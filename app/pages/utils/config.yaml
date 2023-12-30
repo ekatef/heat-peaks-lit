@@ -1,6 +1,6 @@
 tiles: "OSM"
 
-data_dir: "~/pypsa_lit_res/data"
+data_dir: "/pypsa_lit_res/data"
 
 tech_colors:
   # wind
@@ -340,24 +340,54 @@ network_parameters:
   length: Line Length (km)
 
 carrier:
-  CCGT: Combined-Cycle Gas
-  biomass: Biomass
-  offwind-ac: Offshore Wind (AC)
-  geothermal: Geothermal
-  coal: Coal
-  oil: Oil
-  solar: Solar
-  OCGT: Open-Cycle Gas
-  nuclear: Nuclear
+  # power
   onwind: Onshore Wind
+  offwind-ac: Offshore Wind (AC)
   offwind-dc: Offshore Wind (DC)
-  lignite: Lignite
+  solar: Solar
+  solar rooftop: Solar Rooftop
   hydro: Reservoir & Dam
-  PHS: Pumped Hydro Storage
   ror: Run of River
-  H2: Hydrogen Storage
-  battery: Battery Storage
-  load: Load
+  gas: Gas
+
+  # heat
+  urban central solar thermal collector: Solar Thermal (UrbCenOvr)
+  residential urban decentral solar thermal collector: Solar Thermal (UrbDecRes)
+  services urban decentral solar thermal collector: Solar Thermal (UrbDecSer)
+  residential rural solar thermal collector: Solar Thermal (RurDecRes)
+  services rural solar thermal collector: Solar Thermal (RurDecSer)
+
+  # retrofitting
+
+  # moderate
+  retrofitting moderate urban central heat: Retrofit Moder (UrbCenOvr)
+  retrofitting moderate residential urban decentral heat: Retrofit Moder (UrbDecRes)
+  retrofitting moderate services urban decentral heat: Retrofit Moder (UrbDecSer)
+  retrofitting moderate residential rural heat: Retrofit Moder (RurDecRes)
+  retrofitting moderate services rural heat: Retrofit Moder (RurDecSer)
+
+  # ambitious
+  retrofitting ambitious urban central heat: Retrofit Ambit (UrbCenOvr)
+  retrofitting ambitious residential urban decentral heat: Retrofit Ambit (UrbDecRes)
+  retrofitting ambitious services urban decentral heat: Retrofit Ambit (UrbDecSer)
+  retrofitting ambitious residential rural heat: Retrofit Ambit (RurDecRes)
+  retrofitting ambitious services rural heat: Retrofit Ambit (RurDecSer)  
+
+  # biomass: Biomass  
+  # CCGT: Combined-Cycle Gas
+  # OCGT: Open-Cycle Gas     
+  # geothermal: Geothermal
+  # coal: Coal
+  # oil: Oil
+  # nuclear: Nuclear
+  # onwind: Onshore Wind
+  # lignite: Lignite
+  # hydro: Reservoir & Dam
+  # PHS: Pumped Hydro Storage
+  # H2: Hydrogen Storage
+  # battery: Battery Storage
+  # load: Load
+
 
 # https://holoviews.org/user_guide/Colormaps.html
 # you can also pick you own colors
