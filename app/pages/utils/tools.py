@@ -35,7 +35,7 @@ def add_logo():
         """
         <style>
             [data-testid="stSidebarNav"] {
-                background-image: url(https://raw.githubusercontent.com/drifter089/pypsa-lit-docs/main/static/img/logo.png);
+                background-image: url(https://github.com/pypsa-meets-earth/pypsa-kz-data/assets/53824825/ca7893de-26e2-47ad-a3e4-d91cd6716652);
                 background-repeat: no-repeat;
                 padding-top: 30px;
                 background-position: 20px 20px;
