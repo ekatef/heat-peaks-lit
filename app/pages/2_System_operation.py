@@ -93,8 +93,11 @@ with main_col:
     )
     st.markdown(fix_cursor_css, unsafe_allow_html=True)
 
-# the finest available resolution depends on the model
-finest_resolution = helper.get_meta_df(selected_network)["scenario"]["opts"][0].split("L-")[1]
+# the finest available resolution depends on the model and should be extracted from metadata
+# https://stackoverflow.com/a/9891784/8465924    
+pat = r".*?\-(.\d)H.*"
+sector_scen_string = helper.get_meta_df(selected_network)["scenario"]["sector_opts"]
+finest_resolution = re.search(pat, sector_scen_string[0]).group(1)    
 finest_resolution_name = finest_resolution.split("H")[0] + "-hourly"
 upd_dict = {finest_resolution: finest_resolution_name}
 upd_dict.update(res_choices)
