@@ -186,6 +186,10 @@ dem_balance_df = (
 balance_aggr=balance_df.loc[values[0]:values[1]].resample(res).mean()
 dem_balance_aggr=dem_balance_df.loc[values[0]:values[1]].resample(res).mean()
 
+# TODO Check if res contains only numbers
+res_h = str(res) + "H"
+balance_aggr=balance_df.loc[values[0]:values[1]].resample(res_h).mean()
+#dem_balance_aggr=dem_balance_df.loc[values[0]:values[1]].resample(res).mean()
 _, balanse_plot_col, _ = st.columns([1, 80, 1])
 
 plot_color = [tech_colors[c] for c in balance_aggr.columns]
