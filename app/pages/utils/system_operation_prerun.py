@@ -91,6 +91,56 @@ def get_gen_t_dict():
     
     return result
 
+############# for load #####################
+non_empty_load_keys=[param for param in config["loads_t_parameter"]]
+
+def get_load_t_df(pypsa_network, load_t_key):
+    """
+    Get a dataframe of time-series of load from pypsa_network
+    for the parameter corresponding to load_t_key
+    """
+    load_t_df = pypsa_network.loads_t[load_t_key]
+    unique_carriers = get_unique_carriers(load_t_df)
+
+    # electricity load is not captured by re as is doesn't have a sperific suffix
+    unique_carriers = [s if s is not "" else "power" for s in unique_carriers]
+
+    carriers_to_check = unique_carriers
+    if any(name in carriers_to_check for name in config["carrier"].values()):    
+        resultant_df = load_t_df 
+    else:           
+        unique_carriers_nice_names = [config["carrier"][carrier] for carrier in unique_carriers]
+        resultant_df = pd.DataFrame(0, columns=unique_carriers_nice_names, index=load_t_df.index)
+
+        for carrier in unique_carriers:
+            for bus_carrier in load_t_df.columns:           
+                if carrier in re.sub("(.*?)(\d)", "", bus_carrier).strip():  
+                    nice_name = config["carrier"][carrier]
+                    #nice_name = carrier
+                    resultant_df[nice_name] += load_t_df[bus_carrier]                
+    
+    return resultant_df
+
+
+# @st.cache_resource
+def get_load_t_dict():
+    """
+    Get a list of load_t dataframes generation from pypsa_network
+    for the parameter corresponding to all relevant keys (e.g. p)
+    """
+    
+    result={}
+
+    for network_key in pypsa_network_map.keys():
+        network_dict={}
+        network = pypsa_network_map.get(network_key)
+        for non_empty_key in non_empty_load_keys:
+
+            network_dict[non_empty_key] = get_load_t_df(network, non_empty_key)
+            #network_dict[non_empty_key]=  rename_final_df(df)
+        
+        result[network_key]=network_dict
+    return result
 
 
 ############# for storage #####################
