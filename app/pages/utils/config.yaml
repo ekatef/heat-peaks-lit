@@ -345,7 +345,8 @@ carrier:
   onwind: Onshore Wind
   offwind-ac: Offshore Wind (AC)
   offwind-dc: Offshore Wind (DC)
-  solar: Solar
+  # names conflict with solat thermal
+  solar: solar
   solar rooftop: Solar Rooftop
   hydro: Reservoir & Dam
   ror: Run of River
