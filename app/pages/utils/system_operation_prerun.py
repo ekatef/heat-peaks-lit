@@ -39,7 +39,7 @@ def get_unique_carriers(df):
     all_cols=df.columns
     split_cols= []
     for k in all_cols:
-        carrier_name = re.sub('(.*?)(\d)', '', k).strip()
+        carrier_name = re.sub("(.*?)(\d)", "", k).strip()
         split_cols.append(carrier_name)
 
     return list(set(split_cols))
