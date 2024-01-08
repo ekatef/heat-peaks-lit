@@ -33,6 +33,9 @@ pypsa_network_map=tools.get_network_map()
 ###### for generators #####################
 
 def get_unique_carriers(df):
+    """
+    Extract carriers names from the columns names of df
+    """
     all_cols=df.columns
     split_cols= []
     for k in all_cols:
@@ -46,6 +49,10 @@ def get_meta_df(network_key):
     return network.meta
 
 def get_gen_t_df(pypsa_network, gen_t_key):
+    """
+    Get a dataframe of time-series of generation from pypsa_network
+    for the parameter corresponding to gen_t_key
+    """
     gen_t_df = pypsa_network.generators_t[gen_t_key]
     unique_carriers = get_unique_carriers(gen_t_df)
 
