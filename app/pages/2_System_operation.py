@@ -42,6 +42,7 @@ non_empth_links_keys=[param for param in helper.config["links_t_parameter"]]
 non_empth_loads_keys=[param for param in helper.config["loads_t_parameter"]]
 non_empth_stores_keys=[param for param in helper.config["stores_t_parameter"]]
 
+# average by carrier
 gen_df = helper.get_gen_t_dict()
 #storage_df = helper.get_storage_t_dict()
 loads_df = helper.get_load_t_dict()
@@ -118,13 +119,15 @@ with suppl_col:
     )
     st.markdown(fix_cursor_css, unsafe_allow_html=True) 
 
-
+# TODO naming should be imroved
 country_data=gen_df.get(selected_network)
 buses_country_data=gen_buses_df.get(selected_network)
 buses_load_country_data=load_buses_df.get(selected_network)
 
 ##################### generators #####################
 gen_df=country_data["p"].drop("Load", axis=1, errors="ignore")
+# TODO naming should be imroved: gen_buses_df can be distinguished 
+# between the dataframe and the dictionary
 gen_buses_df=buses_country_data["p"].drop("Load", axis=1, errors="ignore")
 load_buses_df=buses_load_country_data["p"]
 
@@ -143,14 +146,13 @@ with date_range_param:
             key="gen_date"
         )
 
-##################### demand #####################
+###################### demand #####################
 loads_country_data=loads_df.get(selected_network)
 #stores_country_data=stores_df.get(selected_network)
 
 loads_df = loads_country_data["p"]
 heat_loads_df = loads_df.filter(like="Heating")
 
-##################### supply-demand balanse #####################
 # heat_columns = ["decentral heat", "central heat", "rural heat"]
 #stores_df = stores_country_data["p"]
 #h2_cols = [col for col in stores_df.columns if "H2" in col]
@@ -183,12 +185,14 @@ balance_df = gen_df
 res_h = str(res) + "H"
 balance_aggr=balance_df.loc[values[0]:values[1]].resample(res_h).mean()
 heat_aggr=heat_loads_df.loc[values[0]:values[1]].resample(res_h).mean()
+
 gen_buses_aggr=gen_buses_df.loc[values[0]:values[1]].resample(res_h).mean()
 load_buses_aggr=load_buses_df.loc[values[0]:values[1]].resample(res_h).mean()
 
 _, balanse_plot_col, _ = st.columns([1, 80, 1])
 
-plot_color = [tech_colors[c] for c in balance_aggr.columns]
+#plot_color = [tech_colors[c] for c in balance_aggr.columns]
+
 retrofit_moderate_cols = balance_aggr.columns[balance_aggr.columns.str.contains("Retrofit Moder")]
 retrofit_ambitious_cols = balance_aggr.columns[balance_aggr.columns.str.contains("Retrofit Ambit")]
 #retrofit_decentral_cols = ["Retrofit Moder (UrbDecSer)", "Retrofit Moder (RurDecRes)", 
@@ -229,6 +233,7 @@ with balanse_plot_col:
     )         
     s2=hv.render(heat_dem_area_plot*heat_dem_line_plot, backend="bokeh")
     st.bokeh_chart(s2, use_container_width=True)
+
 # plot by buses
 gen_buses_aggr = gen_buses_aggr.filter(like="PL")
 load_buses_aggr = load_buses_aggr.filter(like="PL")
@@ -245,6 +250,10 @@ with balanse_plot_col:
     )         
     s2=hv.render(buses_gen_area_plot, backend="bokeh")
     st.bokeh_chart(s2, use_container_width=True)    
+
+
+
+
 
 
 with balanse_plot_col:
@@ -291,6 +300,7 @@ with balanse_plot_col:
     )         
     s2=hv.render(balanse_area_plot, backend="bokeh")
     st.bokeh_chart(s2, use_container_width=True)
+
 tools.add_logo()  
 
 ###################### supply-demand balanse #####################
