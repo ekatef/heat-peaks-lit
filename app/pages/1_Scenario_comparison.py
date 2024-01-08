@@ -54,9 +54,10 @@ def main():
         network_map, option, helper.add_values_for_statistics, helper.get_stats_col_names
     )
 
-    df_techs = [tech_map[c] for c in df.columns]
-    tech_colors = get_colors_map()
-    plot_color = [tech_colors[c] for c in df_techs]
+    # TODO fix tech map to match with the Generators or Links
+    #df_techs = [tech_map[c] for c in df.columns]
+    #tech_colors = get_colors_map()
+    #plot_color = [tech_colors[c] for c in df_techs]
 
     # needed to control markers size for the scatter
     _, plot_col,_ = st.columns([1,80,1])
@@ -67,7 +68,7 @@ def main():
                 size="dummy_size",
                 size_max=25,
                 opacity=0.9,
-                color_discrete_sequence=plot_color,
+                #color_discrete_sequence=plot_color,
                 labels={
                     "value":get_stat_unit(option),
                     "index":" ",
@@ -78,9 +79,10 @@ def main():
             st.plotly_chart(fig,
                 use_cointainer_width=True
             )
+            fig['data'][0]['showlegend']=True
         else:
             fig = px.bar(df, y=df.columns,
-                color_discrete_sequence=plot_color,                    
+                #color_discrete_sequence=plot_color,                    
                 labels={
                     "value":get_stat_unit(option),
                     "index":" ",
@@ -138,25 +140,26 @@ def main():
             tools.config["second_param_units"],
             help="Currently, you can choose between CO2 emissions and Optimal Capacity plots. More options will follow soon"
         )
-    st.markdown(fix_cursor_css, unsafe_allow_html=True)    
+    st.markdown(fix_cursor_css, unsafe_allow_html=True)
+    # TODO CO2 emissions need a fix   
     if option == "CO2 emissions":
         co2_df = helper.get_df_for_parameter(
             network_map,
             "co2_emissions",
             helper.add_values_for_co2,
             helper.get_co2_col_names,
-        ).drop("Load", axis=1)
+        )
 
-        df_techs = [tech_map[c] for c in co2_df.columns]
-        tech_colors = get_colors_map()
-        plot_color = [tech_colors[c] for c in df_techs]
+        #df_techs = [tech_map[c] for c in co2_df.columns]
+        #tech_colors = get_colors_map()
+        #plot_color = [tech_colors[c] for c in df_techs]
 
         _, plot_col, _ = st.columns([1,60,1])
 
         with plot_col:
             fig = px.bar(co2_df, y=co2_df.columns, 
                 title=" ",
-                color_discrete_sequence=plot_color,
+                #color_discrete_sequence=plot_color,
                 labels={
                     "value": tools.config["second_param_units"][option],
                     "index":" ",
@@ -171,9 +174,9 @@ def main():
             network_map, None, helper.add_values_for_generators, helper.get_gen_col_names
         )
 
-        df_techs = [tech_map[c] for c in gen_df.columns]
-        tech_colors = get_colors_map()
-        plot_color = [tech_colors[c] for c in df_techs]
+        #df_techs = [tech_map[c] for c in gen_df.columns]
+        #tech_colors = get_colors_map()
+        #plot_color = [tech_colors[c] for c in df_techs]
 
         _,plot_col,_=st.columns([1,80,1])
 
@@ -182,7 +185,7 @@ def main():
                 gen_df, 
                 y=gen_df.columns, 
                 title=" ",
-                color_discrete_sequence=plot_color,
+                #color_discrete_sequence=plot_color,
                 labels={
                     "value": tools.config["second_param_units"][option],
                     "index":" ",
