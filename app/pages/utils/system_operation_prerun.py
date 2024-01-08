@@ -71,6 +71,28 @@ def get_gen_t_df(pypsa_network, gen_t_key):
                     resultant_df[nice_name] += gen_t_df[bus_carrier]                 
     
     return resultant_df
+# TODO Remove hardcoding?
+# TODO Remove country hardcoding
+def get_buses_t_df(pypsa_network, gen_t_key):
+
+    #country_key = "PL"
+
+    gen_t_df = pypsa_network.generators_t[gen_t_key]
+    unique_carriers = get_unique_carriers(gen_t_df)
+
+    carriers_to_check = unique_carriers.copy()
+    carriers_to_check.remove("solar")
+    if any(name in carriers_to_check for name in config["carrier"].values()):
+        return gen_t_df
+    else:
+        unique_carriers_nice_names = [config["carrier"][carrier] for carrier in unique_carriers]
+        carriers_names_map = dict(zip(unique_carriers, unique_carriers_nice_names))
+        new_columns = gen_t_df.columns
+        for old, new in carriers_names_map.items():
+            new_columns = new_columns.str.replace(old, new, regex=True)
+        gen_t_df.columns = new_columns 
+
+    return gen_t_df
     
 
 non_empth_df_gen_t=[param for param in config["gen_t_parameter"]]
@@ -80,12 +102,26 @@ def get_gen_t_dict():
 
     result={}
     
-
     for network_key in pypsa_network_map.keys():
         network_dict={}
         network=pypsa_network_map.get(network_key)
         for non_empty_key in non_empth_df_gen_t:
-            network_dict[non_empty_key]=get_gen_t_df(network,non_empty_key)
+            network_dict[non_empty_key]=get_gen_t_df(network, non_empty_key)
+        
+        result[network_key]=network_dict
+    
+    return result
+
+# @st.cache_resource
+def get_buses_gen_t_dict():
+
+    result={}
+    
+    for network_key in pypsa_network_map.keys():
+        network_dict={}
+        network=pypsa_network_map.get(network_key)
+        for non_empty_key in non_empth_df_gen_t:
+            network_dict[non_empty_key]=get_buses_t_df(network, non_empty_key)
         
         result[network_key]=network_dict
     
@@ -141,6 +177,53 @@ def get_load_t_dict():
         
         result[network_key]=network_dict
     return result
+
+# @st.cache_resource
+def get_buses_load_t_df(pypsa_network, load_t_key):
+
+    #country_key = "PL"
+
+    load_t_df = pypsa_network.loads_t[load_t_key]
+    
+    resultant_df = load_t_df
+    #resultant_df = resultant_df.filter(like=country_key)
+
+    unique_carriers = get_unique_carriers(load_t_df)
+    # electricity load is not captured by re as is doesn't have a sperific suffix
+    unique_carriers = [s if s is not "" else "power" for s in unique_carriers]
+
+    carriers_to_check = unique_carriers
+    if any(name in carriers_to_check for name in config["carrier"].values()):
+        resultant_df = load_t_df
+    else:    
+        unique_carriers_nice_names = [config["carrier"][carrier] for carrier in unique_carriers]
+        carriers_names_map = dict(zip(unique_carriers, unique_carriers_nice_names))
+        new_columns = load_t_df.columns
+        for old, new in carriers_names_map.items():
+            new_columns = new_columns.str.replace(old, new, regex=True)
+        load_t_df.columns = new_columns
+
+        resultant_df = load_t_df
+
+    return resultant_df
+
+# @st.cache_resource  
+def get_buses_load_t_dict():
+
+    result={}
+    
+    for network_key in pypsa_network_map.keys():
+        network_dict={}
+        network=pypsa_network_map.get(network_key)
+        for non_empty_key in non_empty_load_keys:
+            network_dict[non_empty_key]=get_buses_load_t_df(network, non_empty_key)
+        
+        result[network_key]=network_dict
+    
+    return result
+
+
+
 
 
 ############# for storage #####################
