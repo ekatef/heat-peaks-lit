@@ -36,7 +36,7 @@ def add_values_for_statistics(n, parameter, col_name):
     return n.statistics()[parameter].loc["Generator"][col_name]
 
 def add_statistics(n):
-    return n.statistics()
+    return n.statistics().loc["Generator"]
 
 
 def add_values_for_co2(n, parameter, col_name):
