@@ -351,6 +351,29 @@ carrier:
   ror: Run of River
   gas: Gas
 
+  industry electricity: El Industry
+  gas for industry: Gas Industry
+  # H2 for industry is captured as "for industry"
+  for industry: H2 Industry
+  low-temperature heat for industry: LT Heat Industry
+
+  solid biomass for industry: Solid Bio Industry
+  land transport EV: El Vehicles
+  process emissions: Process Emission
+  EU naphtha for industry: Naphta Industry
+
+  power: Power
+  urban central heat: UrbCenOvr Heating
+  residential urban decentral heat: UrbDecRes Heating
+  services urban decentral heat: UrbDecSer Heating
+  residential rural heat: RurDecRes Heating
+  services rural heat: RurDecSer Heating
+
+  EU oil: Oil
+  land transport fuel cell: FC Vehicles  
+  EU kerosene for aviation: Avia Kerosene
+  EU shipping methanol: Methanol Shipping  
+
   # heat
   urban central solar thermal collector: Solar Thermal (UrbCenOvr)
   residential urban decentral solar thermal collector: Solar Thermal (UrbDecRes)
