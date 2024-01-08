@@ -43,9 +43,10 @@ non_empth_loads_keys=[param for param in helper.config["loads_t_parameter"]]
 non_empth_stores_keys=[param for param in helper.config["stores_t_parameter"]]
 
 gen_df = helper.get_gen_t_dict()
-storage_df = helper.get_storage_t_dict()
-stores_df = helper.get_components_t_dict("stores_t", non_empth_stores_keys)
+#storage_df = helper.get_storage_t_dict()
 loads_df = helper.get_load_t_dict()
+#stores_df = helper.get_components_t_dict("stores_t", non_empth_stores_keys)
+
 # carrier values per bus
 gen_buses_df = helper.get_buses_gen_t_dict()
 load_buses_df = helper.get_buses_load_t_dict()
@@ -144,33 +145,33 @@ with date_range_param:
 
 ##################### demand #####################
 loads_country_data=loads_df.get(selected_network)
-stores_country_data=stores_df.get(selected_network)
+#stores_country_data=stores_df.get(selected_network)
 
 loads_df = loads_country_data["p"]
-stores_df = stores_country_data["p"]
-
-# TODO Remove hard-coding
-h2_cols = [col for col in stores_df.columns if "H2" in col]
-battery_cols = [col for col in stores_df.columns if "battery" in col]
-
-demand_df=pd.DataFrame({"load": loads_df.sum(axis=1)})
-demand_df["H2"]=stores_df[h2_cols].sum(axis=1)
-demand_df["battery"]=stores_df[battery_cols].sum(axis=1)
-
-demand_df["load"] = demand_df["load"] * (-1)
-
-demand_df["pbattery"] = 0
-demand_df["nbattery"] = 0
-demand_df.loc[demand_df['battery'] > 0, "pbattery"] = demand_df["battery"]
-demand_df.loc[demand_df['battery'] < 0, "nbattery"] = demand_df["battery"]
-
-demand_df["pH2"] = 0
-demand_df["nH2"] = 0
-demand_df.loc[demand_df['H2'] > 0, "pH2"] = demand_df["H2"]
-demand_df.loc[demand_df['H2'] < 0, "nH2"] = demand_df["H2"]
 heat_loads_df = loads_df.filter(like="Heating")
 
 ##################### supply-demand balanse #####################
+# heat_columns = ["decentral heat", "central heat", "rural heat"]
+#stores_df = stores_country_data["p"]
+#h2_cols = [col for col in stores_df.columns if "H2" in col]
+#battery_cols = [col for col in stores_df.columns if "battery" in col]
+#
+#demand_df=pd.DataFrame({"load": loads_df.sum(axis=1)})
+#demand_df["H2"]=stores_df[h2_cols].sum(axis=1)
+#demand_df["battery"]=stores_df[battery_cols].sum(axis=1)
+
+#demand_df["load"] = demand_df["load"] * (-1)
+#
+#demand_df["pbattery"] = 0
+#demand_df["nbattery"] = 0
+#demand_df.loc[demand_df['battery'] > 0, "pbattery"] = demand_df["battery"]
+#demand_df.loc[demand_df['battery'] < 0, "nbattery"] = demand_df["battery"]
+#
+#demand_df["pH2"] = 0
+#demand_df["nH2"] = 0
+#demand_df.loc[demand_df['H2'] > 0, "pH2"] = demand_df["H2"]
+#demand_df.loc[demand_df['H2'] < 0, "nH2"] = demand_df["H2"]
+
 ###################### generation #####################
 
 # ensure consistency of columns naming for generation and demand
@@ -291,3 +292,26 @@ with balanse_plot_col:
     s2=hv.render(balanse_area_plot, backend="bokeh")
     st.bokeh_chart(s2, use_container_width=True)
 tools.add_logo()  
+
+###################### supply-demand balanse #####################
+
+# ensure consistency of columns naming for generation and demand
+#gen_df.columns = [tech_map[c] for c in gen_df.columns]
+
+balance_df = gen_df
+
+#balance_df = (
+#    pd.concat([gen_df, demand_df], axis=1)
+#    .drop("battery", axis=1)
+#    .drop("H2", axis=1)
+#    .drop("nH2", axis=1)
+#    .drop("load", axis=1)
+#)
+
+#dem_balance_df = (
+#    demand_df
+#    .drop("battery", axis=1)
+#    .drop("H2", axis=1)
+#    .drop("pH2", axis=1)
+#)
+#
