@@ -56,14 +56,19 @@ def get_gen_t_df(pypsa_network, gen_t_key):
     gen_t_df = pypsa_network.generators_t[gen_t_key]
     unique_carriers = get_unique_carriers(gen_t_df)
 
-    unique_carriers_nice_names = [config["carrier"][carrier] for carrier in unique_carriers]
-    resultant_df = pd.DataFrame(0,columns=unique_carriers_nice_names, index=gen_t_df.index)
-
-    for carrier in unique_carriers:
-        for bus_carrier in gen_t_df.columns:           
-            if carrier in re.sub("(.*?)(\d)", "", bus_carrier).strip():  
-                nice_name = config["carrier"][carrier]
-                resultant_df[nice_name] += gen_t_df[bus_carrier]
+    carriers_to_check = unique_carriers.copy()
+    carriers_to_check.remove("solar")
+    if any(name in carriers_to_check for name in config["carrier"].values()):
+        resultant_df = gen_t_df 
+    else:        
+        unique_carriers_nice_names = [config["carrier"][carrier] for carrier in unique_carriers]
+        resultant_df = pd.DataFrame(0, columns=unique_carriers_nice_names, index=gen_t_df.index)
+        for carrier in unique_carriers:
+            for bus_carrier in gen_t_df.columns:           
+                if carrier in re.sub("(.*?)(\d)", "", bus_carrier).strip():  
+                    nice_name = config["carrier"][carrier]
+                    #nice_name = carrier
+                    resultant_df[nice_name] += gen_t_df[bus_carrier]                 
     
     return resultant_df
     
