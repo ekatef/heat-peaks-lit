@@ -260,14 +260,33 @@ with balanse_plot_col:
     st.bokeh_chart(s2, use_container_width=True)
 
 with balanse_plot_col:
-    dem_balanse_area_plot=dem_balance_aggr.hvplot.area(
+    heat_smooth_area_plot=heat_smoothed_aggr[["Overall Heating Retrofitted", "Overall Heating"]].hvplot.area(
         **kwargs,
-        ylabel="Demand [MW]",
-        #group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
-        color = plot_color
+        ylabel="Retrofitting Effect on Heat Demand [MW]",
+        group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
+        #color = plot_color
         )
-    dem_balanse_area_plot = dem_balanse_area_plot.opts(
+    heat_smooth_area_plot = heat_smooth_area_plot.opts(
         fontsize=plot_font_dict
     )         
-    s2=hv.render(dem_balanse_area_plot, backend='bokeh')
+    s2=hv.render(heat_smooth_area_plot, backend="bokeh")
+    st.bokeh_chart(s2, use_container_width=True)
+
+
+with balanse_plot_col:
+    #balanse_area_plot=balance_aggr[retrofit_ambitious_cols].hvplot.area(
+        #color = ["coral"]
+    #balanse_area_plot=balance_aggr[["solar", "onwind"]].hvplot.area(
+    #    color = ["green", "blue"]
+    #)
+    balanse_area_plot=balance_aggr[retrofit_moderate_cols].hvplot.area(
+        **kwargs,
+        ylabel="Retrofitting in action [MW]",
+        group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
+        #color = plot_color
+        )
+    balanse_area_plot = balanse_area_plot.opts(
+        fontsize=plot_font_dict
+    )         
+    s2=hv.render(balanse_area_plot, backend="bokeh")
     st.bokeh_chart(s2, use_container_width=True)
