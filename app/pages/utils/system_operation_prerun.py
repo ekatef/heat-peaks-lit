@@ -38,6 +38,7 @@ def get_unique_carriers(df):
     """
     all_cols=df.columns
     split_cols= []
+    # TODO H2 for industry is captured as "for industry"
     for k in all_cols:
         carrier_name = re.sub("(.*?)(\d)", "", k).strip()
         split_cols.append(carrier_name)
@@ -71,6 +72,7 @@ def get_gen_t_df(pypsa_network, gen_t_key):
                     resultant_df[nice_name] += gen_t_df[bus_carrier]                 
     
     return resultant_df
+
 # TODO Remove hardcoding?
 # TODO Remove country hardcoding
 def get_buses_t_df(pypsa_network, gen_t_key):
