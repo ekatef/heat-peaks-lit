@@ -290,3 +290,4 @@ with balanse_plot_col:
     )         
     s2=hv.render(balanse_area_plot, backend="bokeh")
     st.bokeh_chart(s2, use_container_width=True)
+tools.add_logo()  
