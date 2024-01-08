@@ -168,6 +168,7 @@ demand_df["pH2"] = 0
 demand_df["nH2"] = 0
 demand_df.loc[demand_df['H2'] > 0, "pH2"] = demand_df["H2"]
 demand_df.loc[demand_df['H2'] < 0, "nH2"] = demand_df["H2"]
+heat_loads_df = loads_df.filter(like="Heating")
 
 ##################### supply-demand balanse #####################
 ###################### generation #####################
@@ -187,6 +188,31 @@ load_buses_aggr=load_buses_df.loc[values[0]:values[1]].resample(res_h).mean()
 _, balanse_plot_col, _ = st.columns([1, 80, 1])
 
 plot_color = [tech_colors[c] for c in balance_aggr.columns]
+retrofit_moderate_cols = balance_aggr.columns[balance_aggr.columns.str.contains("Retrofit Moder")]
+retrofit_ambitious_cols = balance_aggr.columns[balance_aggr.columns.str.contains("Retrofit Ambit")]
+#retrofit_decentral_cols = ["Retrofit Moder (UrbDecSer)", "Retrofit Moder (RurDecRes)", 
+#                           "Retrofit Moder (UrbDecRes)"]
+retrofit_decentral_cols = ["Retrofit Ambit (UrbDecSer)", "Retrofit Ambit (RurDecRes)", 
+                           "Retrofit Ambit (UrbDecRes)"]
+retrofit_central_cols = ["Retrofit Moder (UrbCenOvr)"]
+retrofit_rural_cols = ["Retrofit Moder (RurDecRes)", "Retrofit Moder (RurDecSer)"]
+
+# TODO Add safety filtering on the case when some key are not present in the data
+# smoothing peaks, like non_empty_load_keys=[param for param in config["loads_t_parameter"]]
+heat_smoothed_aggr = heat_aggr.copy()
+
+loads_df.filter(like="heat").columns
+heating_types = ["UrbCenOvr", "UrbDecRes", "UrbDecSer", "RurDecRes", "RurDecSer"]
+retrofit_scenario = "Retrofit Moder"
+for heat_type in heating_types:
+    heat_smoothed_aggr[heat_type + " Heating"] = heat_aggr[heat_type + " Heating"] - balance_aggr[retrofit_scenario + " (" + heat_type + ")"]
+heat_smoothed_aggr["Overall Heating Retrofitted"] = heat_aggr.sum(axis=1) - balance_aggr.filter(like = retrofit_scenario).sum(axis=1)
+heat_smoothed_aggr["Overall Heating"] = heat_aggr.sum(axis=1)
+
+
+heat_load_by_sectors = ["RurDecSer Heating", "RurDecRes Heating", "UrbDecRes Heating", "UrbCenOvr Heating",  "UrbDecSer Heating"]
+overall_heat_load = ["Overall Heating Retrofitted", "Overall Heating"]
+
 with balanse_plot_col:
     heat_dem_area_plot=heat_smoothed_aggr[heat_load_by_sectors].hvplot.area(
         **kwargs,
