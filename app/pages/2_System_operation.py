@@ -181,7 +181,22 @@ _, balanse_plot_col, _ = st.columns([1, 80, 1])
 
 plot_color = [tech_colors[c] for c in balance_aggr.columns]
 with balanse_plot_col:
-    balanse_area_plot=balance_aggr.hvplot.area(
+    heat_dem_area_plot=heat_smoothed_aggr[heat_load_by_sectors].hvplot.area(
+        **kwargs,
+        ylabel="Heat Demand [MW]",
+        group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
+        color = ["#ffc100", "#ff9a00", "#ff7400", "#ff4d00", "#ff0000"]
+        )
+    heat_dem_line_plot=heat_smoothed_aggr[overall_heat_load].hvplot.line(
+        color = ["#333333", "#777777",]
+    )
+    heat_dem_area_plot = heat_dem_area_plot.opts(
+        fontsize=plot_font_dict
+    )         
+    s2=hv.render(heat_dem_area_plot*heat_dem_line_plot, backend="bokeh")
+    st.bokeh_chart(s2, use_container_width=True)
+with balanse_plot_col:
+    buses_gen_area_plot=load_buses_aggr.filter(like="Heating").hvplot.area(
         **kwargs,
         ylabel="Supply [MW]",
         #group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
