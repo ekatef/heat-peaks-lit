@@ -296,6 +296,7 @@ scenario_names:
   # MA: Morocco
 
   flex: Flexible Scenario
+  flex_upd: Updated Flexible Scenario  
 
   # BJ_4: Benin four clusters
   # BJ_6: Benin six clusters
