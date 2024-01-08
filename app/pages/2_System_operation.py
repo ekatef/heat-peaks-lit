@@ -228,14 +228,23 @@ with balanse_plot_col:
     )         
     s2=hv.render(heat_dem_area_plot*heat_dem_line_plot, backend="bokeh")
     st.bokeh_chart(s2, use_container_width=True)
+# plot by buses
+gen_buses_aggr = gen_buses_aggr.filter(like="PL")
+load_buses_aggr = load_buses_aggr.filter(like="PL")
+
 with balanse_plot_col:
     buses_gen_area_plot=load_buses_aggr.filter(like="Heating").hvplot.area(
         **kwargs,
         ylabel="Supply [MW]",
         #group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
-        color = plot_color
+        color = ["#ffc100", "#ff9a00", "#ff7400", "#ff4d00", "#ff0000"]
         )
-    balanse_area_plot = balanse_area_plot.opts(
+    buses_gen_area_plot = buses_gen_area_plot.opts(
+        fontsize=plot_font_dict
+    )         
+    s2=hv.render(buses_gen_area_plot, backend="bokeh")
+    st.bokeh_chart(s2, use_container_width=True)    
+
         fontsize=plot_font_dict
     )         
     s2=hv.render(balanse_area_plot, backend='bokeh')
