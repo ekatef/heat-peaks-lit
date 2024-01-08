@@ -164,32 +164,18 @@ demand_df.loc[demand_df['H2'] > 0, "pH2"] = demand_df["H2"]
 demand_df.loc[demand_df['H2'] < 0, "nH2"] = demand_df["H2"]
 
 ##################### supply-demand balanse #####################
+###################### generation #####################
 
 # ensure consistency of columns naming for generation and demand
-gen_df.columns = [tech_map[c] for c in gen_df.columns]
+#gen_df.columns = [tech_map[c] for c in gen_df.columns]
 
-balance_df = (
-    pd.concat([gen_df, demand_df], axis=1)
-    .drop("battery", axis=1)
-    .drop("H2", axis=1)
-    .drop("nH2", axis=1)
-    .drop("load", axis=1)
-)
-
-dem_balance_df = (
-    demand_df
-    .drop("battery", axis=1)
-    .drop("H2", axis=1)
-    .drop("pH2", axis=1)
-)
-
-balance_aggr=balance_df.loc[values[0]:values[1]].resample(res).mean()
-dem_balance_aggr=dem_balance_df.loc[values[0]:values[1]].resample(res).mean()
+balance_df = gen_df
 
 # TODO Check if res contains only numbers
 res_h = str(res) + "H"
 balance_aggr=balance_df.loc[values[0]:values[1]].resample(res_h).mean()
 #dem_balance_aggr=dem_balance_df.loc[values[0]:values[1]].resample(res).mean()
+gen_buses_aggr=gen_buses_df.loc[values[0]:values[1]].resample(res_h).mean()
 _, balanse_plot_col, _ = st.columns([1, 80, 1])
 
 plot_color = [tech_colors[c] for c in balance_aggr.columns]
