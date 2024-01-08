@@ -46,6 +46,9 @@ gen_df = helper.get_gen_t_dict()
 storage_df = helper.get_storage_t_dict()
 stores_df = helper.get_components_t_dict("stores_t", non_empth_stores_keys)
 loads_df = helper.get_load_t_dict()
+# carrier values per bus
+gen_buses_df = helper.get_buses_gen_t_dict()
+load_buses_df = helper.get_buses_load_t_dict()
 
 res_choices = helper.config["operation"]["resolution"]
 
@@ -116,10 +119,12 @@ with suppl_col:
 
 
 country_data=gen_df.get(selected_network)
-
+buses_country_data=gen_buses_df.get(selected_network)
+buses_load_country_data=load_buses_df.get(selected_network)
 
 ##################### generators #####################
 gen_df=country_data["p"].drop("Load", axis=1, errors="ignore")
+gen_buses_df=buses_country_data["p"].drop("Load", axis=1, errors="ignore")
 load_buses_df=buses_load_country_data["p"]
 
 _, date_range_param, _ = st.columns([1, 50, 1])
@@ -177,6 +182,8 @@ res_h = str(res) + "H"
 balance_aggr=balance_df.loc[values[0]:values[1]].resample(res_h).mean()
 heat_aggr=heat_loads_df.loc[values[0]:values[1]].resample(res_h).mean()
 gen_buses_aggr=gen_buses_df.loc[values[0]:values[1]].resample(res_h).mean()
+load_buses_aggr=load_buses_df.loc[values[0]:values[1]].resample(res_h).mean()
+
 _, balanse_plot_col, _ = st.columns([1, 80, 1])
 
 plot_color = [tech_colors[c] for c in balance_aggr.columns]
