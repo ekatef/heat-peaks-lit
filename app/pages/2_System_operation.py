@@ -38,9 +38,9 @@ fix_cursor_css = '''
     </style>
 '''
 
-non_empth_links_keys=[param for param in helper.config["links_t_parameter"]]
-non_empth_loads_keys=[param for param in helper.config["loads_t_parameter"]]
-non_empth_stores_keys=[param for param in helper.config["stores_t_parameter"]]
+non_empth_links_keys = [param for param in helper.config["links_t_parameter"]]
+non_empth_loads_keys = [param for param in helper.config["loads_t_parameter"]]
+non_empth_stores_keys = [param for param in helper.config["stores_t_parameter"]]
 
 # average by carrier
 gen_df = helper.get_gen_t_dict()
@@ -125,16 +125,16 @@ buses_country_data=gen_buses_df.get(selected_network)
 buses_load_country_data=load_buses_df.get(selected_network)
 
 ##################### generators #####################
-gen_df=country_data["p"].drop("Load", axis=1, errors="ignore")
+gen_df = country_data["p"].drop("Load", axis=1, errors="ignore")
 # TODO naming should be imroved: gen_buses_df can be distinguished 
 # between the dataframe and the dictionary
-gen_buses_df=buses_country_data["p"].drop("Load", axis=1, errors="ignore")
-load_buses_df=buses_load_country_data["p"]
+gen_buses_df = buses_country_data["p"].drop("Load", axis=1, errors="ignore")
+load_buses_df = buses_load_country_data["p"]
 
 _, date_range_param, _ = st.columns([1, 50, 1])
 with date_range_param:
-    min_index=gen_df.index[0]
-    max_index=gen_df.index[-1]
+    min_index = gen_df.index[0]
+    max_index = gen_df.index[-1]
     min_value = datetime.datetime(min_index.year, min_index.month, min_index.day)
     max_value = datetime.datetime(max_index.year, max_index.month, max_index.day)
     values = st.slider(
@@ -183,11 +183,11 @@ balance_df = gen_df
 
 # TODO Check if res contains only numbers
 res_h = str(res) + "H"
-balance_aggr=balance_df.loc[values[0]:values[1]].resample(res_h).mean()
-heat_aggr=heat_loads_df.loc[values[0]:values[1]].resample(res_h).mean()
+balance_aggr = balance_df.loc[values[0]:values[1]].resample(res_h).mean()
+heat_aggr = heat_loads_df.loc[values[0]:values[1]].resample(res_h).mean()
 
-gen_buses_aggr=gen_buses_df.loc[values[0]:values[1]].resample(res_h).mean()
-load_buses_aggr=load_buses_df.loc[values[0]:values[1]].resample(res_h).mean()
+gen_buses_aggr = gen_buses_df.loc[values[0]:values[1]].resample(res_h).mean()
+load_buses_aggr = load_buses_df.loc[values[0]:values[1]].resample(res_h).mean()
 
 _, balanse_plot_col, _ = st.columns([1, 80, 1])
 
@@ -239,7 +239,7 @@ gen_buses_aggr = gen_buses_aggr.filter(like="PL")
 load_buses_aggr = load_buses_aggr.filter(like="PL")
 
 with balanse_plot_col:
-    buses_gen_area_plot=load_buses_aggr.filter(like="Heating").hvplot.area(
+    buses_gen_area_plot = load_buses_aggr.filter(like="Heating").hvplot.area(
         **kwargs,
         ylabel="Supply [MW]",
         #group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
@@ -289,7 +289,7 @@ with balanse_plot_col:
     #balanse_area_plot=balance_aggr[["solar", "onwind"]].hvplot.area(
     #    color = ["green", "blue"]
     #)
-    balanse_area_plot=balance_aggr[retrofit_moderate_cols].hvplot.area(
+    balanse_area_plot = balance_aggr[retrofit_moderate_cols].hvplot.area(
         **kwargs,
         ylabel="Retrofitting in action [MW]",
         group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
