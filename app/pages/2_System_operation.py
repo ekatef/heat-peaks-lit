@@ -153,27 +153,6 @@ loads_country_data=loads_dict_list.get(selected_network)
 loads_df = loads_country_data["p"]
 heat_loads_df = loads_df.filter(like="Heating")
 
-# heat_columns = ["decentral heat", "central heat", "rural heat"]
-#stores_df = stores_country_data["p"]
-#h2_cols = [col for col in stores_df.columns if "H2" in col]
-#battery_cols = [col for col in stores_df.columns if "battery" in col]
-#
-#demand_df=pd.DataFrame({"load": loads_df.sum(axis=1)})
-#demand_df["H2"]=stores_df[h2_cols].sum(axis=1)
-#demand_df["battery"]=stores_df[battery_cols].sum(axis=1)
-
-#demand_df["load"] = demand_df["load"] * (-1)
-#
-#demand_df["pbattery"] = 0
-#demand_df["nbattery"] = 0
-#demand_df.loc[demand_df['battery'] > 0, "pbattery"] = demand_df["battery"]
-#demand_df.loc[demand_df['battery'] < 0, "nbattery"] = demand_df["battery"]
-#
-#demand_df["pH2"] = 0
-#demand_df["nH2"] = 0
-#demand_df.loc[demand_df['H2'] > 0, "pH2"] = demand_df["H2"]
-#demand_df.loc[demand_df['H2'] < 0, "nH2"] = demand_df["H2"]
-
 ###################### generation #####################
 
 # ensure consistency of columns naming for generation and demand
