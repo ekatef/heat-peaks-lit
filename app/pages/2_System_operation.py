@@ -155,9 +155,10 @@ heat_loads_df = loads_df.filter(like="Heating")
 
 ###################### generation #####################
 
-# ensure consistency of columns naming for generation and demand
+# TODO wouldn't it be more reliabe to move columns renaming there?
 #gen_df.columns = [tech_map[c] for c in gen_df.columns]
 
+#TODO Add balance?
 balance_df = gen_df
 
 # TODO Check if res contains only numbers
