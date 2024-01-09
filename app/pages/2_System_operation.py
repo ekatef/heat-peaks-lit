@@ -198,8 +198,7 @@ country_code = "PL"
 gen_buses_aggr = gen_buses_aggr.filter(like=country_code)
 load_buses_aggr = load_buses_aggr.filter(like=country_code)
 
-
-with balanse_plot_col:
+with balance_plot_col:
     buses_gen_area_plot = load_buses_aggr.filter(like="Heating").hvplot.area(
         **kwargs,
         ylabel="Supply [MW]",
@@ -243,8 +242,7 @@ with balanse_plot_col:
     s2=hv.render(heat_smooth_area_plot, backend="bokeh")
     st.bokeh_chart(s2, use_container_width=True)
 
-
-with balanse_plot_col:
+with balance_plot_col:
     #balanse_area_plot=balance_aggr[retrofit_ambitious_cols].hvplot.area(
         #color = ["coral"]
     #balanse_area_plot=balance_aggr[["solar", "onwind"]].hvplot.area(
@@ -264,7 +262,7 @@ with balanse_plot_col:
 
 tools.add_logo()  
 
-###################### supply-demand balanse #####################
+###################### supply-demand balance #####################
 
 # ensure consistency of columns naming for generation and demand
 #gen_df.columns = [tech_map[c] for c in gen_df.columns]
