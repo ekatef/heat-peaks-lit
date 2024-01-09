@@ -43,14 +43,14 @@ non_empth_loads_keys = [param for param in helper.config["loads_t_parameter"]]
 non_empth_stores_keys = [param for param in helper.config["stores_t_parameter"]]
 
 # average by carrier
-gen_df = helper.get_gen_t_dict()
+gen_dict_list = helper.get_gen_t_dict()
 #storage_df = helper.get_storage_t_dict()
-loads_df = helper.get_load_t_dict()
+loads_dict_list = helper.get_load_t_dict()
 #stores_df = helper.get_components_t_dict("stores_t", non_empth_stores_keys)
 
 # carrier values per bus
-gen_buses_df = helper.get_buses_gen_t_dict()
-load_buses_df = helper.get_buses_load_t_dict()
+gen_buses_dict_list = helper.get_buses_gen_t_dict()
+load_buses_dict_list = helper.get_buses_load_t_dict()
 
 res_choices = helper.config["operation"]["resolution"]
 
@@ -93,7 +93,7 @@ tools.add_logo()
 with main_col:
     selected_network = st.selectbox(
         "Select which scenario's plot you want to see :",
-        list(gen_df.keys()),
+        list(gen_dict_list.keys()),
         format_func = scenario_formatter,
         help="You can choose between available scenarios"
     )
@@ -120,9 +120,9 @@ with suppl_col:
     st.markdown(fix_cursor_css, unsafe_allow_html=True) 
 
 # TODO naming should be imroved
-country_data=gen_df.get(selected_network)
-buses_country_data=gen_buses_df.get(selected_network)
-buses_load_country_data=load_buses_df.get(selected_network)
+country_data = gen_dict_list.get(selected_network)
+buses_country_data = gen_buses_dict_list.get(selected_network)
+buses_load_country_data = load_buses_dict_list.get(selected_network)
 
 ##################### generators #####################
 gen_df = country_data["p"].drop("Load", axis=1, errors="ignore")
@@ -147,7 +147,7 @@ with date_range_param:
         )
 
 ###################### demand #####################
-loads_country_data=loads_df.get(selected_network)
+loads_country_data=loads_dict_list.get(selected_network)
 #stores_country_data=stores_df.get(selected_network)
 
 loads_df = loads_country_data["p"]
