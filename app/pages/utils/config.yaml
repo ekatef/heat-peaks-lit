@@ -1,6 +1,6 @@
 tiles: "OSM"
 
-data_dir: "/pypsa_lit_res/data"
+data_dir: "./data"
 
 tech_colors:
   # wind
