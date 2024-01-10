@@ -163,6 +163,7 @@ balance_df = gen_df
 
 # TODO Check if res contains only numbers
 res_h = str(res) + "H"
+
 balance_aggr = balance_df.loc[values[0]:values[1]].resample(res_h).mean()
 heat_aggr = heat_loads_df.loc[values[0]:values[1]].resample(res_h).mean()
 
@@ -201,8 +202,8 @@ load_buses_aggr = load_buses_aggr.filter(like=country_code)
 with balance_plot_col:
     buses_gen_area_plot = load_buses_aggr.filter(like="Heating").hvplot.area(
         **kwargs,
-        ylabel="Supply [MW]",
-        #group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
+        ylabel="Heat Demand [MW]",
+        group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
         color = ["#ffc100", "#ff9a00", "#ff7400", "#ff4d00", "#ff0000"]
         )
     buses_gen_area_plot = buses_gen_area_plot.opts(
