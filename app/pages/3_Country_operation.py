@@ -66,7 +66,7 @@ plot_font_dict = dict(
     yticks=18,
 )
 
-st.title("System operation")
+st.title("Country operation")
 
 _, main_col, _, suppl_col, _ = st.columns([1, 35, 1, 20, 1])
 
