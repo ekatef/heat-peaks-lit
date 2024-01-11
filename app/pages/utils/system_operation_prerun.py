@@ -184,16 +184,12 @@ def get_load_t_dict():
         result[network_key]=network_dict
     return result
 
-def get_buses_load_t_df(pypsa_network, load_t_key):
-
-    #country_key = "PL"
 @st.cache_resource
 def get_buses_load_t_df(_pypsa_network, load_t_key):
 
     load_t_df = _pypsa_network.loads_t[load_t_key]
     
     resultant_df = load_t_df
-    #resultant_df = resultant_df.filter(like=country_key)
 
     unique_carriers = get_unique_carriers(load_t_df)
     # electricity load is not captured by re as is doesn't have a sperific suffix
