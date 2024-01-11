@@ -1,6 +1,6 @@
 tiles: "OSM"
 
-data_dir: "./data"
+data_dir: "/home/martha/Projects/23-09-EEE/heat-demand-peaks/heat-peaks-lit/data/"
 
 tech_colors:
   # wind

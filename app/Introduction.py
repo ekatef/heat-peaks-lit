@@ -5,7 +5,7 @@ import plotly.express as px
 import requests
 import streamlit as st
 
-import app.pages.utils.tools as tools
+import pages.utils.tools as tools
 
 from io import BytesIO
 
@@ -14,7 +14,6 @@ from io import BytesIO
 url_1 = "https://raw.githubusercontent.com/ekatef/assets/master/preview_1.png"
 url_2 = "https://raw.githubusercontent.com/ekatef/assets/master/preview_2.png"
 url_3 = "https://raw.githubusercontent.com/ekatef/assets/master/preview_3.png"
-
 
 @st.cache_data
 def get_image(url):
