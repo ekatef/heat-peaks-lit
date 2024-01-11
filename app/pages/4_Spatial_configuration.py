@@ -67,17 +67,17 @@ graph_opts = dict(
     )
 
 
-polygon_gpd=country_data["polygon_gpd"]
-points_gpd=country_data["nodes_gpd"]
-map_points_df=country_data["nodes_polygon_df"]
+polygon_gpd = country_data["polygon_gpd"]
+points_gpd = country_data["nodes_gpd"]
+map_points_df = country_data["nodes_polygon_df"]
 
 
 def spatial_param_formatter(param):
     if(param=="Nothing"):
         return param
-    param_name=param.split("___")
-    carrier=param_name[0]
-    param=param_name[1]
+    param_name = param.split("___")
+    carrier = param_name[0]
+    param = param_name[1]
     return helper.config["carrier"][carrier]+" - "+helper.config["spatial_parameters"][param]["nice_name"]+" "+helper.config["spatial_parameters"][param]["unit"]
 
 
