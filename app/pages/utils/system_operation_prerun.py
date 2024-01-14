@@ -45,16 +45,18 @@ def get_unique_carriers(df):
 
     return list(set(split_cols))
 
+@st.cache_resource
 def get_meta_df(network_key):
     network=pypsa_network_map.get(network_key)
     return network.meta
 
-def get_gen_t_df(pypsa_network, gen_t_key):
+@st.cache_resource
+def get_gen_t_df(_pypsa_network, gen_t_key):
     """
     Get a dataframe of time-series of generation from pypsa_network
     for the parameter corresponding to gen_t_key
     """
-    gen_t_df = pypsa_network.generators_t[gen_t_key]
+    gen_t_df = _pypsa_network.generators_t[gen_t_key]
     unique_carriers = get_unique_carriers(gen_t_df)
 
     carriers_to_check = unique_carriers.copy()
@@ -75,11 +77,12 @@ def get_gen_t_df(pypsa_network, gen_t_key):
 
 # TODO Remove hardcoding?
 # TODO Remove country hardcoding
-def get_buses_t_df(pypsa_network, gen_t_key):
+@st.cache_resource
+def get_buses_t_df(_pypsa_network, gen_t_key):
 
     #country_key = "PL"
 
-    gen_t_df = pypsa_network.generators_t[gen_t_key]
+    gen_t_df = _pypsa_network.generators_t[gen_t_key]
     unique_carriers = get_unique_carriers(gen_t_df)
 
     carriers_to_check = unique_carriers.copy()
@@ -132,12 +135,13 @@ def get_buses_gen_t_dict():
 ############# for load #####################
 non_empty_load_keys=[param for param in config["loads_t_parameter"]]
 
-def get_load_t_df(pypsa_network, load_t_key):
+@st.cache_resource
+def get_load_t_df(_pypsa_network, load_t_key):
     """
     Get a dataframe of time-series of load from pypsa_network
     for the parameter corresponding to load_t_key
     """
-    load_t_df = pypsa_network.loads_t[load_t_key]
+    load_t_df = _pypsa_network.loads_t[load_t_key]
     unique_carriers = get_unique_carriers(load_t_df)
 
     # electricity load is not captured by re as is doesn't have a sperific suffix
@@ -180,15 +184,12 @@ def get_load_t_dict():
         result[network_key]=network_dict
     return result
 
-# @st.cache_resource
-def get_buses_load_t_df(pypsa_network, load_t_key):
+@st.cache_resource
+def get_buses_load_t_df(_pypsa_network, load_t_key):
 
-    #country_key = "PL"
-
-    load_t_df = pypsa_network.loads_t[load_t_key]
+    load_t_df = _pypsa_network.loads_t[load_t_key]
     
     resultant_df = load_t_df
-    #resultant_df = resultant_df.filter(like=country_key)
 
     unique_carriers = get_unique_carriers(load_t_df)
     # electricity load is not captured by re as is doesn't have a sperific suffix
