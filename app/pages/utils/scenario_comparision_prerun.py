@@ -1,4 +1,4 @@
-import app.pages.utils.tools as tools
+import pages.utils.tools as tools
 import pandas as pd
 
 data_color = "#1B1212"
@@ -112,4 +112,5 @@ def adjust_plot_appearance(current_fig):
             size=18
         )
     )
-    return(current_fig)   
+    return(current_fig)
+
