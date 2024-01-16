@@ -295,6 +295,7 @@ scenario_names:
   # NG_no_oil: Nigeria without oil
   # MA: Morocco
 
+  rigid: Rigid Scenario
   flex: Flexible Scenario
   flex_upd: Updated Flexible Scenario  
 
