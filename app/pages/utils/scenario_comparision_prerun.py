@@ -1,24 +1,26 @@
 import pages.utils.tools as tools
 import pandas as pd
+import streamlit as st
 
 data_color = "#1B1212"
 
-def get_df_for_parameter(network_map, parameter, get_values_fn, get_cols_fn):
-    all_column_names = _get_all_columns(network_map, get_cols_fn)
+@st.cache_resource
+def get_df_for_parameter(_network_map, parameter, _get_values_fn, _get_cols_fn):
+    all_column_names = _get_all_columns(_network_map, _get_cols_fn)
     all_column_names.discard("load")
     all_column_names = list(all_column_names)
     df_array = []
-    for n in network_map.values():
-        avilable_cols = get_cols_fn(n)
+    for n in _network_map.values():
+        avilable_cols = _get_cols_fn(n)
         child_arr = []
         for col_name in all_column_names:
             if col_name in avilable_cols:
-                child_arr.append(get_values_fn(n, parameter, col_name))
+                child_arr.append(_get_values_fn(n, parameter, col_name))
             else:
                 child_arr.append(0)
         df_array.append(child_arr)
 
-    indices = network_map.keys()
+    indices = _network_map.keys()
     indices = [tools.config["scenario_names"][i] for i in indices]
     nice_col_name=[]
     for col_name in all_column_names:
