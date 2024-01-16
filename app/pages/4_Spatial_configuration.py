@@ -4,8 +4,8 @@ st.set_page_config(
 )
 
 
-import app.pages.utils.spatial_pre_run as helper
-import app.pages.utils.tools as tools
+import pages.utils.spatial_pre_run as helper
+import pages.utils.tools as tools
 
 import os
 import pathlib
