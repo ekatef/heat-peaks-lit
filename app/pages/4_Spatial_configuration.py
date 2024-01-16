@@ -56,9 +56,9 @@ with main_col:
     )
 st.markdown(fix_cursor_css, unsafe_allow_html=True)    
 
-country_data=data.get(selected_network)
+country_data = data.get(selected_network)
 
-_, col1, col2, col3, _ = st.columns([1,30,30,30,1])
+_, col1, col2, col3, _ = st.columns([1, 30, 30, 30, 1])
 
 graph_opts = dict(
         xaxis=None,
