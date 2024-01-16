@@ -68,7 +68,7 @@ plot_font_dict = dict(
 
 st.title("Country operation")
 
-_, main_col, _, suppl_col, _ = st.columns([1, 35, 1, 20, 1])
+_, main_col, _, country_col, _, suppl_col, _ = st.columns([1, 35, 1, 20, 1, 20, 1])
 
 def scenario_formatter(scenario):
     return helper.config["scenario_names"][scenario]
@@ -92,6 +92,17 @@ with main_col:
         help="You can choose between available scenarios"
     )
     st.markdown(fix_cursor_css, unsafe_allow_html=True)
+
+with country_col:
+    choices = {"PL": "Poland"}
+    res = st.selectbox(
+        "Resolution",
+        choices,
+        format_func=lambda x: choices[x], 
+        key="country_res",
+        help="You can choose a country to examine operation of the energy system"
+    )
+    st.markdown(fix_cursor_css, unsafe_allow_html=True)     
 
 # the finest available resolution depends on the model and should be extracted from metadata
 # https://stackoverflow.com/a/9891784/8465924    
