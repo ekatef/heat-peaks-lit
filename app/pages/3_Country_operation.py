@@ -68,7 +68,7 @@ plot_font_dict = dict(
 
 st.title("Country operation")
 
-_, main_col, _, country_col, _, suppl_col, _ = st.columns([1, 35, 1, 20, 1, 20, 1])
+_, main_col, _, country_col, _, date_col, _ = st.columns([1, 35, 1, 20, 1, 20, 1])
 
 def scenario_formatter(scenario):
     return helper.config["scenario_names"][scenario]
@@ -113,7 +113,7 @@ finest_resolution_name = finest_resolution.split("H")[0] + "-hourly"
 upd_dict = {finest_resolution: finest_resolution_name}
 upd_dict.update(res_choices)
 
-with suppl_col:
+with date_col:
     choices = upd_dict
     res = st.selectbox(
         "Resolution",
