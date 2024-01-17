@@ -45,6 +45,7 @@ non_empth_links_keys = [param for param in helper.config["links_t_parameter"]]
 # carrier values per bus
 gen_buses_dict_list = helper.get_buses_gen_t_dict()
 load_buses_dict_list = helper.get_buses_load_t_dict()
+links_buses_dict_list = helper.get_buses_links_t_dict()
 
 res_choices = helper.config["operation"]["resolution"]
 
@@ -128,6 +129,7 @@ with date_col:
 # country_data = gen_dict_list.get(selected_network)
 buses_country_data = gen_buses_dict_list.get(selected_network)
 buses_load_country_data = load_buses_dict_list.get(selected_network)
+buses_links_country_data = links_buses_dict_list.get(selected_network)
 
 ##################### generators #####################
 # gen_df = country_data["p"].drop("Load", axis=1, errors="ignore")
@@ -135,6 +137,7 @@ buses_load_country_data = load_buses_dict_list.get(selected_network)
 # between the dataframe and the dictionary
 gen_buses_df = buses_country_data["p"].drop("Load", axis=1, errors="ignore")
 load_buses_df = buses_load_country_data["p"]
+cons_links_df = buses_links_country_data["p0"]
 
 _, date_range_param, _ = st.columns([1, 50, 1])
 with date_range_param:
@@ -166,6 +169,7 @@ _, balance_plot_col, _ = st.columns([1, 80, 1])
 
 gen_buses_aggr = gen_buses_df.loc[values[0]:values[1]].resample(res_h).mean()
 load_buses_aggr = load_buses_df.loc[values[0]:values[1]].resample(res_h).mean()
+cons_links_aggr = cons_links_df.loc[values[0]:values[1]].resample(res_h).mean()
 
 # TODO Add a selector box
 country_code = "PL"
