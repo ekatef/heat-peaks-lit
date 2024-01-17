@@ -4,8 +4,7 @@ st.set_page_config(
 )
 import pathlib
 import plotly.express as px
-import app.pages.utils.tools as tools
-import app.pages.utils.scenario_comparision_prerun as helper
+import pages.utils.tools as tools
 
 data_color = "#1B1212"
 # needed to change cursor mode of selectboxes from the default text mode

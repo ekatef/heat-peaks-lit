@@ -10,7 +10,10 @@ def open_yaml_file(config_file):
        config = yaml.safe_load(f)
     return config
 
-config=open_yaml_file("app/pages/utils/config.yaml")
+if pathlib.Path("pages/utils/config.yaml").is_file():
+    config=open_yaml_file("pages/utils/config.yaml")
+else:
+    config=open_yaml_file("app/pages/utils/config.yaml")    
 
 
 @st.cache_resource
