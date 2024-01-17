@@ -40,7 +40,7 @@ fix_cursor_css = '''
 
 non_empth_links_keys = [param for param in helper.config["links_t_parameter"]]
 non_empth_loads_keys = [param for param in helper.config["loads_t_parameter"]]
-non_empth_stores_keys = [param for param in helper.config["stores_t_parameter"]]
+non_empth_links_keys = [param for param in helper.config["links_t_parameter"]]
 
 # carrier values per bus
 gen_buses_dict_list = helper.get_buses_gen_t_dict()
