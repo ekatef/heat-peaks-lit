@@ -92,18 +92,7 @@ with main_col:
         format_func = scenario_formatter,
         help="You can choose between available scenarios"
     )
-    st.markdown(fix_cursor_css, unsafe_allow_html=True)
-
-with country_col:
-    choices = {"PL": "Poland"}
-    res = st.selectbox(
-        "Resolution",
-        choices,
-        format_func=lambda x: choices[x], 
-        key="country_res",
-        help="You can choose a country to examine operation of the energy system"
-    )
-    st.markdown(fix_cursor_css, unsafe_allow_html=True)     
+    st.markdown(fix_cursor_css, unsafe_allow_html=True)   
 
 # the finest available resolution depends on the model and should be extracted from metadata
 # https://stackoverflow.com/a/9891784/8465924    
@@ -138,6 +127,21 @@ buses_links_country_data = links_buses_dict_list.get(selected_network)
 gen_buses_df = buses_country_data["p"].drop("Load", axis=1, errors="ignore")
 load_buses_df = buses_load_country_data["p"]
 cons_links_df = buses_links_country_data["p0"]
+
+countries_codes = pd.unique(
+    [(lambda x: re.sub("\d.*", '', x))(x) for x in gen_buses_df.columns]
+)
+# to avoid mis-interpretaiton of regex outputs
+country_codes_clean = [x for x in countries_codes if x in helper.config["countries_names"].keys()]
+with country_col:
+    ctr = st.selectbox(
+        "Country",
+        country_codes_clean,
+        format_func=country_formatter, 
+        key="country",
+        help="You can choose a country to examine operation of the energy system"
+    )
+    st.markdown(fix_cursor_css, unsafe_allow_html=True)  
 
 _, date_range_param, _ = st.columns([1, 50, 1])
 with date_range_param:
