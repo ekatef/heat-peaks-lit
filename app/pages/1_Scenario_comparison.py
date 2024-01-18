@@ -37,7 +37,8 @@ def main():
     tech_map = dict(map(reversed, carriers_map.items()))
 
     ###### first dropdown plotting n.statistics #####
-    params = list(network_map.values())[0].statistics().columns
+    remove_params = set(["Capacity Factor", "Supply", "Withdrawal"])
+    params = list(set(list(network_map.values())[0].statistics().columns)-remove_params)
     st.header("Statistics plot")
     _, select_col, _ = st.columns([2,60,20])
 
@@ -62,37 +63,18 @@ def main():
     # needed to control markers size for the scatter
     _, plot_col,_ = st.columns([1,80,1])
     with plot_col:
-        if option == "Capacity Factor":
-            df["dummy_size"] = 1
-            fig = px.scatter(df, y=df.columns,
-                size="dummy_size",
-                size_max=25,
-                opacity=0.9,
-                #color_discrete_sequence=plot_color,
-                labels={
-                    "value":get_stat_unit(option),
-                    "index":" ",
-                    "variable": "carriers"
-                },
-                title=" ")
-            helper.adjust_plot_appearance(current_fig=fig)
-            st.plotly_chart(fig,
-                use_cointainer_width=True
-            )
-            fig['data'][0]['showlegend']=True
-        else:
-            fig = px.bar(df, y=df.columns,
-                #color_discrete_sequence=plot_color,                    
-                labels={
-                    "value":get_stat_unit(option),
-                    "index":" ",
-                    "variable": "carriers"
-                }, 
-                title=" ")
-            helper.adjust_plot_appearance(current_fig=fig)
-            st.plotly_chart(fig,
-                use_cointainer_width=True
-            )            
+        fig = px.bar(df, y=df.columns,
+            #color_discrete_sequence=plot_color,
+            labels={
+                "value":get_stat_unit(option),
+                "index":" ",
+                "variable": "carriers"
+            },
+            title=" ")
+        helper.adjust_plot_appearance(current_fig=fig)
+        st.plotly_chart(fig,
+            use_cointainer_width=True
+        )
 
     st.header("Network statistics")
     _, table_col, _ = st.columns([2,60,20])
