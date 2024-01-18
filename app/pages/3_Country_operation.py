@@ -114,12 +114,10 @@ with suppl_col:
     st.markdown(fix_cursor_css, unsafe_allow_html=True) 
 
 # # TODO naming should be imroved
-# country_data = gen_dict_list.get(selected_network)
 buses_country_data = gen_buses_dict_list.get(selected_network)
 buses_load_country_data = load_buses_dict_list.get(selected_network)
 
 ##################### generators #####################
-# gen_df = country_data["p"].drop("Load", axis=1, errors="ignore")
 # TODO naming should be imroved: gen_buses_df can be distinguished 
 # between the dataframe and the dictionary
 gen_buses_df = buses_country_data["p"].drop("Load", axis=1, errors="ignore")
@@ -153,12 +151,12 @@ res_h = str(res) + "H"
 
 _, balance_plot_col, _ = st.columns([1, 80, 1])
 
-gen_buses_aggr = gen_buses_df.loc[values[0]:values[1]].resample(res_h).mean()
 load_buses_aggr = load_buses_df.loc[values[0]:values[1]].resample(res_h).mean()
 
 # TODO Add a selector box
 with suppl_col:
-    choices = helper.get_countries_list(selected_network)
+    choices = ["all countries"]
+    choices.extend(helper.get_countries_list(selected_network))
     choices = [item for item in choices if item != ""]
     country_code = st.selectbox(
         "Select Country",
@@ -167,21 +165,57 @@ with suppl_col:
     )
     st.markdown(fix_cursor_css, unsafe_allow_html=True)
 
+if country_code != "all countries":
+    load_buses_aggr = load_buses_aggr.filter(like=country_code)
 
-gen_buses_aggr = gen_buses_aggr.filter(like=country_code)
-load_buses_aggr = load_buses_aggr.filter(like=country_code)
-
-with balance_plot_col:
-    buses_gen_area_plot = load_buses_aggr.filter(like="Heating").hvplot.area(
-        **kwargs,
-        ylabel="Heat Demand [MW]",
-        group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
-        color = ["#ffc100", "#ff9a00", "#ff7400", "#ff4d00", "#ff0000"]
+    with balance_plot_col:
+        buses_gen_area_plot = load_buses_aggr.filter(like="Heating").hvplot.area(
+            **kwargs,
+            ylabel="Heat Demand [MW]",
+            group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
+            color = ["#ffc100", "#ff9a00", "#ff7400", "#ff4d00", "#ff0000"]
+            )
+        buses_gen_area_plot = buses_gen_area_plot.opts(
+            fontsize=plot_font_dict
         )
-    buses_gen_area_plot = buses_gen_area_plot.opts(
-        fontsize=plot_font_dict
-    )         
-    s2=hv.render(buses_gen_area_plot, backend="bokeh")
-    st.bokeh_chart(s2, use_container_width=True)    
+        s2=hv.render(buses_gen_area_plot, backend="bokeh")
+        st.bokeh_chart(s2, use_container_width=True)
+else:
+    gen_dict_list = helper.get_gen_t_dict()
+    country_data = gen_dict_list.get(selected_network)
+    gen_df = country_data["p"].drop("Load", axis=1, errors="ignore")
+    balance_df = gen_df
+    balance_aggr = balance_df.loc[values[0]:values[1]].resample(res_h).mean()
+
+    loads_dict_list = helper.get_load_t_dict()
+    loads_country_data=loads_dict_list.get(selected_network)
+    loads_df = loads_country_data["p"]
+    heat_loads_df = loads_df.filter(like="Heating")
+    heat_aggr = heat_loads_df.loc[values[0]:values[1]].resample(res_h).mean()
+    heat_aggr["Overall"] = heat_aggr.sum(axis=1)
+    heat_aggr["Overall Flatten"] = heat_aggr["Overall"] - balance_aggr.filter(like="etrofi").filter(like="oder").sum(axis=1)
+
+    heat_aggr_2 = pd.DataFrame()
+    heat_aggr_2["RurDecRes Heat"] = heat_aggr.filter(like = 'RurDecRes').sum(axis=1)
+    heat_aggr_2["UrbDecRes Heat"] = heat_aggr.filter(like = 'UrbDecRes').sum(axis=1)
+    heat_aggr_2["RurDecSer Heat"] = heat_aggr.filter(like = 'RurDecSer').sum(axis=1)
+    heat_aggr_2["UrbDecSer Heat"] = heat_aggr.filter(like = 'UrbDecSer').sum(axis=1)
+    heat_aggr_2["UrbCenOvr Heat"] = heat_aggr.filter(like = 'UrbCenOvr').sum(axis=1)
+
+    with balance_plot_col:
+        heat_dem_area_plot=heat_aggr_2.filter(like="eat").hvplot.area(
+            **kwargs,
+            ylabel="Heat Demand [MW]",
+            group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
+            color = ["#ffc100", "#ff9a00", "#ff7400", "#ff4d00", "#ff0000"]
+            )
+        heat_dem_line_plot=heat_aggr[["Overall", "Overall Flatten"]].hvplot.line(
+            color = ["#333333", "#777777",]
+        )
+        heat_dem_area_plot = heat_dem_area_plot.opts(
+            fontsize=plot_font_dict
+        )
+        s2=hv.render(heat_dem_area_plot*heat_dem_line_plot, backend="bokeh")
+        st.bokeh_chart(s2, use_container_width=True)
 
 tools.add_logo()  
