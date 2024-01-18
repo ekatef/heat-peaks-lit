@@ -161,7 +161,7 @@ with date_range_param:
             key="gen_date"
         )
 
-# ###################### generation #####################
+# ###################### time aggregation #####################
 
 # # TODO wouldn't it be more reliabe to move columns renaming there?
 # #gen_df.columns = [tech_map[c] for c in gen_df.columns]
@@ -178,8 +178,7 @@ gen_buses_aggr = gen_buses_df.loc[values[0]:values[1]].resample(res_h).mean()
 load_buses_aggr = load_buses_df.loc[values[0]:values[1]].resample(res_h).mean()
 cons_links_aggr = cons_links_df.loc[values[0]:values[1]].resample(res_h).mean()
 
-# TODO Add a selector box
-country_code = "PL"
+# ###################### space heating #####################
 
 gen_buses_aggr = gen_buses_aggr.filter(like=country_code)
 load_buses_aggr = load_buses_aggr.filter(like=country_code)
