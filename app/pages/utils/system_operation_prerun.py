@@ -25,8 +25,6 @@ import streamlit as st
 import pages.utils.tools as tools
 import typing
 
-
-
 config=tools.config
 pypsa_network_map=tools.get_network_map()
 
@@ -98,7 +96,6 @@ def get_buses_t_df(_pypsa_network, gen_t_key):
         gen_t_df.columns = new_columns 
 
     return gen_t_df
-    
 
 non_empth_df_gen_t=[param for param in config["gen_t_parameter"]]
 # @st.cache_resource
