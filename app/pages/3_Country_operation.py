@@ -205,6 +205,24 @@ with balance_plot_col:
     buses_heat_area_plot = buses_heat_area_plot * buses_orheat_line_plot           
     s2=hv.render(buses_heat_area_plot, backend="bokeh")
     st.bokeh_chart(s2, use_container_width=True)
+
+if gen_buses_retrof_aggr.sum().sum()>0:
+    with balance_plot_col:
+        buses_retrof_area_plot = gen_buses_retrof_aggr.hvplot.area(
+            **kwargs,
+            ylabel="Retrofitting [MW]",
+            group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
+            color = ["#ffc100", "#ff9a00", "#ff7400", "#ff4d00", "#ff0000"]
+            )
+        buses_retrof_area_plot = buses_retrof_area_plot.opts(
+            fontsize=plot_font_dict
+        )
+        # buses_ovheat_line_plot = load_buses_space_heat_aggr["space heating overall"].hvplot.line(color="navy")
+        # buses_orheat_line_plot = load_buses_space_heat_aggr["space heating original"].hvplot.line(color="darkred")
+        # buses_retrof_area_plot = buses_retrof_area_plot * buses_ovheat_line_plot
+        # buses_retrof_area_plot = buses_retrof_area_plot * buses_orheat_line_plot           
+        s2=hv.render(buses_retrof_area_plot, backend="bokeh")
+        st.bokeh_chart(s2, use_container_width=True)    
         fontsize=plot_font_dict
     )         
     s2=hv.render(buses_gen_area_plot, backend="bokeh")
