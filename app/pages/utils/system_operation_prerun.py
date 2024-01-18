@@ -225,13 +225,49 @@ def get_buses_load_t_dict():
     
     return result
 
+############## links
+non_empth_df_links_t=[param for param in config["links_t_parameter"]]
 
+@st.cache_resource
+def get_buses_links_t_df(_pypsa_network, link_t_key):
 
+    link_t_df = _pypsa_network.links_t[link_t_key]
+    
+    resultant_df = link_t_df
 
+    unique_carriers = get_unique_carriers(link_t_df)
+    # electricity link is not captured by re as is doesn't have a sperific suffix
+    unique_carriers = [s if s is not "" else "power" for s in unique_carriers]
 
-############# for storage #####################
+    carriers_to_check = unique_carriers
+    if any(name in carriers_to_check for name in config["carrier"].values()):
+        resultant_df = link_t_df
+    else:    
+        unique_carriers_nice_names = [config["carrier"][carrier] for carrier in unique_carriers]
+        carriers_names_map = dict(zip(unique_carriers, unique_carriers_nice_names))
+        new_columns = link_t_df.columns
+        for old, new in carriers_names_map.items():
+            new_columns = new_columns.str.replace(old, new, regex=True)
+        link_t_df.columns = new_columns
 
-non_empty_storage_keys=[param for param in config["storage_t_parameter"]]
+        resultant_df = link_t_df
+
+    return resultant_df
+
+# @st.cache_resource  
+def get_buses_links_t_dict():
+
+    result={}
+    
+    for network_key in pypsa_network_map.keys():
+        network_dict={}
+        network=pypsa_network_map.get(network_key)
+        for non_empty_key in non_empth_df_links_t:
+            network_dict[non_empty_key]=get_buses_links_t_df(network, non_empty_key)
+        
+        result[network_key]=network_dict
+    
+    return result
 
 def get_renamed_column(column_name):
     split_arr=column_name.split(" ")
