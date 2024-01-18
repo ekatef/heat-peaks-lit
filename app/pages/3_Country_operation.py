@@ -105,7 +105,7 @@ upd_dict.update(res_choices)
 with suppl_col:
     choices = upd_dict
     res = st.selectbox(
-        "Resolution",
+        "Country",
         choices,
         format_func=lambda x: choices[x], 
         key="gen_res",
@@ -157,7 +157,16 @@ gen_buses_aggr = gen_buses_df.loc[values[0]:values[1]].resample(res_h).mean()
 load_buses_aggr = load_buses_df.loc[values[0]:values[1]].resample(res_h).mean()
 
 # TODO Add a selector box
-country_code = "PL"
+with suppl_col:
+    choices = helper.get_countries_list(selected_network)
+    choices = [item for item in choices if item != ""]
+    country_code = st.selectbox(
+        "Select Country",
+        choices,
+        help="You can select any parameter from PyPSA Network Statistics table"
+    )
+    st.markdown(fix_cursor_css, unsafe_allow_html=True)
+
 
 gen_buses_aggr = gen_buses_aggr.filter(like=country_code)
 load_buses_aggr = load_buses_aggr.filter(like=country_code)

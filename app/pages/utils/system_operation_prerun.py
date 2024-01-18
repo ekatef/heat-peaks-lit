@@ -98,7 +98,12 @@ def get_buses_t_df(_pypsa_network, gen_t_key):
         gen_t_df.columns = new_columns 
 
     return gen_t_df
+
+def get_countries_list(network_key):
+
+    network = pypsa_network_map.get(network_key)
     
+    return network.buses.country.unique()
 
 non_empth_df_gen_t=[param for param in config["gen_t_parameter"]]
 
