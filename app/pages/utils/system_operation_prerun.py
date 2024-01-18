@@ -101,6 +101,20 @@ def get_buses_t_df(_pypsa_network, gen_t_key):
     
 
 non_empth_df_gen_t=[param for param in config["gen_t_parameter"]]
+# @st.cache_resource
+def get_gen_dict():
+
+    result={}
+    
+    for network_key in pypsa_network_map.keys():
+        network_dict={}
+        network=pypsa_network_map.get(network_key)
+        for non_empty_key in non_empth_df_gen_t:
+            network_dict[non_empty_key]=get_gen_df(network, non_empty_key)
+        
+        result[network_key]=network_dict
+    
+    return result
 
 # @st.cache_resource
 def get_gen_t_dict():
