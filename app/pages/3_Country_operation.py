@@ -74,6 +74,9 @@ _, main_col, _, country_col, _, date_col, _ = st.columns([1, 35, 1, 20, 1, 20, 1
 def scenario_formatter(scenario):
     return helper.config["scenario_names"][scenario]
 
+def country_formatter(country_code):
+    return helper.config["countries_names"][country_code]
+
 def get_carrier_map():
     return helper.config["carrier"]
 
