@@ -180,17 +180,31 @@ cons_links_aggr = cons_links_df.loc[values[0]:values[1]].resample(res_h).mean()
 
 # ###################### space heating #####################
 
-gen_buses_aggr = gen_buses_aggr.filter(like=country_code)
-load_buses_aggr = load_buses_aggr.filter(like=country_code)
+gen_buses_retrof_aggr = gen_buses_aggr.filter(like=ctr).filter(like="etrof")
+gen_buses_retrof_aggr.columns.name = None
+
+load_buses_heat_aggr = load_buses_aggr.filter(like=ctr).filter(like="heat")
+load_buses_space_heat_aggr = load_buses_heat_aggr.loc[:,~load_buses_heat_aggr.columns.str.endswith("industry")]
+load_buses_space_heat_aggr.columns.name = None
+load_buses_space_heat_aggr["space heating original"] = load_buses_space_heat_aggr.sum(axis=1)
+load_buses_space_heat_aggr["space heating overall"] = load_buses_space_heat_aggr["space heating original"] - gen_buses_retrof_aggr.sum(axis=1)
 
 with balance_plot_col:
-    buses_gen_area_plot = load_buses_aggr.filter(like="Heating").hvplot.area(
+    buses_heat_area_plot = load_buses_space_heat_aggr[load_buses_space_heat_aggr.columns.difference(["space heating overall", "space heating original"])].hvplot.area(
         **kwargs,
         ylabel="Heat Demand [MW]",
         group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
         color = ["#ffc100", "#ff9a00", "#ff7400", "#ff4d00", "#ff0000"]
         )
-    buses_gen_area_plot = buses_gen_area_plot.opts(
+    buses_heat_area_plot = buses_heat_area_plot.opts(
+        fontsize=plot_font_dict
+    )
+    buses_ovheat_line_plot = load_buses_space_heat_aggr["space heating overall"].hvplot.line(color="navy")
+    buses_orheat_line_plot = load_buses_space_heat_aggr["space heating original"].hvplot.line(color="darkred")
+    buses_heat_area_plot = buses_heat_area_plot * buses_ovheat_line_plot
+    buses_heat_area_plot = buses_heat_area_plot * buses_orheat_line_plot           
+    s2=hv.render(buses_heat_area_plot, backend="bokeh")
+    st.bokeh_chart(s2, use_container_width=True)
         fontsize=plot_font_dict
     )         
     s2=hv.render(buses_gen_area_plot, backend="bokeh")
