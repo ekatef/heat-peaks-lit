@@ -247,6 +247,8 @@ def get_buses_load_t_dict():
     
     return result
 
+############## links
+non_empth_df_links_t=[param for param in config["links_t_parameter"]]
 
 def get_marginal_costs_dict():
 
