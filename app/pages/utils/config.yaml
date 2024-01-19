@@ -47,11 +47,17 @@ links_t_parameter:
   p1:
     nice_name: Another Demand
     unit: MW
-    legend_title: " " 
+    legend_title: " "
   p2:
     nice_name: Heat Demand
     unit: MW
-    legend_title: " "        
+    legend_title: " "
+
+buses_t_parameter:
+  marginal_price:
+    nice_name: Marginal costs
+    unit: EUR/MWh
+    legend_title: " "
 
 ######### operation parameters
 
