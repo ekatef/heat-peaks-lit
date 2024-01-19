@@ -46,13 +46,16 @@ plot_font_dict = dict(
 
 st.title("Marginal costs")
 
-_, main_col, _, country_col, _, date_col, _ = st.columns([1, 35, 1, 20, 1, 20, 1])
+_, country_col, _, carrier_col, _, date_col, _, main_col, _ = st.columns([1, 20, 1, 20, 1, 20, 1, 30, 1])
 
 def scenario_formatter(scenario):
     return helper.config["scenario_names"][scenario]
 
 def country_formatter(country_code):
     return helper.config["countries_names"][country_code]
+
+def carrier_formatter(carrier_code):
+    return helper.config["carrier_names"][carrier_code]
 
 def get_carrier_map():
     return helper.config["carrier"]
@@ -65,23 +68,35 @@ tech_map = dict(map(reversed, carriers_map.items()))
 tech_colors = get_colors_map()
 
 tools.add_logo()
+
 with main_col:
-    selected_network = st.selectbox(
-        "Select which scenario's plot you want to see :",
-        list(gen_buses_dict_list.keys()),
-        format_func = scenario_formatter,
-        help="You can choose between available scenarios"
-    )
-    st.markdown(fix_cursor_css, unsafe_allow_html=True)   
+    flex = st.checkbox("Flexible", True)
+    rigi = st.checkbox("Rigid")
+    igas = st.checkbox("iGas & TES")
+
+    selected_networks = []
+    if flex:
+        selected_networks.append("flex")
+    if rigi:
+        selected_networks.append("rigid")
+
+if (flex or rigi or igas) and selected_networks == []:
+    st.error("Oops, no data available for the selected scenario...")
+    st.stop()
+
+if selected_networks == []:
+    st.error("You must choose a scenario. Please tick at least one of the boxes!")
+    st.stop()
 
 # the finest available resolution depends on the model and should be extracted from metadata
 # https://stackoverflow.com/a/9891784/8465924    
 pat = r".*?\-(.\d)H.*"
-sector_scen_string = helper.get_meta_df(selected_network)["scenario"]["sector_opts"]
-finest_resolution = re.search(pat, sector_scen_string[0]).group(1)    
-finest_resolution_name = finest_resolution.split("H")[0] + "-hourly"
-upd_dict = {finest_resolution: finest_resolution_name}
-upd_dict.update(res_choices)
+for selected_network in selected_networks:
+    sector_scen_string = helper.get_meta_df(selected_network)["scenario"]["sector_opts"]
+    finest_resolution = re.search(pat, sector_scen_string[0]).group(1)    
+    finest_resolution_name = finest_resolution.split("H")[0] + "-hourly"
+    upd_dict = {finest_resolution: finest_resolution_name}
+    upd_dict.update(res_choices)
 
 with date_col:
     choices = upd_dict
@@ -112,11 +127,20 @@ with date_range_param:
             key="gen_date"
         )
 
+with carrier_col:
+    carrier = st.selectbox(
+        "Costs for...",
+        ["AC", "gas", "H2"],
+        format_func=carrier_formatter,
+        help="You can choose the costs of a distinct carrier."
+    )
+
 countries_codes = pd.unique(
     [(lambda x: re.sub("\d.*", '', x))(x) for x in gen_buses_df.columns]
 )
 # to avoid mis-interpretaiton of regex outputs
 country_codes_clean = [x for x in countries_codes if x in helper.config["countries_names"].keys()]
+country_codes_clean.insert(0, "all")
 with country_col:
     ctr = st.selectbox(
         "Country",
@@ -129,25 +153,33 @@ with country_col:
 
 # ###################### electricity costs #####################
 
-costs_dict_list = helper.get_marginal_costs_dict()
-costs = costs_dict_list.get(selected_network)
-
-res_h = str(res) + "H"
-
-costs = (
-    costs.query("carrier == 'AC' and country == @ctr")
-    .T[ctr].squeeze()
-    .loc[values[0]:values[1]].resample(res_h).mean()
-)
-
 fig = sp.make_subplots(
-    rows=1, cols=1,
-)
+        rows=1, cols=1,
+    )
 
-fig.add_trace(
-    go.Scatter(x=costs.index, y=costs.values,
-    mode='lines'), row=1, col=1
-)
+costs_dict_list = helper.get_marginal_costs_dict()
+for selected_network in selected_networks:
+    costs = costs_dict_list.get(selected_network)
+
+    res_h = str(res) + "H"
+
+    if ctr != "all":
+        costs = (
+            costs.query("carrier == @carrier and country == @ctr")
+            .T[ctr].squeeze()
+            .loc[values[0]:values[1]].resample(res_h).mean()
+        )
+    else:
+        costs = (
+            costs.groupby("carrier").mean()
+            .query("carrier == @carrier").squeeze()
+            .loc[values[0]:values[1]].resample(res_h).mean()
+        )
+
+    fig.add_trace(
+        go.Scatter(x=costs.index, y=costs.values,
+        mode='lines', name=f"{scenario_formatter(selected_network)}"), row=1, col=1
+    )
 
 st.plotly_chart(fig)
 

@@ -256,6 +256,7 @@ def get_marginal_costs_dict():
 
     for network_key in pypsa_network_map.keys():
         network = pypsa_network_map.get(network_key)
+        network.buses.country = network.buses.location.apply(lambda b: b.split(" ")[0][0:2])
         marginal_costs = get_marginal_costs(network, non_empty_bus_key)
 
         result[network_key] = marginal_costs

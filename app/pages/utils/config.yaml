@@ -129,7 +129,14 @@ countries_names:
   RO: Romania
   RS: Serbia
   SE: Sweden
-  SI: Slovenia  
+  SI: Slovenia
+  all: All Countries
+
+
+carrier_names:
+  H2: hydrogen
+  AC: electricity
+  gas: gas
 
 ########## spatial parameters
 
