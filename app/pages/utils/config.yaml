@@ -2,6 +2,340 @@ tiles: "OSM"
 
 data_dir: "./data"
 
+scenario_names:
+  # NG: Nigeria
+  # NG_no_oil: Nigeria without oil
+  # MA: Morocco
+
+  rigid: Rigid Scenario
+  flex: Flexible Scenario
+  flex_upd: Updated Flexible Scenario  
+
+  # BJ_4: Benin four clusters
+  # BJ_6: Benin six clusters
+  # NG_BJ_6: Nigeria ad Benin
+
+  # results_2011: Case A
+  # results_2013: Case B
+  # results_2018: Case C
+
+  # GE: GE
+
+######### time-series keys
+
+gen_t_parameter:
+  p:
+    nice_name: Supply
+    unit: MW
+    legend_title: " "
+  p_max_pu:
+    nice_name: Maximum Output Possible Per Unit Nominal Power
+    unit: MW
+    legend_title: " "
+
+loads_t_parameter:
+  p: 
+    nice_name: Demand
+    unit: MW
+    legend_title: " "
+
+links_t_parameter:
+  p0:
+    nice_name: Demand
+    unit: MW
+    legend_title: " "
+  p1:
+    nice_name: Another Demand
+    unit: MW
+    legend_title: " " 
+  p2:
+    nice_name: Heat Demand
+    unit: MW
+    legend_title: " "        
+
+######### operation parameters
+
+operation:
+  carrier:
+    total-electricity: Total Electricity
+    total-heat: Total Heating
+    H2: Hydrogen
+    gas: Methane
+    total-liquid-hydrocarbons: Liquid Hydrocarbons
+    co2 stored: Stored Carbon Dioxide
+    co2: Carbon Dioxide
+    # AC: High Voltage Electricity
+    # low voltage: Low Voltage Electricity
+    # urban central heat: Urban Central Heating
+    # residential rural heat: Residential Rural Building Heating
+    # methanol: Methanol
+    # oil: Liquid Hydrocarbons
+  resolution:
+    24H: daily
+    168H: weekly
+
+scenarios:
+  costs: Total System Costs (bn€/a)
+  generation: Generation Capacities (GW)
+  storage: Storage Capacities (TWh)
+  conversion: Conversion Capacities (GW)
+  energy: Energy Balance (TWh/a)
+  co2: Carbon Dioxide Balance (MtCO2/a)
+  # hydrogen: Hydrogen Balance (TWh/a)
+
+ylim:
+  costs: [0, 1000]
+  generation: [0, 7000]
+  storage: [0, 200]
+  conversion: [0, 11000]
+  energy: [-15000, 15000]
+  co2: [-600, 600]
+
+countries_names:
+  AL: Albania
+  AT: Austria
+  BA: Bosnia & Herzegovina
+  BE: Belgium
+  BG: Bulgaria
+  CH: Switzerland
+  CZ: Czechia
+  DE: Germany
+  DK: Denmark
+  EE: Estonia
+  ES: Spain
+  FI: Finland
+  FR: France
+  GB: United Kingdom
+  GR: Greece
+  HR: Croatia
+  HU: Hungary
+  IE: Ireland
+  IT: Italy
+  LT: Lithuania
+  LU: Luxembourg
+  LV: Latvia
+  ME: Montenegro
+  MK: North Macedonia
+  NL: Netherlands
+  NO: Norway
+  PL: Poland
+  PT: Portugal
+  RO: Romania
+  RS: Serbia
+  SE: Sweden
+  SI: Slovenia  
+
+########## spatial parameters
+
+spatial_parameters:
+  p_nom_opt:
+    nice_name: Capacity
+    unit: (MW)  
+  cf:
+    nice_name: Capacity Factor
+    unit: "%"
+  crt:
+    nice_name: Curtailment
+    unit: "%"
+  usdpt:
+    nice_name: Used Potential
+    unit: "%"       
+  marginal_cost:
+    nice_name: Cost During Production
+    unit: (euro/MWh)
+  capital_cost:
+    nice_name: Cost Of Expanding Generation
+    unit: (euro/MW)
+  bus_load:
+    nice_name: Electricity Load
+    unit: (MW)    
+
+network_parameters:
+  total_capacity: Total Capacity (MVA)
+  reinforcement: Reinforcement (MVA)
+  original_capacity: Original Capacity (MVA)
+  max_capacity: Maximum Capacity (MVA)
+  length: Line Length (km)
+
+carrier:
+  # power
+  onwind: Onshore Wind
+  offwind-ac: Offshore Wind (AC)
+  offwind-dc: Offshore Wind (DC)
+  # names conflict with solat thermal
+  solar: solar
+  solar rooftop: Solar Rooftop
+  hydro: Reservoir & Dam
+  ror: Run of River
+  gas: Gas
+
+  industry electricity: El Industry
+  gas for industry: Gas Industry
+  # H2 for industry is captured as "for industry"
+  for industry: H2 Industry
+  low-temperature heat for industry: LT Heat Industry
+
+  solid biomass for industry: Solid Bio Industry
+  land transport EV: El Vehicles
+  process emissions: Process Emission
+  EU naphtha for industry: Naphta Industry
+
+  power: Power
+  urban central heat: UrbCenOvr Heating
+  residential urban decentral heat: UrbDecRes Heating
+  services urban decentral heat: UrbDecSer Heating
+  residential rural heat: RurDecRes Heating
+  services rural heat: RurDecSer Heating
+
+  EU oil: Oil
+  land transport fuel cell: FC Vehicles  
+  EU kerosene for aviation: Avia Kerosene
+  EU shipping methanol: Methanol Shipping  
+
+  # heat
+  urban central solar thermal collector: Solar Thermal (UrbCenOvr)
+  residential urban decentral solar thermal collector: Solar Thermal (UrbDecRes)
+  services urban decentral solar thermal collector: Solar Thermal (UrbDecSer)
+  residential rural solar thermal collector: Solar Thermal (RurDecRes)
+  services rural solar thermal collector: Solar Thermal (RurDecSer)
+
+  # retrofitting
+
+  # moderate
+  retrofitting moderate urban central heat: Retrofit Moder (UrbCenOvr)
+  retrofitting moderate residential urban decentral heat: Retrofit Moder (UrbDecRes)
+  retrofitting moderate services urban decentral heat: Retrofit Moder (UrbDecSer)
+  retrofitting moderate residential rural heat: Retrofit Moder (RurDecRes)
+  retrofitting moderate services rural heat: Retrofit Moder (RurDecSer)
+
+  # ambitious
+  retrofitting ambitious urban central heat: Retrofit Ambit (UrbCenOvr)
+  retrofitting ambitious residential urban decentral heat: Retrofit Ambit (UrbDecRes)
+  retrofitting ambitious services urban decentral heat: Retrofit Ambit (UrbDecSer)
+  retrofitting ambitious residential rural heat: Retrofit Ambit (RurDecRes)
+  retrofitting ambitious services rural heat: Retrofit Ambit (RurDecSer)
+
+  power: power
+  services rural resistive heater: services rural resistive heater
+  process emissions: process emissions
+  urban central solid biomass CHP: urban central solid biomass CHP
+  Fuel Cell: Fuel Cell
+  electricity distribution grid: electricity distribution grid
+  urban central solid biomass CHP CC: urban central solid biomass CHP CC
+  EU process emissions CC: EU process emissions CC
+  solid biomass for industry CC: solid biomass for industry CC
+  battery discharger: battery discharger
+  services urban decentral water tanks dischar: services urban decentral water tanks dischar
+  residential urban decentral micro gas CHP: residential urban decentral micro gas CHP
+  SMR CC: SMR CC
+  residential rural water tanks discharger: residential rural water tanks discharger
+  residential urban decentral air heat pump: residential urban decentral air heat pump
+  urban central DAC: urban central DAC
+  urban central gas CHP CC: urban central gas CHP CC
+  services rural ground heat pump: services rural ground heat pump
+  Fischer-Tropsch: Fischer-Tropsch
+  residential urban decentral water tanks char: residential urban decentral water tanks char
+  OCGT: OCGT
+  services rural gas boiler: services rural gas boiler
+  gas for industry: gas for industry
+  residential urban decentral water tanks disc: residential urban decentral water tanks disc
+  G: G
+  residential urban decentral resistive heater: residential urban decentral resistive heater
+  residential rural resistive heater: residential rural resistive heater
+  biogas to gas: biogas to gas
+  services rural water tanks discharger: services rural water tanks discharger
+  residential rural water tanks charger: residential rural water tanks charger
+  urban central gas boiler: urban central gas boiler
+  residential rural gas boiler: residential rural gas boiler
+  urban central air heat pump: urban central air heat pump
+  services rural micro gas CHP: services rural micro gas CHP
+  EU shipping methanol: EU shipping methanol
+  services urban decentral water tanks charger: services urban decentral water tanks charger
+  Electrolysis: Electrolysis
+  SMR: SMR
+  urban central water tanks discharger: urban central water tanks discharger
+  residential rural micro gas CHP: residential rural micro gas CHP
+  home battery discharger: home battery discharger
+  services urban decentral resistive heater: services urban decentral resistive heater
+  services urban decentral gas boiler: services urban decentral gas boiler
+  residential rural ground heat pump: residential rural ground heat pump
+  residential urban decentral gas boiler: residential urban decentral gas boiler
+  services urban decentral DAC: services urban decentral DAC
+  urban central gas CHP: urban central gas CHP
+  methanolisation: methanolisation
+  -reversed: -reversed
+  ervices urban decentral micro gas CHP: ervices urban decentral micro gas CHP
+  olid biomass for industry: olid biomass for industry
+  U naphtha for industry: U naphtha for industry
+  attery charger: attery charger
+  as for industry CC: as for industry CC
+  rban central water tanks charger: rban central water tanks charger
+  abatier: abatier
+  ome battery charger: ome battery charger
+  rban central resistive heater: rban central resistive heater
+  U kerosene for aviation: U kerosene for aviation
+  ervices urban decentral air heat pump: ervices urban decentral air heat pump
+  ervices rural water tanks charger: ervices rural water tanks charger
+  EV charger: EV charger
+
+  # biomass: Biomass  
+  # CCGT: Combined-Cycle Gas
+  # OCGT: Open-Cycle Gas     
+  # geothermal: Geothermal
+  # coal: Coal
+  # oil: Oil
+  # nuclear: Nuclear
+  # onwind: Onshore Wind
+  # lignite: Lignite
+  # hydro: Reservoir & Dam
+  # PHS: Pumped Hydro Storage
+  # H2: Hydrogen Storage
+  # battery: Battery Storage
+  # load: Load
+
+
+# https://holoviews.org/user_guide/Colormaps.html
+# you can also pick you own colors
+carrier_colors:
+  CCGT: Purples
+  oil: Greys
+  solar: YlOrBr
+  onwind: Blues
+  ror: BuPu
+  OCGT: Oranges
+  coal: PuBuGn
+  biomass: Reds
+  offwind-ac: Reds
+  geothermal: Reds
+  nuclear: Reds
+  offwind-dc: Reds
+  lignite: Reds
+  hydro: Reds
+  PHS: Reds
+  H2: Reds
+  battery: Reds
+
+
+########### SCENARIO COMPARISION parameters
+
+statistics_param_units:
+  Capacity Factor: Capacity factor, %
+  Capital Expenditure: Euro
+  Curtailment: MW
+  Installed Capacity: MW
+  Operational Expenditure: Euro
+  Optimal Capacity: MW
+  Revenue: Euro
+  Supply: MW-hours
+  Withdrawal: Euro
+
+second_param_units:
+  CO2 emissions: MtCO2
+  # TODO Would be worth discussing which parameter does make sense as a second option
+  # strictly speaking, we have Optimal Capacity in the droplist above
+  # but agree that it may be worth to have a visual comparison
+  Optimal Capacity: MW
+
 tech_colors:
   # wind
   onwind: "#3458ab"
@@ -252,262 +586,4 @@ preferred_order:
   - H2 liquefaction
   - power-to-liquid
   - CO2 sequestration
-  - CCS
-
-operation:
-  carrier:
-    total-electricity: Total Electricity
-    total-heat: Total Heating
-    H2: Hydrogen
-    gas: Methane
-    total-liquid-hydrocarbons: Liquid Hydrocarbons
-    co2 stored: Stored Carbon Dioxide
-    co2: Carbon Dioxide
-    # AC: High Voltage Electricity
-    # low voltage: Low Voltage Electricity
-    # urban central heat: Urban Central Heating
-    # residential rural heat: Residential Rural Building Heating
-    # methanol: Methanol
-    # oil: Liquid Hydrocarbons
-  resolution:
-    24H: daily
-    168H: weekly
-
-scenarios:
-  costs: Total System Costs (bn€/a)
-  generation: Generation Capacities (GW)
-  storage: Storage Capacities (TWh)
-  conversion: Conversion Capacities (GW)
-  energy: Energy Balance (TWh/a)
-  co2: Carbon Dioxide Balance (MtCO2/a)
-  # hydrogen: Hydrogen Balance (TWh/a)
-
-ylim:
-  costs: [0, 1000]
-  generation: [0, 7000]
-  storage: [0, 200]
-  conversion: [0, 11000]
-  energy: [-15000, 15000]
-  co2: [-600, 600]
-
-scenario_names:
-  # NG: Nigeria
-  # NG_no_oil: Nigeria without oil
-  # MA: Morocco
-
-  rigid: Rigid Scenario
-  flex: Flexible Scenario
-  flex_upd: Updated Flexible Scenario  
-
-  # BJ_4: Benin four clusters
-  # BJ_6: Benin six clusters
-  # NG_BJ_6: Nigeria ad Benin
-
-  # results_2011: Case A
-  # results_2013: Case B
-  # results_2018: Case C
-
-  # GE: GE
-
-########## spatial parameters
-
-spatial_parameters:
-  p_nom_opt:
-    nice_name: Capacity
-    unit: (MW)  
-  cf:
-    nice_name: Capacity Factor
-    unit: "%"
-  crt:
-    nice_name: Curtailment
-    unit: "%"
-  usdpt:
-    nice_name: Used Potential
-    unit: "%"       
-  marginal_cost:
-    nice_name: Cost During Production
-    unit: (euro/MWh)
-  capital_cost:
-    nice_name: Cost Of Expanding Generation
-    unit: (euro/MW)
-  bus_load:
-    nice_name: Electricity Load
-    unit: (MW)    
-
-network_parameters:
-  total_capacity: Total Capacity (MVA)
-  reinforcement: Reinforcement (MVA)
-  original_capacity: Original Capacity (MVA)
-  max_capacity: Maximum Capacity (MVA)
-  length: Line Length (km)
-
-carrier:
-  # power
-  onwind: Onshore Wind
-  offwind-ac: Offshore Wind (AC)
-  offwind-dc: Offshore Wind (DC)
-  # names conflict with solat thermal
-  solar: solar
-  solar rooftop: Solar Rooftop
-  hydro: Reservoir & Dam
-  ror: Run of River
-  gas: Gas
-
-  industry electricity: El Industry
-  gas for industry: Gas Industry
-  # H2 for industry is captured as "for industry"
-  for industry: H2 Industry
-  low-temperature heat for industry: LT Heat Industry
-
-  solid biomass for industry: Solid Bio Industry
-  land transport EV: El Vehicles
-  process emissions: Process Emission
-  EU naphtha for industry: Naphta Industry
-
-  power: Power
-  urban central heat: UrbCenOvr Heating
-  residential urban decentral heat: UrbDecRes Heating
-  services urban decentral heat: UrbDecSer Heating
-  residential rural heat: RurDecRes Heating
-  services rural heat: RurDecSer Heating
-
-  EU oil: Oil
-  land transport fuel cell: FC Vehicles  
-  EU kerosene for aviation: Avia Kerosene
-  EU shipping methanol: Methanol Shipping  
-
-  # heat
-  urban central solar thermal collector: Solar Thermal (UrbCenOvr)
-  residential urban decentral solar thermal collector: Solar Thermal (UrbDecRes)
-  services urban decentral solar thermal collector: Solar Thermal (UrbDecSer)
-  residential rural solar thermal collector: Solar Thermal (RurDecRes)
-  services rural solar thermal collector: Solar Thermal (RurDecSer)
-
-  # retrofitting
-
-  # moderate
-  retrofitting moderate urban central heat: Retrofit Moder (UrbCenOvr)
-  retrofitting moderate residential urban decentral heat: Retrofit Moder (UrbDecRes)
-  retrofitting moderate services urban decentral heat: Retrofit Moder (UrbDecSer)
-  retrofitting moderate residential rural heat: Retrofit Moder (RurDecRes)
-  retrofitting moderate services rural heat: Retrofit Moder (RurDecSer)
-
-  # ambitious
-  retrofitting ambitious urban central heat: Retrofit Ambit (UrbCenOvr)
-  retrofitting ambitious residential urban decentral heat: Retrofit Ambit (UrbDecRes)
-  retrofitting ambitious services urban decentral heat: Retrofit Ambit (UrbDecSer)
-  retrofitting ambitious residential rural heat: Retrofit Ambit (RurDecRes)
-  retrofitting ambitious services rural heat: Retrofit Ambit (RurDecSer)  
-
-  # biomass: Biomass  
-  # CCGT: Combined-Cycle Gas
-  # OCGT: Open-Cycle Gas     
-  # geothermal: Geothermal
-  # coal: Coal
-  # oil: Oil
-  # nuclear: Nuclear
-  # onwind: Onshore Wind
-  # lignite: Lignite
-  # hydro: Reservoir & Dam
-  # PHS: Pumped Hydro Storage
-  # H2: Hydrogen Storage
-  # battery: Battery Storage
-  # load: Load
-
-
-# https://holoviews.org/user_guide/Colormaps.html
-# you can also pick you own colors
-carrier_colors:
-  CCGT: Purples
-  oil: Greys
-  solar: YlOrBr
-  onwind: Blues
-  ror: BuPu
-  OCGT: Oranges
-  coal: PuBuGn
-  biomass: Reds
-  offwind-ac: Reds
-  geothermal: Reds
-  nuclear: Reds
-  offwind-dc: Reds
-  lignite: Reds
-  hydro: Reds
-  PHS: Reds
-  H2: Reds
-  battery: Reds
-
-######### system operation parameters
-
-gen_t_parameter:
-  p:
-    nice_name: Supply
-    unit: MW
-    legend_title: " "
-  p_max_pu:
-    nice_name: Maximum Output Possible Per Unit Nominal Power
-    unit: MW
-    legend_title: " "
-
-storage_t_parameter:
-  p:
-    nice_name: Active Power
-    unit: MW
-    legend_title: Region Number and Storage Type
-  inflow:
-    nice_name: Inflow To State Of Charge
-    unit: MW
-    legend_title: Region Number and Storage Type
-  spill:
-    nice_name: Spillage For Each Snapshot
-    unit: MW
-    legend_title: Region Number and Storage Type
-  state_of_charge:
-    nice_name: State Of Charge
-    unit: MWh
-    legend_title: Region Number and Storage Type
-
-loads_t_parameter:
-  p: 
-    nice_name: Demand
-    unit: MW
-    legend_title: " "
-
-stores_t_parameter:
-  p: 
-    nice_name: Load State
-    unit: MW
-    legend_title: " "
-
-links_t_parameter:
-  p0:
-    nice_name: Demand
-    unit: MW
-    legend_title: " "
-  mu_upper:
-    nice_name: Shadow Price Of Maximum Nominal Power
-    unit: euro/MW
-    legend_title: " "
-  mu_lower:
-    nice_name: Shadow Price Of Minimum Nominal Power
-    unit: euro/MW
-    legend_title: " "
-
-########### SCENARIO COMPARISION parameters
-
-statistics_param_units:
-  Capacity Factor: Capacity factor, %
-  Capital Expenditure: Euro
-  Curtailment: MW
-  Installed Capacity: MW
-  Operational Expenditure: Euro
-  Optimal Capacity: MW
-  Revenue: Euro
-  Supply: MW-hours
-  Withdrawal: Euro
-
-second_param_units:
-  CO2 emissions: MtCO2
-  # TODO Would be worth discussing which parameter does make sense as a second option
-  # strictly speaking, we have Optimal Capacity in the droplist above
-  # but agree that it may be worth to have a visual comparison
-  Optimal Capacity: MW
+  - CCS  

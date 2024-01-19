@@ -40,9 +40,9 @@ fix_cursor_css = '''
 
 non_empth_links_keys = [param for param in helper.config["links_t_parameter"]]
 non_empth_loads_keys = [param for param in helper.config["loads_t_parameter"]]
-non_empth_stores_keys = [param for param in helper.config["stores_t_parameter"]]
 
-# average by carrier
+# TODO avarage by carriers
+# detailed by carrier and countries
 gen_dict_list = helper.get_gen_t_dict()
 #storage_df = helper.get_storage_t_dict()
 loads_dict_list = helper.get_load_t_dict()
@@ -51,7 +51,7 @@ loads_dict_list = helper.get_load_t_dict()
 res_choices = helper.config["operation"]["resolution"]
 
 kwargs = dict(
-        stacked=True,
+        stacked=False,
         line_width=0,
         xlabel="",
         width=800,
@@ -140,7 +140,8 @@ loads_country_data=loads_dict_list.get(selected_network)
 #stores_country_data=stores_df.get(selected_network)
 
 loads_df = loads_country_data["p"]
-heat_loads_df = loads_df.filter(like="Heating")
+heat_loads_df = loads_df.filter(like="heat")
+#heat_loads_df = loads_df.filter(like="Heating")
 
 ###################### generation #####################
 
@@ -160,22 +161,27 @@ heat_aggr["Overall"] = heat_aggr.sum(axis=1)
 # TODO make filtering case insensitive/based on regex
 heat_aggr["Overall Flatten"] = heat_aggr["Overall"] - balance_aggr.filter(like="etrofi").filter(like="oder").sum(axis=1)
 
+#res_heat = balance_aggr
+#res_heat["Overall"] = heat_aggr.sum(axis=1)
+#res_heat["Overall Flatten"] = res_heat["Overall"] - balance_aggr.filter(like="etrofi").filter(like="oder").sum(axis=1)
+
 _, balance_plot_col, _ = st.columns([1, 80, 1])
 
 with balance_plot_col:
-     heat_dem_area_plot=heat_aggr.filter(like="eat").hvplot.area(
+    #heat_dem_area_plot=res_heat.filter(like="eat").hvplot.area(
+    heat_dem_area_plot=heat_aggr[["Overall", "Overall Flatten"]].hvplot.area(         
          **kwargs,
          ylabel="Heat Demand [MW]",
          group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
          color = ["#ffc100", "#ff9a00", "#ff7400", "#ff4d00", "#ff0000"]
          )
-     heat_dem_line_plot=heat_aggr[["Overall", "Overall Flatten"]].hvplot.line(
+    heat_dem_line_plot=heat_aggr[["Overall", "Overall Flatten"]].hvplot.line(
          color = ["#333333", "#777777",]
      )
-     heat_dem_area_plot = heat_dem_area_plot.opts(
+    heat_dem_area_plot = heat_dem_area_plot.opts(
          fontsize=plot_font_dict
      )         
-     s2=hv.render(heat_dem_area_plot*heat_dem_line_plot, backend="bokeh")
-     st.bokeh_chart(s2, use_container_width=True)
+    s2=hv.render(heat_dem_area_plot*heat_dem_line_plot, backend="bokeh")
+    st.bokeh_chart(s2, use_container_width=True)
 
 tools.add_logo()  

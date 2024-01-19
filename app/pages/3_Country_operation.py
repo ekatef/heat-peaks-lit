@@ -40,11 +40,12 @@ fix_cursor_css = '''
 
 non_empth_links_keys = [param for param in helper.config["links_t_parameter"]]
 non_empth_loads_keys = [param for param in helper.config["loads_t_parameter"]]
-non_empth_stores_keys = [param for param in helper.config["stores_t_parameter"]]
+non_empth_links_keys = [param for param in helper.config["links_t_parameter"]]
 
 # carrier values per bus
 gen_buses_dict_list = helper.get_buses_gen_t_dict()
 load_buses_dict_list = helper.get_buses_load_t_dict()
+links_buses_dict_list = helper.get_buses_links_t_dict()
 
 res_choices = helper.config["operation"]["resolution"]
 
@@ -68,10 +69,13 @@ plot_font_dict = dict(
 
 st.title("Country operation")
 
-_, main_col, _, suppl_col, _ = st.columns([1, 35, 1, 20, 1])
+_, main_col, _, country_col, _, date_col, _ = st.columns([1, 35, 1, 20, 1, 20, 1])
 
 def scenario_formatter(scenario):
     return helper.config["scenario_names"][scenario]
+
+def country_formatter(country_code):
+    return helper.config["countries_names"][country_code]
 
 def get_carrier_map():
     return helper.config["carrier"]
@@ -91,7 +95,7 @@ with main_col:
         format_func = scenario_formatter,
         help="You can choose between available scenarios"
     )
-    st.markdown(fix_cursor_css, unsafe_allow_html=True)
+    st.markdown(fix_cursor_css, unsafe_allow_html=True)   
 
 # the finest available resolution depends on the model and should be extracted from metadata
 # https://stackoverflow.com/a/9891784/8465924    
@@ -102,7 +106,7 @@ finest_resolution_name = finest_resolution.split("H")[0] + "-hourly"
 upd_dict = {finest_resolution: finest_resolution_name}
 upd_dict.update(res_choices)
 
-with suppl_col:
+with date_col:
     choices = upd_dict
     res = st.selectbox(
         "Resolution",
@@ -117,6 +121,7 @@ with suppl_col:
 # country_data = gen_dict_list.get(selected_network)
 buses_country_data = gen_buses_dict_list.get(selected_network)
 buses_load_country_data = load_buses_dict_list.get(selected_network)
+buses_links_country_data = links_buses_dict_list.get(selected_network)
 
 ##################### generators #####################
 # gen_df = country_data["p"].drop("Load", axis=1, errors="ignore")
@@ -124,6 +129,22 @@ buses_load_country_data = load_buses_dict_list.get(selected_network)
 # between the dataframe and the dictionary
 gen_buses_df = buses_country_data["p"].drop("Load", axis=1, errors="ignore")
 load_buses_df = buses_load_country_data["p"]
+cons_links_df = buses_links_country_data["p0"]
+
+countries_codes = pd.unique(
+    [(lambda x: re.sub("\d.*", '', x))(x) for x in gen_buses_df.columns]
+)
+# to avoid mis-interpretaiton of regex outputs
+country_codes_clean = [x for x in countries_codes if x in helper.config["countries_names"].keys()]
+with country_col:
+    ctr = st.selectbox(
+        "Country",
+        country_codes_clean,
+        format_func=country_formatter, 
+        key="country",
+        help="You can choose a country to examine operation of the energy system"
+    )
+    st.markdown(fix_cursor_css, unsafe_allow_html=True)  
 
 _, date_range_param, _ = st.columns([1, 50, 1])
 with date_range_param:
@@ -140,7 +161,7 @@ with date_range_param:
             key="gen_date"
         )
 
-# ###################### generation #####################
+# ###################### time aggregation #####################
 
 # # TODO wouldn't it be more reliabe to move columns renaming there?
 # #gen_df.columns = [tech_map[c] for c in gen_df.columns]
@@ -155,24 +176,92 @@ _, balance_plot_col, _ = st.columns([1, 80, 1])
 
 gen_buses_aggr = gen_buses_df.loc[values[0]:values[1]].resample(res_h).mean()
 load_buses_aggr = load_buses_df.loc[values[0]:values[1]].resample(res_h).mean()
+cons_links_aggr = cons_links_df.loc[values[0]:values[1]].resample(res_h).mean()
 
-# TODO Add a selector box
-country_code = "PL"
+# ###################### space heating #####################
 
-gen_buses_aggr = gen_buses_aggr.filter(like=country_code)
-load_buses_aggr = load_buses_aggr.filter(like=country_code)
+gen_buses_retrof_aggr = gen_buses_aggr.filter(like=ctr).filter(like="etrof")
+gen_buses_retrof_aggr.columns.name = None
+
+load_buses_heat_aggr = load_buses_aggr.filter(like=ctr).filter(like="heat")
+load_buses_space_heat_aggr = load_buses_heat_aggr.loc[:,~load_buses_heat_aggr.columns.str.endswith("industry")]
+load_buses_space_heat_aggr.columns.name = None
+load_buses_space_heat_aggr["space heating original"] = load_buses_space_heat_aggr.sum(axis=1)
+load_buses_space_heat_aggr["space heating overall"] = load_buses_space_heat_aggr["space heating original"] - gen_buses_retrof_aggr.sum(axis=1)
 
 with balance_plot_col:
-    buses_gen_area_plot = load_buses_aggr.filter(like="Heating").hvplot.area(
+    buses_heat_area_plot = load_buses_space_heat_aggr[load_buses_space_heat_aggr.columns.difference(["space heating overall", "space heating original"])].hvplot.area(
         **kwargs,
         ylabel="Heat Demand [MW]",
         group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
         color = ["#ffc100", "#ff9a00", "#ff7400", "#ff4d00", "#ff0000"]
         )
-    buses_gen_area_plot = buses_gen_area_plot.opts(
+    buses_heat_area_plot = buses_heat_area_plot.opts(
+        fontsize=plot_font_dict
+    )
+    buses_ovheat_line_plot = load_buses_space_heat_aggr["space heating overall"].hvplot.line(color="navy")
+    buses_orheat_line_plot = load_buses_space_heat_aggr["space heating original"].hvplot.line(color="darkred")
+    buses_heat_area_plot = buses_heat_area_plot * buses_ovheat_line_plot
+    buses_heat_area_plot = buses_heat_area_plot * buses_orheat_line_plot           
+    s2=hv.render(buses_heat_area_plot, backend="bokeh")
+    st.bokeh_chart(s2, use_container_width=True)
+
+if gen_buses_retrof_aggr.sum().sum()>0:
+    with balance_plot_col:
+        buses_retrof_area_plot = gen_buses_retrof_aggr.hvplot.area(
+            **kwargs,
+            ylabel="Retrofitting [MW]",
+            group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
+            color = ["#ffc100", "#ff9a00", "#ff7400", "#ff4d00", "#ff0000"]
+            )
+        buses_retrof_area_plot = buses_retrof_area_plot.opts(
+            fontsize=plot_font_dict
+        )
+        # buses_ovheat_line_plot = load_buses_space_heat_aggr["space heating overall"].hvplot.line(color="navy")
+        # buses_orheat_line_plot = load_buses_space_heat_aggr["space heating original"].hvplot.line(color="darkred")
+        # buses_retrof_area_plot = buses_retrof_area_plot * buses_ovheat_line_plot
+        # buses_retrof_area_plot = buses_retrof_area_plot * buses_orheat_line_plot           
+        s2=hv.render(buses_retrof_area_plot, backend="bokeh")
+        st.bokeh_chart(s2, use_container_width=True)    
+
+# ###################### electricity load #####################
+
+# keep only columns like "AL1 0"
+power_cols = [x for x in load_buses_aggr.columns if re.match("^[0-9 ]+$", re.sub(ctr, "", x))]
+load_el_buses_aggr = load_buses_aggr[power_cols]
+load_el_buses_aggr.columns.name = None
+load_el_buses_aggr.index = pd.to_datetime(load_el_buses_aggr.index)
+
+#cons_hp_links_aggr = cons_links_aggr.filter(like=ctr).filter(like="heat pump")
+regional_cons_links_aggr = cons_links_aggr.filter(like=ctr).filter(like=ctr)
+# cols_of_interest = regional_cons_links_aggr.columns.str.contains("resistive heater|H2 Electrolysis|heat pump")
+cols_of_interest = regional_cons_links_aggr.columns.str.contains("resistive heater|heat pump")
+cons_hp_links_aggr = regional_cons_links_aggr[regional_cons_links_aggr.columns[cols_of_interest]]
+cons_hp_links_aggr.index = pd.to_datetime(cons_hp_links_aggr.index)
+
+regional_load_buses_aggr = load_buses_aggr.filter(like=ctr)
+regional_load_buses_aggr.columns.name = None
+regional_load_buses_aggr.index = pd.to_datetime(regional_load_buses_aggr.index)
+
+heat_el_buses_aggr = pd.concat(
+    [cons_hp_links_aggr, regional_load_buses_aggr.filter(like="industry electricity")],
+    axis = 1
+)    
+heat_el_buses_aggr["power"] = load_el_buses_aggr.sum(axis=1)
+
+with balance_plot_col:
+    buses_el_area_plot = heat_el_buses_aggr[heat_el_buses_aggr.columns.difference(["power"])].hvplot.area(
+        **kwargs,
+        ylabel="Electricity Consumption [MW]",
+        group_label=helper.config["links_t_parameter"]["p0"]["legend_title"],
+        color = ["#ffc100", "#ff9a00", "#ff7400", "#ff4d00", "#ff0000", "gray", "pink"]
+        )
+    buses_el_line_plot = heat_el_buses_aggr["power"].hvplot.line(color="navy")
+    buses_el_area_plot = buses_el_area_plot * buses_el_line_plot
+    buses_el_area_plot = buses_el_area_plot.opts(
         fontsize=plot_font_dict
     )         
-    s2=hv.render(buses_gen_area_plot, backend="bokeh")
-    st.bokeh_chart(s2, use_container_width=True)    
+    s2=hv.render(buses_el_area_plot, backend="bokeh")
+    st.bokeh_chart(s2, use_container_width=True)
 
 tools.add_logo()  

@@ -29,7 +29,7 @@ data--|
 ```bash
 cd heat-peaks-lit
 pip install -e .
-make -f ./Makefile run_app
+make streamlit run app/Introduction.py
 ```
 
 ## Architecture
