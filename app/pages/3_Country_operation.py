@@ -136,6 +136,7 @@ countries_codes = pd.unique(
 )
 # to avoid mis-interpretaiton of regex outputs
 country_codes_clean = [x for x in countries_codes if x in helper.config["countries_names"].keys()]
+country_codes_clean = sorted(country_codes_clean)
 with country_col:
     ctr = st.selectbox(
         "Country",
