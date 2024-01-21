@@ -93,7 +93,7 @@ st.image(
 
 st.header("Select a page from the sidebar to get started")
 
-st.subheader("This is a visualisation app of EEE project. You can view the code on [GitHub](https://github.com/martacki/heat-demand-peaks) and load the main results using a buttom bellow")
+st.subheader("This is a visualisation app of EEE project. You can view the code on [GitHub](https://github.com/martacki/heat-demand-peaks) and load the main results using a button bellow")
 
 with open("/Users/ekaterina/Documents/_github_/heat-peaks-lit/app/assets/OET_presentation_template.pdf", "rb") as file:
     btn=st.download_button(
