@@ -57,6 +57,24 @@ def resize_image(img, target_width, target_height, fill_color=(255, 255, 255)):
 
     return(img)    
 
+customized_button = st.markdown("""
+    <style >
+    .stDownloadButton, div.stButton {text-align:center}
+    .stDownloadButton button, div.stButton > button:first-child {
+        background-color: #F0F0F0;
+        color:#000000;
+        width: 150px;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    
+    .stDownloadButton button:hover, div.stButton > button:hover {
+        background-color: #ADD8E6;
+        color:#000000;
+    }
+        }
+    </style>""", unsafe_allow_html=True)       
+
 tools.add_logo()
 
 st.title("Welcome to the Peak Demand Project!")
