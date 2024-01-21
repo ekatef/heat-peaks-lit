@@ -189,12 +189,16 @@ load_buses_space_heat_aggr.columns.name = None
 load_buses_space_heat_aggr["space heating original"] = load_buses_space_heat_aggr.sum(axis=1)
 load_buses_space_heat_aggr["space heating overall"] = load_buses_space_heat_aggr["space heating original"] - gen_buses_retrof_aggr.sum(axis=1)
 
+heat_techs = ["residential rural heat", "residential urban decentral heat",
+              "services rural heat", "services urban decentral heat",
+              "urban central heat"]
+
 with balance_plot_col:
     buses_heat_area_plot = load_buses_space_heat_aggr[load_buses_space_heat_aggr.columns.difference(["space heating overall", "space heating original"])].hvplot.area(
         **kwargs,
         ylabel="Heat Demand [MW]",
         group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
-        color = ["#ffc100", "#ff9a00", "#ff7400", "#ff4d00", "#ff0000"]
+        color = [tech_colors[x] for x in heat_techs]
         )
     buses_heat_area_plot = buses_heat_area_plot.opts(
         fontsize=plot_font_dict
