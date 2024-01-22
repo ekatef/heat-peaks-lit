@@ -223,11 +223,69 @@ def get_buses_load_t_df(_pypsa_network, load_t_key):
     return resultant_df
 
 
-def get_marginal_costs(_pypsa_network, marginal_cost_key):
+def get_marginal_costs(_pypsa_network, marginal_cost_key, carrier, country):
 
-    result = _pypsa_network.buses_t[marginal_cost_key].T.groupby(
-        [_pypsa_network.buses.country, _pypsa_network.buses.carrier]
-    ).mean()
+    if carrier == "electricity":
+        consider_carriers = [
+            'AC', 'H2',
+            'battery', 'Li ion', 'residential rural heat',
+            'residential rural water tanks', 'services rural heat',
+            'services rural water tanks', 'residential urban decentral heat',
+            'residential urban decentral water tanks',
+            'services urban decentral heat',
+            'services urban decentral water tanks', 'urban central heat',
+            'urban central water tanks', 'solid biomass',
+            'low voltage', 'home battery'
+        ]
+        consider_carriers = _pypsa_network.buses.query("carrier in @consider_carriers").index
+
+        if country == 'all':
+            result = _pypsa_network.buses_t[marginal_cost_key][consider_carriers].mean(axis=1)
+        else:
+            result = _pypsa_network.buses_t[marginal_cost_key][consider_carriers].filter(like=country).mean(axis=1)
+
+    if carrier == "gas":
+        consider_carriers = [
+            'gas', 'biogas'
+        ]
+
+        consider_carriers = _pypsa_network.buses.query("carrier in @consider_carriers").index
+        result = _pypsa_network.buses_t[marginal_cost_key][consider_carriers].mean(axis=1)
+
+    return result
+
+
+def get_weighted_costs(_pypsa_network, marginal_cost_key, carrier):
+
+    if carrier == "electricity":
+        cc = [
+            'AC', 'H2',
+            'battery', 'Li ion', 'residential rural heat',
+            'residential rural water tanks', 'services rural heat',
+            'services rural water tanks', 'residential urban decentral heat',
+            'residential urban decentral water tanks',
+            'services urban decentral heat',
+            'services urban decentral water tanks', 'urban central heat',
+            'urban central water tanks', 'solid biomass',
+            'low voltage', 'home battery'
+        ]
+        cc = _pypsa_network.buses.query("carrier in @cc").index
+
+        result = pd.Series(index = _pypsa_network.buses.loc[cc].country.unique(), data=0)
+        for country in result.index:
+            result.loc[country] = (
+                _pypsa_network.loads_t.p_set
+                .multiply(_pypsa_network.buses_t.marginal_price)[cc]
+                .filter(like = country).sum().sum() / _pypsa_network.loads_t.p_set.filter(like = country).sum().sum()
+            )
+
+    if carrier == "gas":
+        cc = [
+            'gas', 'biogas'
+        ]
+        cc = _pypsa_network.buses.query("carrier in @cc").index
+
+        result = pd.Series(index=["Europe"], data=[_pypsa_network.buses_t[marginal_cost_key][cc].mean().mean()])
 
     return result
 
@@ -247,19 +305,35 @@ def get_buses_load_t_dict():
     
     return result
 
-############## links
-non_empth_df_links_t=[param for param in config["links_t_parameter"]]
 
-def get_marginal_costs_dict():
+def get_marginal_costs_dict(country):
 
     result={}
 
     for network_key in pypsa_network_map.keys():
+        marginal_costs = {}
         network = pypsa_network_map.get(network_key)
         network.buses.country = network.buses.location.apply(lambda b: b.split(" ")[0][0:2])
-        marginal_costs = get_marginal_costs(network, non_empty_bus_key)
+        for carrier in ["electricity", "gas"]:
+            marginal_costs[carrier] = get_marginal_costs(network, non_empty_bus_key, carrier, country)
 
         result[network_key] = marginal_costs
+
+    return result
+
+
+def get_weighted_costs_dict():
+
+    result={}
+
+    for network_key in pypsa_network_map.keys():
+        weighted_costs = {}
+        network = pypsa_network_map.get(network_key)
+        network.buses.country = network.buses.location.apply(lambda b: b.split(" ")[0][0:2])
+        for carrier in ["electricity", "gas"]:
+            weighted_costs[carrier] = get_weighted_costs(network, non_empty_bus_key, carrier)
+
+        result[network_key] = weighted_costs
 
     return result
 

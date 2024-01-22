@@ -10,6 +10,7 @@ import pandas as pd
 import re
 import plotly.graph_objects as go
 import plotly.subplots as sp
+import plotly.express as px
 import datetime
 
 # needed to change cursor mode of selectboxes from the default text mode
@@ -53,9 +54,6 @@ def scenario_formatter(scenario):
 
 def country_formatter(country_code):
     return helper.config["countries_names"][country_code]
-
-def carrier_formatter(carrier_code):
-    return helper.config["carrier_names"][carrier_code]
 
 def get_carrier_map():
     return helper.config["carrier"]
@@ -130,8 +128,7 @@ with date_range_param:
 with carrier_col:
     carrier = st.selectbox(
         "Costs for...",
-        ["AC", "gas", "H2"],
-        format_func=carrier_formatter,
+        ["electricity", "gas"],
         help="You can choose the costs of a distinct carrier."
     )
 
@@ -154,32 +151,37 @@ with country_col:
 # ###################### electricity costs #####################
 
 fig = sp.make_subplots(
-        rows=1, cols=1,
+        rows=2, cols=1,
     )
 
-costs_dict_list = helper.get_marginal_costs_dict()
+costs_dict_list = helper.get_marginal_costs_dict(ctr)
+costs_weighted_dict_list = helper.get_weighted_costs_dict()
+
 for selected_network in selected_networks:
-    costs = costs_dict_list.get(selected_network)
 
     res_h = str(res) + "H"
 
-    if ctr != "all":
-        costs = (
-            costs.query("carrier == @carrier and country == @ctr")
-            .T[ctr].squeeze()
-            .loc[values[0]:values[1]].resample(res_h).mean()
-        )
-    else:
-        costs = (
-            costs.groupby("carrier").mean()
-            .query("carrier == @carrier").squeeze()
-            .loc[values[0]:values[1]].resample(res_h).mean()
-        )
+    costs_unagg = costs_dict_list.get(selected_network)
+    costs = costs_unagg[carrier].loc[values[0]:values[1]].squeeze().resample(res_h).mean()
 
     fig.add_trace(
         go.Scatter(x=costs.index, y=costs.values,
         mode='lines', name=f"{scenario_formatter(selected_network)}"), row=1, col=1
     )
+
+    costs_weighted = costs_weighted_dict_list.get(selected_network)
+    costs = costs_weighted[carrier].sort_values()
+
+    new_trace = go.Bar(
+        x=costs.index, y=costs.values,
+        textposition='auto', name=f"{scenario_formatter(selected_network)}"
+    )
+    fig.add_trace(new_trace, row=2, col=1)
+
+    fig.update_yaxes(title_text='Costs [EUR/MWh]', row=1, col=1)
+    fig.update_yaxes(title_text='Average costs [EUR/MWh]', row=2, col=1)
+
+    fig.update_layout(width=1000, height=600)
 
 st.plotly_chart(fig)
 
