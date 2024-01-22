@@ -43,6 +43,7 @@ def main():
     st.header("Statistics plot")
     _, select_col, _ = st.columns([2,60,20])
 
+    tech_list = ["gas for industry", "gas for industry CC", "solid biomass for industry"]
 
     with select_col: 
         option = st.selectbox(
