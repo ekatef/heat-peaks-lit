@@ -18,10 +18,10 @@ conda activate heat-peaks-lit
 The app expects to have the inputs available using the paths specified in `app/pages/utils/config.yaml` as `data_dir` argument. The inputs are the solved cross-sectoral networks organised by sub-folders named according to the scenario names set in the config as `scenario_names`. The expected folder structure looks like follows:
 
 data--|
-     |--results--|
-                |--flex--|
-                         |--networks--|
-                                      |--elec_s_48_lcopt__Co2L0.0-24H-T-H_2050.nc
+      |--results--|
+                  |--flex--|
+                           |--networks--|
+                                        |--elec_s_48_lcopt__Co2L0.0-24H-T-H_2050.nc
 
 
 ### Build the app
@@ -29,7 +29,7 @@ data--|
 ```bash
 cd heat-peaks-lit
 pip install -e .
-make streamlit run app/Introduction.py
+streamlit run app/Introduction.py
 ```
 
 ## Architecture

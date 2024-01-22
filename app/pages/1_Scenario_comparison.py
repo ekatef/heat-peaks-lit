@@ -7,6 +7,8 @@ import plotly.express as px
 import pages.utils.tools as tools
 import pages.utils.scenario_comparision_prerun as helper
 
+_, main_col, _, suppl_col, _ = st.columns([1, 35, 1, 20, 1])
+
 data_color = "#1B1212"
 # needed to change cursor mode of selectboxes from the default text mode
 fix_cursor_css = '''
@@ -60,7 +62,7 @@ def main():
     #plot_color = [tech_colors[c] for c in df_techs]
 
     # needed to control markers size for the scatter
-    _, plot_col,_ = st.columns([1,80,1])
+    _, plot_col, _ = st.columns([1, 80, 1])
     with plot_col:
         if option == "Capacity Factor":
             df["dummy_size"] = 1
@@ -95,7 +97,7 @@ def main():
             )            
 
     st.header("Network statistics")
-    _, table_col, _ = st.columns([2,60,20])
+    _, table_col, _ = st.columns([2, 60, 20])
     with table_col:
         scenario = st.selectbox(
             "Select scenario:",

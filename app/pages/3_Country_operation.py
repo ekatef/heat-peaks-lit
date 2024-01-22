@@ -136,6 +136,7 @@ countries_codes = pd.unique(
 )
 # to avoid mis-interpretaiton of regex outputs
 country_codes_clean = [x for x in countries_codes if x in helper.config["countries_names"].keys()]
+country_codes_clean = sorted(country_codes_clean)
 with country_col:
     ctr = st.selectbox(
         "Country",
@@ -169,14 +170,14 @@ with date_range_param:
 # #TODO Add balance?
 # balance_df = gen_df
 
-# TODO Check if res contains only numbers
-res_h = str(res) + "H"
+if res.isdigit():
+    res = str(res) + "H"
 
 _, balance_plot_col, _ = st.columns([1, 80, 1])
 
-gen_buses_aggr = gen_buses_df.loc[values[0]:values[1]].resample(res_h).mean()
-load_buses_aggr = load_buses_df.loc[values[0]:values[1]].resample(res_h).mean()
-cons_links_aggr = cons_links_df.loc[values[0]:values[1]].resample(res_h).mean()
+gen_buses_aggr = gen_buses_df.loc[values[0]:values[1]].resample(res).mean()
+load_buses_aggr = load_buses_df.loc[values[0]:values[1]].resample(res).mean()
+cons_links_aggr = cons_links_df.loc[values[0]:values[1]].resample(res).mean()
 
 # ###################### space heating #####################
 
