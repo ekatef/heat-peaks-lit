@@ -44,8 +44,9 @@ def get_df_for_parameter(_network_map, parameter, tech_name, _get_values_fn):
 
 
 #############
-def add_values_for_statistics(n, parameter, col_name):
-    return n.statistics()[parameter].loc["Generator"][col_name]
+def add_values_for_statistics(n, parameter, tech_list):
+    df=n.statistics().loc[["Generator", "Link"]]
+    return df.query('carrier in @tech_list')[parameter]
 
 def add_statistics(n):
     return n.statistics().loc["Generator"]
@@ -75,7 +76,7 @@ def add_values_for_generators(n, _parameter, col_name):
 
 ################
 def get_stats_col_names(n):
-    return n.statistics()["Curtailment"].loc["Generator"].index
+    return n.statistics().index
 
 
 def get_co2_col_names(n):
