@@ -54,7 +54,7 @@ def main():
         st.markdown(fix_cursor_css, unsafe_allow_html=True)
 
     df = helper.get_df_for_parameter(
-        network_map, option, helper.add_values_for_statistics, helper.get_stats_col_names
+        network_map, option, tech_list, helper.add_values_for_statistics
     )
 
     # TODO fix tech map to match with the Generators or Links
