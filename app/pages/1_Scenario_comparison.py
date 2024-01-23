@@ -97,7 +97,7 @@ def main():
             helper.adjust_plot_appearance(current_fig=fig)
             st.plotly_chart(fig,
                 use_cointainer_width=True
-            )            
+            )
 
     st.header("Network statistics")
     _, table_col, _ = st.columns([2, 60, 20])
@@ -109,7 +109,7 @@ def main():
             help="You can choose between available scenarios"
         )
     st.markdown(fix_cursor_css, unsafe_allow_html=True)
-    stat_table = helper.add_statistics(network_map[scenario])
+    stat_table = helper.add_statistics(network_map[scenario], keep_columns)
 
     th_props = [
         ("font-size", "18px"),
