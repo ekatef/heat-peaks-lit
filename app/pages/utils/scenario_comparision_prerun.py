@@ -48,8 +48,8 @@ def add_values_for_statistics(n, parameter, tech_list):
     df=n.statistics().loc[["Generator", "Link"]]
     return df.query('carrier in @tech_list')[parameter]
 
-def add_statistics(n):
-    return n.statistics().loc["Generator"]
+def add_statistics(n, keep_columns):
+    return n.statistics()[keep_columns].loc["Generator"]
 
 
 def add_values_for_co2(n, parameter, col_name):
