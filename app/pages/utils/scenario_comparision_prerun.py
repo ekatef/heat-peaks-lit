@@ -103,7 +103,9 @@ def adjust_plot_appearance(current_fig):
         legend_font_size=18,
         legend_title_font_color=data_color,
         legend_title_font_size=18,
-        font_color=data_color
+        font_color=data_color,
+        height=800,
+        width=800
     )
     current_fig.update_xaxes(
         tickangle=270,
