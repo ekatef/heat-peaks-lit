@@ -86,6 +86,7 @@ def main():
             )
             fig['data'][0]['showlegend']=True
         else:
+            df = df.T.groupby(df.columns).sum().T
             fig = px.bar(df, y=df.columns,
                 #color_discrete_sequence=plot_color,                    
                 labels={
