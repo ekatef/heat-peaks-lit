@@ -39,7 +39,10 @@ def main():
     tech_map = dict(map(reversed, carriers_map.items()))
 
     ###### first dropdown plotting n.statistics #####
-    params = list(network_map.values())[0].statistics().columns
+    params = list(network_map.values())[0].statistics()
+    keep_columns = ["Capital Expenditure", "Operational Expenditure", "Curtailment", "Revenue"]
+    params = params[keep_columns].columns
+
     st.header("Statistics plot")
     _, select_col, _ = st.columns([2,60,20])
 

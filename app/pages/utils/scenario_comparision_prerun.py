@@ -37,8 +37,8 @@ def get_df_for_parameter(_network_map, parameter, _get_values_fn, _get_cols_fn):
 def add_values_for_statistics(n, parameter, col_name):
     return n.statistics()[parameter].loc["Generator"][col_name]
 
-def add_statistics(n):
-    return n.statistics().loc["Generator"]
+def add_statistics(n, keep_columns):
+    return n.statistics()[keep_columns].loc["Generator"]
 
 
 def add_values_for_co2(n, parameter, col_name):
