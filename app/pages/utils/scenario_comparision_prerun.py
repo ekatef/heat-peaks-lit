@@ -5,32 +5,23 @@ import streamlit as st
 data_color = "#1B1212"
 
 @st.cache_resource
-def get_df_for_parameter(_network_map, parameter, _get_values_fn, _get_cols_fn):
-    all_column_names = _get_all_columns(_network_map, _get_cols_fn)
-    all_column_names.discard("load")
-    all_column_names = list(all_column_names)
-    df_array = []
-    for n in _network_map.values():
-        avilable_cols = _get_cols_fn(n)
-        child_arr = []
-        for col_name in all_column_names:
-            if col_name in avilable_cols:
-                child_arr.append(_get_values_fn(n, parameter, col_name))
-            else:
-                child_arr.append(0)
-        df_array.append(child_arr)
+def get_df_for_parameter(_network_map, parameter):
 
-    indices = _network_map.keys()
-    indices = [tools.config["scenario_names"][i] for i in indices]
-    nice_col_name=[]
-    for col_name in all_column_names:
-        if col_name in list(tools.config["carrier"]):
-            nice_col_name.append(tools.config["carrier"][col_name])
+    result = pd.DataFrame()
+    for key, n in _network_map.items():
+        if isinstance(parameter, list):
+            df = n.statistics()[parameter].dropna().sum(axis=1).droplevel(0).to_frame()
         else:
-            nice_col_name.append(col_name)
+            df = n.statistics()[parameter].dropna().droplevel(0).to_frame()
+        df.columns = [key]
+        result = result.join(df, how="outer").fillna(0)
+
+    result = result.groupby(result.index).sum()
+    result = result.groupby(result.index.map(tools.rename_techs)).sum()
+    drop = result.index[result.max(axis=1) < 0.005*result.sum().max()]
+    result = result.drop(drop).T
     
-    wide_form_df = pd.DataFrame(df_array, columns=nice_col_name, index=indices)
-    return wide_form_df
+    return result
 
 
 #############
