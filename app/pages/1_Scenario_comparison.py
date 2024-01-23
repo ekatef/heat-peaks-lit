@@ -2,6 +2,8 @@ import streamlit as st
 st.set_page_config(
     layout="wide"
 )
+
+import numpy as np
 import pathlib
 import plotly.express as px
 import pages.utils.tools as tools
@@ -41,17 +43,17 @@ def main():
     ###### first dropdown plotting n.statistics #####
     params = list(network_map.values())[0].statistics()
     keep_columns = ["Capital Expenditure", "Operational Expenditure", "Curtailment", "Revenue"]
-    params = params[keep_columns].columns
+    params = params[keep_columns].columns.values
 
     st.header("Statistics plot")
     _, select_col, _ = st.columns([2,60,20])
 
     tech_list = ["gas for industry", "gas for industry CC", "solid biomass for industry"]
 
-    with select_col: 
+    with select_col:
         option = st.selectbox(
             "Select metric",
-            params,
+            np.append(params, 'Total Costs'),
             help="You can select any parameter from PyPSA Network Statistics table"
         )
         st.markdown(fix_cursor_css, unsafe_allow_html=True)
@@ -87,7 +89,6 @@ def main():
             )
             fig['data'][0]['showlegend']=True
         else:
-            df = df.T.groupby(df.columns).sum().T
             fig = px.bar(df, y=df.columns,
                 #color_discrete_sequence=plot_color,                    
                 labels={

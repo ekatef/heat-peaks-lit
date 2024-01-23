@@ -5,6 +5,7 @@ import streamlit as st
 data_color = "#1B1212"
 
 @st.cache_resource
+<<<<<<< HEAD
 def get_df_for_parameter(_network_map, parameter, tech_name, _get_values_fn):
     #all_column_names = _get_all_columns(_network_map, _get_cols_fn)
     #all_column_names.discard("load")
@@ -41,6 +42,25 @@ def get_df_for_parameter(_network_map, parameter, tech_name, _get_values_fn):
     wide_form_df.columns = wide_form_df.columns.droplevel(0)
 
     return wide_form_df
+=======
+def get_df_for_parameter(_network_map, parameter):
+
+    result = pd.DataFrame()
+    for key, n in _network_map.items():
+        if isinstance(parameter, list):
+            df = n.statistics()[parameter].dropna().sum(axis=1).droplevel(0).to_frame()
+        else:
+            df = n.statistics()[parameter].dropna().droplevel(0).to_frame()
+        df.columns = [key]
+        result = result.join(df, how="outer").fillna(0)
+
+    result = result.groupby(result.index).sum()
+    result = result.groupby(result.index.map(tools.rename_techs)).sum()
+    drop = result.index[result.max(axis=1) < 0.005*result.sum().max()]
+    result = result.drop(drop).T
+    
+    return result
+>>>>>>> 6db8b88 (total costs option in scneario comparison)
 
 
 #############

@@ -327,6 +327,7 @@ statistics_param_units:
   Revenue: Euro
   Supply: MW-hours
   Withdrawal: Euro
+  Total Costs: Euro
 
 second_param_units:
   CO2 emissions: MtCO2
