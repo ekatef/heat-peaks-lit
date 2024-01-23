@@ -180,7 +180,6 @@ carrier:
   process emissions: Process Emission
   EU naphtha for industry: Naphta Industry
 
-  power: Power
   urban central heat: UrbCenOvr Heating
   residential urban decentral heat: UrbDecRes Heating
   services urban decentral heat: UrbDecSer Heating
@@ -215,7 +214,7 @@ carrier:
   retrofitting ambitious residential rural heat: Retrofit Ambit (RurDecRes)
   retrofitting ambitious services rural heat: Retrofit Ambit (RurDecSer)
 
-  power: power
+  power: Power
   services rural resistive heater: services rural resistive heater
   process emissions: process emissions
   urban central solid biomass CHP: urban central solid biomass CHP
