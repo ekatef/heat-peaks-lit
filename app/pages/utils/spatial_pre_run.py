@@ -13,7 +13,7 @@ import yaml
 config=tools.config
 # config.data_dir
 
-@st.cache_resource
+#@st.cache_resource
 def get_onshore_regions():
     # RESULTS_DIR=os.path.join("../pypsa-earth","resources")
     RESULTS_DIR=os.path.join(config["data_dir"], "resources")

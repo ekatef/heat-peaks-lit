@@ -181,7 +181,7 @@ cons_links_aggr = cons_links_df.loc[values[0]:values[1]].resample(res).mean()
 
 # ###################### space heating #####################
 
-gen_buses_retrof_aggr = gen_buses_aggr.filter(like=ctr).filter(like="etrof")
+gen_buses_retrof_aggr = gen_buses_aggr.filter(like=ctr).filter(like="retrof")
 gen_buses_retrof_aggr.columns.name = None
 
 load_buses_heat_aggr = load_buses_aggr.filter(like=ctr).filter(like="heat")
