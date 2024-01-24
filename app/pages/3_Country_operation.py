@@ -38,6 +38,9 @@ fix_cursor_css = '''
     </style>
 '''
 
+warm_orange_pallette = ["#ffe289", "#ffd966", "#ffc100", "#ff9a00", "#ff7400", 
+    "#ff4d00", "#ff0000", "#d60000", "#b20000", "#8e0000"]
+
 non_empth_links_keys = [param for param in helper.config["links_t_parameter"]]
 non_empth_loads_keys = [param for param in helper.config["loads_t_parameter"]]
 non_empth_links_keys = [param for param in helper.config["links_t_parameter"]]
@@ -223,7 +226,7 @@ if gen_buses_retrof_aggr.sum().sum()>0:
             **kwargs,
             ylabel="Retrofitting [MW]",
             group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
-            color = ["#ffc100", "#ff9a00", "#ff7400", "#ff4d00", "#ff0000"]
+            color = warm_orange_pallette
             )
         buses_retrof_area_plot = buses_retrof_area_plot.opts(
             fontsize=plot_font_dict
@@ -265,9 +268,9 @@ with balance_plot_col:
         **kwargs,
         ylabel="Electricity Consumption [MW]",
         group_label=helper.config["links_t_parameter"]["p0"]["legend_title"],
-        color = ["#ffc100", "#ff9a00", "#ff7400", "#ff4d00", "#ff0000", "gray", "pink"]
+        color = warm_orange_pallette
         )
-    buses_el_line_plot = heat_el_buses_aggr["power"].hvplot.line(color="navy")
+    buses_el_line_plot = heat_el_buses_aggr["power"].hvplot.line(color="#8B0000")
     buses_el_area_plot = buses_el_area_plot * buses_el_line_plot
     buses_el_area_plot = buses_el_area_plot.opts(
         fontsize=plot_font_dict
