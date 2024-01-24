@@ -42,6 +42,7 @@ def main():
 
     ###### first dropdown plotting n.statistics #####
     params = list(network_map.values())[0].statistics()
+    # TODO Add "Total Costs" defined as a sum of ["Capital Expenditure", "Operational Expenditure"]
     keep_columns = ["Capital Expenditure", "Operational Expenditure", "Curtailment", "Revenue"]
     params = params[keep_columns].columns.values
 
