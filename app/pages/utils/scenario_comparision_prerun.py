@@ -4,45 +4,37 @@ import streamlit as st
 
 data_color = "#1B1212"
 
-@st.cache_resource
-<<<<<<< HEAD
-def get_df_for_parameter(_network_map, parameter, tech_name, _get_values_fn):
-    #all_column_names = _get_all_columns(_network_map, _get_cols_fn)
-    #all_column_names.discard("load")
-    #all_column_names = list(all_column_names)
-    df_array = []
-    indices = []
+# @st.cache_resource
+# def get_df_for_parameter(_network_map, parameter, tech_name, _get_values_fn):
+#     #all_column_names = _get_all_columns(_network_map, _get_cols_fn)
+#     #all_column_names.discard("load")
+#     #all_column_names = list(all_column_names)
+#     df_array = []
+#     indices = []
 
-    for key, n in _network_map.items():
-        #avilable_cols = _get_cols_fn(n)
-        #child_arr = []
-        #for col_name in all_column_names:
-        #    if col_name in avilable_cols:
-        #        child_arr.append(_get_values_fn(n, parameter, tech_name))
-        #    else:
-        #        child_arr.append(0)
-        child_arr = _get_values_fn(n, parameter, tech_name)
-        # it can easily happen that a requested technology is not available for a network
-        if len(child_arr) > 0:      
-            df_array.append(child_arr)
-            indices.append(key)
+#     for key, n in _network_map.items():
+#         #avilable_cols = _get_cols_fn(n)
+#         #child_arr = []
+#         #for col_name in all_column_names:
+#         #    if col_name in avilable_cols:
+#         #        child_arr.append(_get_values_fn(n, parameter, tech_name))
+#         #    else:
+#         #        child_arr.append(0)
+#         child_arr = _get_values_fn(n, parameter, tech_name)
+#         # it can easily happen that a requested technology is not available for a network
+#         if len(child_arr) > 0:      
+#             df_array.append(child_arr)
+#             indices.append(key)
 
-    indices = [tools.config["scenario_names"][i] for i in indices]
-    nice_col_name=[]
+#     indices = [tools.config["scenario_names"][i] for i in indices]
+#     nice_col_name=[]
 
-    #for col_name in all_column_names:
-    #    if col_name in list(tools.config["carrier"]):
-    #        nice_col_name.append(tools.config["carrier"][col_name])
-    #    else:
-    #        nice_col_name.append(col_name)
-    
-    #wide_form_df = pd.DataFrame(df_array, columns=nice_col_name, index=indices)
-    wide_form_df = pd.DataFrame(df_array, index=indices)
-    # TODO Hard-coded nice names can be actually safier
-    wide_form_df.columns = wide_form_df.columns.droplevel(0)
+#     wide_form_df = pd.DataFrame(df_array, index=indices)
+#     # TODO Hard-coded nice names can be actually safier
+#     wide_form_df.columns = wide_form_df.columns.droplevel(0)
 
-    return wide_form_df
-=======
+#     return wide_form_df
+
 def get_df_for_parameter(_network_map, parameter):
 
     result = pd.DataFrame()
@@ -60,10 +52,7 @@ def get_df_for_parameter(_network_map, parameter):
     result = result.drop(drop).T
     
     return result
->>>>>>> 6db8b88 (total costs option in scneario comparison)
 
-
-#############
 def add_values_for_statistics(n, parameter, tech_list):
     df=n.statistics().loc[["Generator", "Link"]]
     return df.query('carrier in @tech_list')[parameter]
