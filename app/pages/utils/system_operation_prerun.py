@@ -55,22 +55,7 @@ def get_gen_t_df(_pypsa_network, gen_t_key):
     for the parameter corresponding to gen_t_key
     """
     gen_t_df = _pypsa_network.generators_t[gen_t_key]
-    unique_carriers = get_unique_carriers(gen_t_df)
-
-    carriers_to_check = unique_carriers.copy()
-    carriers_to_check.remove("solar")
-    if any(name in carriers_to_check for name in config["carrier"].values()):
-        resultant_df = gen_t_df 
-    else:        
-        unique_carriers_nice_names = [config["carrier"][carrier] for carrier in unique_carriers]
-        resultant_df = pd.DataFrame(0, columns=unique_carriers_nice_names, index=gen_t_df.index)
-        for carrier in unique_carriers:
-            for bus_carrier in gen_t_df.columns:           
-                if carrier in re.sub("(.*?)(\d)", "", bus_carrier).strip():  
-                    nice_name = config["carrier"][carrier]
-                    #nice_name = carrier
-                    resultant_df[nice_name] += gen_t_df[bus_carrier]                 
-    
+    resultant_df = gen_t_df
     return resultant_df
 
 # TODO Remove hardcoding?
@@ -81,20 +66,6 @@ def get_buses_t_df(_pypsa_network, gen_t_key):
     #country_key = "PL"
 
     gen_t_df = _pypsa_network.generators_t[gen_t_key]
-    unique_carriers = get_unique_carriers(gen_t_df)
-
-    carriers_to_check = unique_carriers.copy()
-    carriers_to_check.remove("solar")
-    if any(name in carriers_to_check for name in config["carrier"].values()):
-        return gen_t_df
-    else:
-        unique_carriers_nice_names = [config["carrier"][carrier] for carrier in unique_carriers]
-        carriers_names_map = dict(zip(unique_carriers, unique_carriers_nice_names))
-        new_columns = gen_t_df.columns
-        for old, new in carriers_names_map.items():
-            new_columns = new_columns.str.replace(old, new, regex=True)
-        gen_t_df.columns = new_columns 
-
     return gen_t_df
 
 non_empth_df_gen_t=[param for param in config["gen_t_parameter"]]
@@ -153,25 +124,6 @@ def get_load_t_df(_pypsa_network, load_t_key):
     for the parameter corresponding to load_t_key
     """
     load_t_df = _pypsa_network.loads_t[load_t_key]
-    unique_carriers = get_unique_carriers(load_t_df)
-
-    # electricity load is not captured by re as is doesn't have a sperific suffix
-    unique_carriers = [s if s is not "" else "power" for s in unique_carriers]
-
-    carriers_to_check = unique_carriers
-    if any(name in carriers_to_check for name in config["carrier"].values()):    
-        resultant_df = load_t_df 
-    else:           
-        unique_carriers_nice_names = [config["carrier"][carrier] for carrier in unique_carriers]
-        resultant_df = pd.DataFrame(0, columns=unique_carriers_nice_names, index=load_t_df.index)
-
-        for carrier in unique_carriers:
-            for bus_carrier in load_t_df.columns:           
-                if carrier in re.sub("(.*?)(\d)", "", bus_carrier).strip():  
-                    nice_name = config["carrier"][carrier]
-                    #nice_name = carrier
-                    resultant_df[nice_name] += load_t_df[bus_carrier]                
-    
     return resultant_df
 
 
@@ -201,24 +153,6 @@ def get_buses_load_t_df(_pypsa_network, load_t_key):
     load_t_df = _pypsa_network.loads_t[load_t_key]
     
     resultant_df = load_t_df
-
-    unique_carriers = get_unique_carriers(load_t_df)
-    # electricity load is not captured by re as is doesn't have a sperific suffix
-    unique_carriers = [s if s is not "" else "power" for s in unique_carriers]
-
-    carriers_to_check = unique_carriers
-    if any(name in carriers_to_check for name in config["carrier"].values()):
-        resultant_df = load_t_df
-    else:    
-        unique_carriers_nice_names = [config["carrier"][carrier] for carrier in unique_carriers]
-        carriers_names_map = dict(zip(unique_carriers, unique_carriers_nice_names))
-        new_columns = load_t_df.columns
-        for old, new in carriers_names_map.items():
-            new_columns = new_columns.str.replace(old, new, regex=True)
-        load_t_df.columns = new_columns
-
-        resultant_df = load_t_df
-
     return resultant_df
 
 # @st.cache_resource  
@@ -245,24 +179,6 @@ def get_buses_links_t_df(_pypsa_network, link_t_key):
     link_t_df = _pypsa_network.links_t[link_t_key]
     
     resultant_df = link_t_df
-
-    unique_carriers = get_unique_carriers(link_t_df)
-    # electricity link is not captured by re as is doesn't have a sperific suffix
-    unique_carriers = [s if s is not "" else "power" for s in unique_carriers]
-
-    carriers_to_check = unique_carriers
-    if any(name in carriers_to_check for name in config["carrier"].values()):
-        resultant_df = link_t_df
-    else:    
-        unique_carriers_nice_names = [config["carrier"][carrier] for carrier in unique_carriers]
-        carriers_names_map = dict(zip(unique_carriers, unique_carriers_nice_names))
-        new_columns = link_t_df.columns
-        for old, new in carriers_names_map.items():
-            new_columns = new_columns.str.replace(old, new, regex=True)
-        link_t_df.columns = new_columns
-
-        resultant_df = link_t_df
-
     return resultant_df
 
 # @st.cache_resource  
