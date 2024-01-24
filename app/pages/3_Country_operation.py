@@ -60,11 +60,11 @@ kwargs = dict(
         alpha=0.8
     )
 plot_font_dict = dict(
-    title=18,
-    legend=18,
-    labels=18, 
-    xticks=18, 
-    yticks=18,
+    title=14,
+    legend=14,
+    labels=14, 
+    xticks=14, 
+    yticks=14,
 )
 
 st.title("Country operation")
