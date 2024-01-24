@@ -68,19 +68,24 @@ tech_colors = get_colors_map()
 tools.add_logo()
 
 with main_col:
-    flex = st.checkbox("Flexible", True)
-    rigi = st.checkbox("Rigid")
-    igas = st.checkbox("iGas & TES")
+    checkboxes = pd.DataFrame(
+        index = helper.config["scenario_names"].keys(),
+        columns = ["checkbox_active"],
+        data = [False]*len(helper.config["scenario_names"].keys())
+    )
+    checkboxes.iloc[0] = True
+
+    for scenario in checkboxes.index:
+        checkbox_active = st.checkbox(
+            helper.config["scenario_names"].get(scenario),
+            checkboxes.loc[scenario, "checkbox_active"]
+        )
+        checkboxes.loc[scenario, "checkbox_active"] = checkbox_active
 
     selected_networks = []
-    if flex:
-        selected_networks.append("flex")
-    if rigi:
-        selected_networks.append("rigid")
-
-if (flex or rigi or igas) and selected_networks == []:
-    st.error("Oops, no data available for the selected scenario...")
-    st.stop()
+    for scenario in checkboxes.index:
+        if checkboxes.loc[scenario, "checkbox_active"]:
+            selected_networks.append(scenario)
 
 if selected_networks == []:
     st.error("You must choose a scenario. Please tick at least one of the boxes!")
