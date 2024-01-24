@@ -38,6 +38,9 @@ fix_cursor_css = '''
     </style>
 '''
 
+warm_orange_pallette = ["#ffe289", "#ffd966", "#ffc100", "#ff9a00", "#ff7400", 
+    "#ff4d00", "#ff0000", "#d60000", "#b20000", "#8e0000"]
+
 non_empth_links_keys = [param for param in helper.config["links_t_parameter"]]
 non_empth_loads_keys = [param for param in helper.config["loads_t_parameter"]]
 non_empth_links_keys = [param for param in helper.config["links_t_parameter"]]
@@ -60,11 +63,11 @@ kwargs = dict(
         alpha=0.8
     )
 plot_font_dict = dict(
-    title=18,
-    legend=18,
-    labels=18, 
-    xticks=18, 
-    yticks=18,
+    title=14,
+    legend=14,
+    labels=14, 
+    xticks=14, 
+    yticks=14,
 )
 
 st.title("Country operation")
@@ -190,18 +193,28 @@ load_buses_space_heat_aggr.columns.name = None
 load_buses_space_heat_aggr["space heating original"] = load_buses_space_heat_aggr.sum(axis=1)
 load_buses_space_heat_aggr["space heating overall"] = load_buses_space_heat_aggr["space heating original"] - gen_buses_retrof_aggr.sum(axis=1)
 
+heat_techs = ["residential rural heat", "residential urban decentral heat",
+              "services rural heat", "services urban decentral heat",
+              "urban central heat"]
+
 with balance_plot_col:
     buses_heat_area_plot = load_buses_space_heat_aggr[load_buses_space_heat_aggr.columns.difference(["space heating overall", "space heating original"])].hvplot.area(
         **kwargs,
         ylabel="Heat Demand [MW]",
         group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
-        color = ["#ffc100", "#ff9a00", "#ff7400", "#ff4d00", "#ff0000"]
+        color = [tech_colors[x] for x in heat_techs]
         )
     buses_heat_area_plot = buses_heat_area_plot.opts(
         fontsize=plot_font_dict
     )
-    buses_ovheat_line_plot = load_buses_space_heat_aggr["space heating overall"].hvplot.line(color="navy")
-    buses_orheat_line_plot = load_buses_space_heat_aggr["space heating original"].hvplot.line(color="darkred")
+    buses_ovheat_line_plot = (
+        load_buses_space_heat_aggr["space heating overall"].hvplot
+        .line(color=[tech_colors[x] for x in ["space heating overall"]])
+    )
+    buses_orheat_line_plot = (
+        load_buses_space_heat_aggr["space heating original"].hvplot
+        .line(color=[tech_colors[x] for x in ["space heating original"]])
+    )
     buses_heat_area_plot = buses_heat_area_plot * buses_ovheat_line_plot
     buses_heat_area_plot = buses_heat_area_plot * buses_orheat_line_plot           
     s2=hv.render(buses_heat_area_plot, backend="bokeh")
@@ -213,7 +226,7 @@ if gen_buses_retrof_aggr.sum().sum()>0:
             **kwargs,
             ylabel="Retrofitting [MW]",
             group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
-            color = ["#ffc100", "#ff9a00", "#ff7400", "#ff4d00", "#ff0000"]
+            color = warm_orange_pallette
             )
         buses_retrof_area_plot = buses_retrof_area_plot.opts(
             fontsize=plot_font_dict
@@ -255,9 +268,9 @@ with balance_plot_col:
         **kwargs,
         ylabel="Electricity Consumption [MW]",
         group_label=helper.config["links_t_parameter"]["p0"]["legend_title"],
-        color = ["#ffc100", "#ff9a00", "#ff7400", "#ff4d00", "#ff0000", "gray", "pink"]
+        color = warm_orange_pallette
         )
-    buses_el_line_plot = heat_el_buses_aggr["power"].hvplot.line(color="navy")
+    buses_el_line_plot = heat_el_buses_aggr["power"].hvplot.line(color="#8B0000")
     buses_el_area_plot = buses_el_area_plot * buses_el_line_plot
     buses_el_area_plot = buses_el_area_plot.opts(
         fontsize=plot_font_dict
