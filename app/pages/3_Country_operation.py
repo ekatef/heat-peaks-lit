@@ -204,8 +204,14 @@ with balance_plot_col:
     buses_heat_area_plot = buses_heat_area_plot.opts(
         fontsize=plot_font_dict
     )
-    buses_ovheat_line_plot = load_buses_space_heat_aggr["space heating overall"].hvplot.line(color="navy")
-    buses_orheat_line_plot = load_buses_space_heat_aggr["space heating original"].hvplot.line(color="darkred")
+    buses_ovheat_line_plot = (
+        load_buses_space_heat_aggr["space heating overall"].hvplot
+        .line(color=[tech_colors[x] for x in ["space heating overall"]])
+    )
+    buses_orheat_line_plot = (
+        load_buses_space_heat_aggr["space heating original"].hvplot
+        .line(color=[tech_colors[x] for x in ["space heating original"]])
+    )
     buses_heat_area_plot = buses_heat_area_plot * buses_ovheat_line_plot
     buses_heat_area_plot = buses_heat_area_plot * buses_orheat_line_plot           
     s2=hv.render(buses_heat_area_plot, backend="bokeh")
