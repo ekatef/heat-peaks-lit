@@ -61,6 +61,14 @@ buses_t_parameter:
 
 ######### operation parameters
 
+carriers_for_marginal_costs:
+  electricity: ['AC', 'H2', 'battery', 'Li ion', 'residential rural heat', 'residential rural water tanks', 'services rural heat',
+    'services rural water tanks', 'residential urban decentral heat', 'residential urban decentral water tanks', 'services urban decentral heat',
+    'services urban decentral water tanks', 'urban central heat',
+    'urban central water tanks', 'solid biomass',
+    'low voltage', 'home battery']
+  gas: ['gas', 'biogas']
+
 operation:
   carrier:
     total-electricity: Total Electricity
@@ -176,7 +184,7 @@ carrier:
   offwind-ac: Offshore Wind (AC)
   offwind-dc: Offshore Wind (DC)
   # names conflict with solat thermal
-  solar: solar
+  solar: Solar
   solar rooftop: Solar Rooftop
   hydro: Reservoir & Dam
   ror: Run of River

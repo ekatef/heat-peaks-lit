@@ -225,31 +225,16 @@ def get_buses_load_t_df(_pypsa_network, load_t_key):
 
 def get_marginal_costs(_pypsa_network, marginal_cost_key, carrier, country):
 
-    if carrier == "electricity":
-        consider_carriers = [
-            'AC', 'H2',
-            'battery', 'Li ion', 'residential rural heat',
-            'residential rural water tanks', 'services rural heat',
-            'services rural water tanks', 'residential urban decentral heat',
-            'residential urban decentral water tanks',
-            'services urban decentral heat',
-            'services urban decentral water tanks', 'urban central heat',
-            'urban central water tanks', 'solid biomass',
-            'low voltage', 'home battery'
-        ]
-        consider_carriers = _pypsa_network.buses.query("carrier in @consider_carriers").index
+    consider_carriers = config["carriers_for_marginal_costs"][carrier]
+    consider_carriers = _pypsa_network.buses.query("carrier in @consider_carriers").index
 
+    if carrier == "electricity":
         if country == 'all':
             result = _pypsa_network.buses_t[marginal_cost_key][consider_carriers].mean(axis=1)
         else:
             result = _pypsa_network.buses_t[marginal_cost_key][consider_carriers].filter(like=country).mean(axis=1)
 
     if carrier == "gas":
-        consider_carriers = [
-            'gas', 'biogas'
-        ]
-
-        consider_carriers = _pypsa_network.buses.query("carrier in @consider_carriers").index
         result = _pypsa_network.buses_t[marginal_cost_key][consider_carriers].mean(axis=1)
 
     return result
