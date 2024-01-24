@@ -62,16 +62,13 @@ def get_gen_t_df(_pypsa_network, gen_t_key):
 # TODO Remove country hardcoding
 #@st.cache_resource
 def get_buses_t_df(_pypsa_network, gen_t_key):
-
-    #country_key = "PL"
-
     gen_t_df = _pypsa_network.generators_t[gen_t_key]
     return gen_t_df
 
 non_empth_df_gen_t=[param for param in config["gen_t_parameter"]]
+
 # @st.cache_resource
 def get_gen_dict():
-
     result={}
     
     for network_key in pypsa_network_map.keys():
@@ -124,6 +121,7 @@ def get_load_t_df(_pypsa_network, load_t_key):
     for the parameter corresponding to load_t_key
     """
     load_t_df = _pypsa_network.loads_t[load_t_key]
+    resultant_df = load_t_df
     return resultant_df
 
 
@@ -140,18 +138,13 @@ def get_load_t_dict():
         network_dict={}
         network = pypsa_network_map.get(network_key)
         for non_empty_key in non_empty_load_keys:
-
             network_dict[non_empty_key] = get_load_t_df(network, non_empty_key)
-            #network_dict[non_empty_key]=  rename_final_df(df)
-        
         result[network_key]=network_dict
     return result
 
 #@st.cache_resource
 def get_buses_load_t_df(_pypsa_network, load_t_key):
-
-    load_t_df = _pypsa_network.loads_t[load_t_key]
-    
+    load_t_df = _pypsa_network.loads_t[load_t_key]   
     resultant_df = load_t_df
     return resultant_df
 
@@ -175,9 +168,7 @@ non_empth_df_links_t=[param for param in config["links_t_parameter"]]
 
 #@st.cache_resource
 def get_buses_links_t_df(_pypsa_network, link_t_key):
-
-    link_t_df = _pypsa_network.links_t[link_t_key]
-    
+    link_t_df = _pypsa_network.links_t[link_t_key]   
     resultant_df = link_t_df
     return resultant_df
 
