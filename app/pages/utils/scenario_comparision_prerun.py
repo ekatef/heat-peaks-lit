@@ -4,7 +4,7 @@ import streamlit as st
 
 data_color = "#1B1212"
 
-@st.cache_resource
+#@st.cache_resource
 def get_df_for_parameter(_network_map, parameter, _get_values_fn, _get_cols_fn):
     all_column_names = _get_all_columns(_network_map, _get_cols_fn)
     all_column_names.discard("load")

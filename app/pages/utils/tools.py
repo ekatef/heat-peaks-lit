@@ -4,7 +4,7 @@ import streamlit as st
 import pypsa
 import yaml
 
-# @st.cache_resource
+#@st.cache_resource
 def open_yaml_file(config_file):
     with open(config_file, "r") as f:
        config = yaml.safe_load(f)
@@ -16,7 +16,7 @@ else:
     config=open_yaml_file("app/pages/utils/config.yaml")    
 
 
-@st.cache_resource
+#@st.cache_resource
 def get_network_map():
     RESULTS_DIR = pathlib.Path(config["data_dir"], "results")
     networks = {}

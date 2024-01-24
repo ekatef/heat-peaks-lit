@@ -66,7 +66,7 @@ def get_buses_t_df(_pypsa_network, gen_t_key):
 
 non_empth_df_gen_t=[param for param in config["gen_t_parameter"]]
 
-# @st.cache_resource
+#@st.cache_resource
 def get_gen_dict():
     result={}
     
@@ -80,7 +80,7 @@ def get_gen_dict():
     
     return result
 
-# #@st.cache_resource
+#@st.cache_resource
 def get_gen_t_dict():
 
     result={}
@@ -95,7 +95,7 @@ def get_gen_t_dict():
     
     return result
 
-# #@st.cache_resource
+#@st.cache_resource
 def get_buses_gen_t_dict():
 
     result={}
@@ -123,7 +123,7 @@ def get_load_t_df(_pypsa_network, load_t_key):
     return load_t_df
 
 
-# #@st.cache_resource
+#@st.cache_resource
 def get_load_t_dict():
     """
     Get a list of load_t dataframes generation from pypsa_network
@@ -145,7 +145,7 @@ def get_buses_load_t_df(_pypsa_network, load_t_key):
     load_t_df = _pypsa_network.loads_t[load_t_key]   
     return load_t_df
 
-# #@st.cache_resource  
+#@st.cache_resource  
 def get_buses_load_t_dict():
 
     result={}
@@ -168,7 +168,7 @@ def get_buses_links_t_df(_pypsa_network, link_t_key):
     link_t_df = _pypsa_network.links_t[link_t_key]   
     return link_t_df
 
-# #@st.cache_resource  
+#@st.cache_resource  
 def get_buses_links_t_dict():
 
     result={}
@@ -195,7 +195,7 @@ def rename_final_df(df):
     return df
 
 
-# #@st.cache_resource
+#@st.cache_resource
 def get_storage_t_dict():
     
     result={}
@@ -236,7 +236,7 @@ def get_links_df(pypsa_network, pypsa_component, component_key):
 #non_empth_loads_keys=[param for param in config["loads_t_parameter"]]
 #non_empth_stores_keys=[param for param in config["stores_t_parameter"]]
 
-# #@st.cache_resource
+#@st.cache_resource
 def get_components_t_dict(component_key, component_keys):
     result={}
 
