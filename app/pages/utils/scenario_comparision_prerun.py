@@ -16,8 +16,10 @@ def get_df_for_parameter(_network_map, parameter):
         df.columns = [key]
         result = result.join(df, how="outer").fillna(0)
 
+    tech_map = {item: item for item in result.index}
+    tech_map |= tools.config["carrier"] # update tech mapping, if applicable
+    result.index = result.index.map(tech_map)
     result = result.groupby(result.index).sum()
-    result = result.groupby(result.index.map(tools.rename_techs)).sum()
     drop = result.index[result.max(axis=1) < 0.005*result.sum().max()]
     result = result.drop(drop).T
     
