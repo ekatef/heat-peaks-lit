@@ -155,24 +155,28 @@ with country_col:
 
 # ###################### electricity costs #####################
 
-fig = sp.make_subplots(
-        rows=2, cols=1,
-    )
-
 costs_dict_list = helper.get_marginal_costs_dict(ctr)
 costs_weighted_dict_list = helper.get_weighted_costs_dict()
 
+fig = sp.make_subplots(rows=1, cols=1)
+st.header("Electricity prices during the year for a selected country")
 for selected_network in selected_networks:
-
-    res_h = str(res) + "H"
+    if res.isdigit():
+        res = str(res) + "H"
 
     costs_unagg = costs_dict_list.get(selected_network)
-    costs = costs_unagg[carrier].loc[values[0]:values[1]].squeeze().resample(res_h).mean()
+    costs = costs_unagg[carrier].loc[values[0]:values[1]].squeeze().resample(res).mean()
 
     fig.add_trace(
         go.Scatter(x=costs.index, y=costs.values,
         mode='lines', name=f"{scenario_formatter(selected_network)}"), row=1, col=1
     )
+
+st.plotly_chart(fig)
+
+fig = sp.make_subplots(rows=1, cols=1)
+st.header("Average electricity prices for all countries")
+for selected_network in selected_networks:
 
     costs_weighted = costs_weighted_dict_list.get(selected_network)
     costs = costs_weighted[carrier].sort_values()
@@ -181,12 +185,12 @@ for selected_network in selected_networks:
         x=costs.index, y=costs.values,
         textposition='auto', name=f"{scenario_formatter(selected_network)}"
     )
-    fig.add_trace(new_trace, row=2, col=1)
+    fig.add_trace(new_trace, row=1, col=1)
 
     fig.update_yaxes(title_text='Costs [EUR/MWh]', row=1, col=1)
     fig.update_yaxes(title_text='Average costs [EUR/MWh]', row=2, col=1)
 
-    fig.update_layout(width=1000, height=600)
+    fig.update_layout(width=800, height=400)
 
 st.plotly_chart(fig)
 
