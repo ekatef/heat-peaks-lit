@@ -34,7 +34,7 @@ gen_t_parameter:
     legend_title: " "
 
 loads_t_parameter:
-  p: 
+  p_set: 
     nice_name: Demand
     unit: MW
     legend_title: " "
@@ -106,6 +106,7 @@ ylim:
   co2: [-600, 600]
 
 countries_names:
+  all: All Countries
   AL: Albania
   AT: Austria
   BA: Bosnia & Herzegovina
@@ -138,7 +139,6 @@ countries_names:
   RS: Serbia
   SE: Sweden
   SI: Slovenia
-  all: All Countries
 
 
 carrier_names:
@@ -212,11 +212,11 @@ carrier:
   process emissions: Process Emission
   EU naphtha for industry: Naphta Industry
 
-  urban central heat: UrbCenOvr Heating
-  residential urban decentral heat: UrbDecRes Heating
-  services urban decentral heat: UrbDecSer Heating
-  residential rural heat: RurDecRes Heating
-  services rural heat: RurDecSer Heating
+  urban central heat: Urb Centr Heating
+  residential urban decentral heat: Urb Decentr Heating
+  services urban decentral heat: Urb Decentr Heating
+  residential rural heat: Rural Decentr Heating
+  services rural heat: Rural Decentr Heating
 
   EU oil: Oil
   land transport fuel cell: FC Vehicles  
@@ -239,6 +239,8 @@ carrier:
   residential rural ground heat pump: Ground Heat Pump
   residential urban decentral air heat pump: Air Heat Pump
   residential urban decentral gas boiler: Gas Boiler
+  residential rural gas boiler: Gas Boiler
+  services rural gas boiler: Gas Boiler
   residential urban decentral: Resistive Heater
   residential urban decentral resistive heater: Resistive Heater
   services ground heat pump: Ground Heat Pump
