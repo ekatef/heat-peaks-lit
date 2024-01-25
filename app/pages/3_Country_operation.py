@@ -110,7 +110,7 @@ with scen_col:
         format_func = scenario_formatter,
         help="You can choose between available scenarios"
     )
-    st.markdown(fix_cursor_css, unsafe_allow_html=True)   
+    st.markdown(fix_cursor_css, unsafe_allow_html=True) 
 
 # the finest available resolution depends on the model and should be extracted from metadata
 # https://stackoverflow.com/a/9891784/8465924    
@@ -175,35 +175,31 @@ cons_links_aggr = cons_links_df.loc[values[0]:values[1]].resample(res).mean()
 
 # ###################### space heating #####################
 
-gen_buses_retrof_aggr = gen_buses_aggr.filter(like=ctr).filter(like="retrof")
-gen_buses_retrof_aggr.columns.name = None
-
-load_buses_heat_aggr = load_buses_aggr.filter(like=ctr).filter(like="heat")
-load_buses_space_heat_aggr = load_buses_heat_aggr.loc[:,~load_buses_heat_aggr.columns.str.endswith("industry")]
-load_buses_space_heat_aggr.columns.name = None
-load_buses_space_heat_aggr["space heating original"] = load_buses_space_heat_aggr.sum(axis=1)
-load_buses_space_heat_aggr["space heating overall"] = load_buses_space_heat_aggr["space heating original"] - gen_buses_retrof_aggr.sum(axis=1)
+load_buses_aggr["Heating Original"] = load_buses_aggr.filter(like="Heating").sum(axis=1)
+load_buses_aggr["Heating Retrofitted"] = load_buses_aggr["Heating Original"] - gen_buses_aggr.filter(like="Retrofitting").sum(axis=1)
 
 heat_techs = ["residential rural heat", "residential urban decentral heat",
               "services rural heat", "services urban decentral heat",
               "urban central heat"]
 
 with balance_plot_col:
-    buses_heat_area_plot = load_buses_space_heat_aggr[load_buses_space_heat_aggr.columns.difference(["space heating overall", "space heating original"])].hvplot.area(
+    buses_heat_area_plot = load_buses_aggr[
+        load_buses_aggr.filter(like="Heating").columns.difference(["Heating Original", "Heating Retrofitted"])
+    ].hvplot.area(
         **kwargs,
         ylabel="Heat Demand [MW]",
-        group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
+        group_label=helper.config["loads_t_parameter"]["p_set"]["legend_title"],
         color = [tech_colors[x] for x in heat_techs]
         )
     buses_heat_area_plot = buses_heat_area_plot.opts(
         fontsize=plot_font_dict
     )
     buses_ovheat_line_plot = (
-        load_buses_space_heat_aggr["space heating overall"].hvplot
+        load_buses_aggr["Heating Retrofitted"].hvplot
         .line(color=[tech_colors[x] for x in ["space heating overall"]])
     )
     buses_orheat_line_plot = (
-        load_buses_space_heat_aggr["space heating original"].hvplot
+        load_buses_aggr["Heating Original"].hvplot
         .line(color=[tech_colors[x] for x in ["space heating original"]])
     )
     buses_heat_area_plot = buses_heat_area_plot * buses_ovheat_line_plot
@@ -211,58 +207,43 @@ with balance_plot_col:
     s2=hv.render(buses_heat_area_plot, backend="bokeh")
     st.bokeh_chart(s2, use_container_width=True)
 
-if gen_buses_retrof_aggr.sum().sum()>0:
+if gen_buses_aggr.filter(like="Retrofitting").sum(axis=1).sum()>0:
     with balance_plot_col:
-        buses_retrof_area_plot = gen_buses_retrof_aggr.hvplot.area(
+        buses_retrof_area_plot = gen_buses_aggr["Retrofitting"].hvplot.area(
             **kwargs,
             ylabel="Retrofitting [MW]",
-            group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
+            group_label=helper.config["loads_t_parameter"]["p_set"]["legend_title"],
             color = warm_orange_pallette
             )
         buses_retrof_area_plot = buses_retrof_area_plot.opts(
             fontsize=plot_font_dict
-        )
-        # buses_ovheat_line_plot = load_buses_space_heat_aggr["space heating overall"].hvplot.line(color="navy")
-        # buses_orheat_line_plot = load_buses_space_heat_aggr["space heating original"].hvplot.line(color="darkred")
-        # buses_retrof_area_plot = buses_retrof_area_plot * buses_ovheat_line_plot
-        # buses_retrof_area_plot = buses_retrof_area_plot * buses_orheat_line_plot           
+        )           
         s2=hv.render(buses_retrof_area_plot, backend="bokeh")
         st.bokeh_chart(s2, use_container_width=True)
 
-# ###################### electricity load #####################
+# ###################### heat supply #####################
 
-power_cols = [x for x in load_buses_aggr.columns if re.match("^[0-9 ]+$", re.sub(ctr, "", x))]
-load_el_buses_aggr = load_buses_aggr[power_cols]
-load_el_buses_aggr.columns.name = None
-load_el_buses_aggr.index = pd.to_datetime(load_el_buses_aggr.index)
+heat_supply_cols = cons_links_aggr.columns[cons_links_aggr.columns.isin(
+    ["Air Heat Pump", "Ground Heat Pump", "Biomass CHP", 
+    "Gas Boiler", "Gas CHP", "Microgas CHP", "Resistive Heater"]
+)]
 
-cols_of_interest = cons_links_aggr.columns.str.contains("Resistive Heater|Heat Pump")
-cons_hp_links_aggr = cons_links_aggr[cons_links_aggr.columns[cols_of_interest]]
-cons_hp_links_aggr.index = pd.to_datetime(cons_hp_links_aggr.index)
+heat_supply_buses_aggr = cons_links_aggr[heat_supply_cols]
 
 #SOLAR THERMAL IS MISSING, CAN BE RETRIEVED VIA:
 #helper.get_gen_t_dict(country = ctr).get(selected_network)["p"]["Solar Thermal"]
-
-regional_load_buses_aggr = load_buses_aggr.filter(like=ctr)
-regional_load_buses_aggr.columns.name = None
-regional_load_buses_aggr.index = pd.to_datetime(regional_load_buses_aggr.index)
-
-heat_el_buses_aggr = pd.concat(
-    [cons_hp_links_aggr, regional_load_buses_aggr.filter(like="industry electricity")],
-    axis = 1
-)
-heat_el_buses_aggr["power"] = load_el_buses_aggr.sum(axis=1)
-
+heat_supply_buses_aggr["Solar Thermal"] = gen_buses_aggr.filter(like="Solar Thermal")
+heat_supply_buses_aggr["Retrofitting"] = gen_buses_aggr.filter(like="Retrofitting").sum(axis=1)
 
 with balance_plot_col:
-    buses_el_area_plot = heat_el_buses_aggr[heat_el_buses_aggr.columns.difference(["power"])].hvplot.area(
+    buses_el_area_plot = heat_supply_buses_aggr.hvplot.area(
         **kwargs,
         ylabel="Heat Supply [MW]",
         group_label=helper.config["links_t_parameter"]["p0"]["legend_title"],
         color = warm_orange_pallette
         )
-    buses_el_line_plot = heat_el_buses_aggr["power"].hvplot.line(color="#8B0000")
-    buses_el_area_plot = buses_el_area_plot * buses_el_line_plot
+    #buses_el_line_plot = load_buses_aggr["electricity"].hvplot.line(color="#8B0000")
+    #buses_el_area_plot = buses_el_area_plot * buses_el_line_plot
     buses_el_area_plot = buses_el_area_plot.opts(
         fontsize=plot_font_dict
     )
