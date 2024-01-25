@@ -45,10 +45,6 @@ non_empth_links_keys = [param for param in helper.config["links_t_parameter"]]
 non_empth_loads_keys = [param for param in helper.config["loads_t_parameter"]]
 non_empth_links_keys = [param for param in helper.config["links_t_parameter"]]
 
-# carrier values per bus
-gen_buses_dict_list = helper.get_buses_gen_t_dict()
-load_buses_dict_list = helper.get_buses_load_t_dict()
-
 res_choices = helper.config["operation"]["resolution"]
 
 kwargs = dict(
@@ -91,6 +87,22 @@ tech_colors = get_colors_map()
 
 tools.add_logo()
 
+country_codes_clean = helper.config["countries_names"].keys()
+with country_col:
+    ctr = st.selectbox(
+        "Country",
+        country_codes_clean,
+        format_func=country_formatter, 
+        key="country",
+        help="You can choose a country to examine operation of the energy system"
+    )
+    st.markdown(fix_cursor_css, unsafe_allow_html=True)
+
+# extract dataframes from all the available networks
+gen_buses_dict_list = helper.get_buses_gen_t_dict(ctr)
+load_buses_dict_list = helper.get_buses_load_t_dict(ctr)
+links_buses_dict_list = helper.get_buses_links_t_dict(ctr)
+
 with scen_col:
     selected_network = st.selectbox(
         "Select which scenario's plot you want to see :",
@@ -120,34 +132,12 @@ with date_col:
     )
     st.markdown(fix_cursor_css, unsafe_allow_html=True) 
 
-# # TODO naming should be imroved
-# country_data = gen_dict_list.get(selected_network)
 buses_country_data = gen_buses_dict_list.get(selected_network)
-buses_load_country_data = load_buses_dict_list.get(selected_network)
-##################### generators #####################
-# gen_df = country_data["p"].drop("Load", axis=1, errors="ignore")
-# TODO naming should be imroved: gen_buses_df can be distinguished 
-# between the dataframe and the dictionary
 gen_buses_df = buses_country_data["p"].drop("Load", axis=1, errors="ignore")
-load_buses_df = buses_load_country_data["p"]
 
-countries_codes = pd.unique(
-    [(lambda x: re.sub("\d.*", '', x))(x) for x in gen_buses_df.columns]
-)
-# to avoid mis-interpretaiton of regex outputs
-country_codes_clean = [x for x in countries_codes if x in helper.config["countries_names"].keys()]
-country_codes_clean = sorted(country_codes_clean)
-with country_col:
-    ctr = st.selectbox(
-        "Country",
-        country_codes_clean,
-        format_func=country_formatter, 
-        key="country",
-        help="You can choose a country to examine operation of the energy system"
-    )
-    st.markdown(fix_cursor_css, unsafe_allow_html=True)  
+buses_load_country_data = load_buses_dict_list.get(selected_network)
+load_buses_df = buses_load_country_data["p_set"]
 
-links_buses_dict_list = helper.get_buses_links_t_dict(ctr)
 buses_links_country_data = links_buses_dict_list.get(selected_network)
 cons_links_df = buses_links_country_data["p0"]
 
