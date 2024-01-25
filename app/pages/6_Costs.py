@@ -159,7 +159,7 @@ costs_dict_list = helper.get_marginal_costs_dict(ctr)
 costs_weighted_dict_list = helper.get_weighted_costs_dict()
 
 fig = sp.make_subplots(rows=1, cols=1)
-st.header("Prices during the year for a selected country")
+st.header(f"Prices for {carrier} during the year for a selected country")
 for selected_network in selected_networks:
     if res.isdigit():
         res = str(res) + "H"
@@ -175,7 +175,7 @@ for selected_network in selected_networks:
 st.plotly_chart(fig)
 
 fig = sp.make_subplots(rows=1, cols=1)
-st.header("Average electricity prices for all countries")
+st.header(f"Average {carrier} prices for all countries")
 for selected_network in selected_networks:
 
     costs_weighted = costs_weighted_dict_list.get(selected_network)
