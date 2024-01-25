@@ -261,8 +261,8 @@ with balance_plot_col:
     buses_el_area_plot = buses_el_area_plot * buses_el_line_plot
     buses_el_area_plot = buses_el_area_plot.opts(
         fontsize=plot_font_dict
-    )         
+    )
     s2=hv.render(buses_el_area_plot, backend="bokeh")
     st.bokeh_chart(s2, use_container_width=True)
 
-tools.add_logo()  
+tools.add_logo()
