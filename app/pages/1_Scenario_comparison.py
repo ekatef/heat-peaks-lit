@@ -11,7 +11,7 @@ import pages.utils.scenario_comparision_prerun as helper
 
 _, main_col, _, suppl_col, _ = st.columns([1, 35, 1, 20, 1])
 
-data_color = "#1B1212"
+data_color = "#333333"
 # needed to change cursor mode of selectboxes from the default text mode
 fix_cursor_css = '''
     <style>

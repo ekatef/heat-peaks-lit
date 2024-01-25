@@ -159,7 +159,7 @@ costs_dict_list = helper.get_marginal_costs_dict(ctr)
 costs_weighted_dict_list = helper.get_weighted_costs_dict()
 
 fig = sp.make_subplots(rows=1, cols=1)
-st.header("Electricity prices during the year for a selected country")
+st.header("Prices during the year for a selected country")
 for selected_network in selected_networks:
     if res.isdigit():
         res = str(res) + "H"
