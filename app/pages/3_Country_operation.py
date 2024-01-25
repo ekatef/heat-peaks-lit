@@ -37,6 +37,7 @@ fix_cursor_css = '''
         }            
     </style>
 '''
+
 # TODO Replace by the proper colors definition
 warm_orange_pallette = ["#ffe289", "#ffd966", "#ffc100", "#ff9a00", "#ff7400", 
     "#ff4d00", "#ff0000", "#d60000", "#b20000", "#8e0000"]
