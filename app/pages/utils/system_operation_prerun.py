@@ -49,23 +49,23 @@ def get_meta_df(network_key):
     return network.meta
 
 #@st.cache_resource
-def get_gen_t_df(_pypsa_network, gen_t_key):
+def get_gen_t_df(_pypsa_network, gen_t_key, country="all"):
     """
     Get a dataframe of time-series of generation from pypsa_network
     for the parameter corresponding to gen_t_key
     """
+    gen_t_df = _pypsa_network.generators_t[gen_t_key].copy()
+    if country != "all":
+        gen_t_df = gen_t_df.filter(like=country)
+
     gen_t_df = (
-        _pypsa_network.generators_t[gen_t_key].copy().T
-        .groupby(_pypsa_network.generators.carrier)
-        .sum().T
-        .rename(columns=config["carrier"])
+        gen_t_df.T.groupby(_pypsa_network.generators.carrier).sum()
+        .rename(index=config["carrier"])
     )
-    gen_t_df = gen_t_df.T.groupby(gen_t_df.columns).sum().T
+    gen_t_df = gen_t_df.groupby(gen_t_df.index).sum().T
 
     return gen_t_df
 
-# TODO Remove hardcoding?
-# TODO Remove country hardcoding
 #@st.cache_resource
 def get_buses_t_df(_pypsa_network, gen_t_key):
     gen_t_df = _pypsa_network.generators_t[gen_t_key]
@@ -88,7 +88,7 @@ def get_gen_dict():
     return result
 
 #@st.cache_resource
-def get_gen_t_dict():
+def get_gen_t_dict(country = "all"):
 
     result={}
     
@@ -96,7 +96,7 @@ def get_gen_t_dict():
         network_dict={}
         network=pypsa_network_map.get(network_key)
         for non_empty_key in non_empth_df_gen_t:
-            network_dict[non_empty_key]=get_gen_t_df(network, non_empty_key)
+            network_dict[non_empty_key]=get_gen_t_df(network, non_empty_key, country)
         
         result[network_key]=network_dict
     
@@ -265,36 +265,23 @@ def get_weighted_costs_dict():
 non_empth_df_links_t=[param for param in config["links_t_parameter"]]
 
 #@st.cache_resource
-def get_buses_links_t_df(_pypsa_network, link_t_key):
-    link_t_df = _pypsa_network.links_t[link_t_key]   
+def get_buses_links_t_df(_pypsa_network, link_t_key, country="all"):
+
+    link_t_df = _pypsa_network.links_t[link_t_key].copy()
+
+    if country != "all":
+        link_t_df = link_t_df.filter(like=country)
+
+    link_t_df = (
+        link_t_df.T.groupby(_pypsa_network.links.carrier).sum()
+        .rename(index=config["carrier"])
+    )
+
+    link_t_df = link_t_df.groupby(link_t_df.index).sum().T
+
     return link_t_df
 
-    link_t_df = _pypsa_network.links_t[link_t_key]
-
-    resultant_df = link_t_df
-
-    unique_carriers = get_unique_carriers(link_t_df)
-    # electricity link is not captured by re as is doesn't have a sperific suffix
-    unique_carriers = [s if s is not "" else "power" for s in unique_carriers]
-
-    carriers_to_check = unique_carriers
-    if any(name in carriers_to_check for name in config["carrier"].values()):
-        resultant_df = link_t_df
-    else:
-        unique_carriers_nice_names = [config["carrier"][carrier] for carrier in unique_carriers]
-        carriers_names_map = dict(zip(unique_carriers, unique_carriers_nice_names))
-        new_columns = link_t_df.columns
-        for old, new in carriers_names_map.items():
-            new_columns = new_columns.str.replace(old, new, regex=True)
-        link_t_df.columns = new_columns
-
-        resultant_df = link_t_df
-
-    return resultant_df
-
-# @st.cache_resource
-
-def get_buses_links_t_dict():
+def get_buses_links_t_dict(country="all"):
 
     result={}
 
@@ -302,7 +289,7 @@ def get_buses_links_t_dict():
         network_dict={}
         network=pypsa_network_map.get(network_key)
         for non_empty_key in non_empth_df_links_t:
-            network_dict[non_empty_key]=get_buses_links_t_df(network, non_empty_key)
+            network_dict[non_empty_key]=get_buses_links_t_df(network, non_empty_key, country)
 
         result[network_key]=network_dict
 
