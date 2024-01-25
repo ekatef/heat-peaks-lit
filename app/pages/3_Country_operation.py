@@ -112,12 +112,24 @@ with scen_col:
     )
     st.markdown(fix_cursor_css, unsafe_allow_html=True) 
 
+buses_country_data = gen_buses_dict_list.get(selected_network)
+gen_buses_df = buses_country_data["p"].drop("Load", axis=1, errors="ignore")
+
+buses_load_country_data = load_buses_dict_list.get(selected_network)
+load_buses_df = buses_load_country_data["p_set"]
+
+buses_links_country_data = links_buses_dict_list.get(selected_network)
+cons_links_df = buses_links_country_data["p0"]
+
+# metadata for time resolution may be wrong; keeping the meta-data approach for reference only
 # the finest available resolution depends on the model and should be extracted from metadata
 # https://stackoverflow.com/a/9891784/8465924    
-pat = r".*?\-(.\d)H.*"
-sector_scen_string = helper.get_meta_df(selected_network)["scenario"]["sector_opts"]
-finest_resolution = re.search(pat, sector_scen_string[0]).group(1)    
-finest_resolution_name = finest_resolution.split("H")[0] + "-hourly"
+#pat = r".*?\-(.\d)H.*"
+#sector_scen_string = helper.get_meta_df(selected_network)["scenario"]["sector_opts"]
+#finest_resolution = re.search(pat, sector_scen_string[0]).group(1)    
+#finest_resolution_name = finest_resolution.split("H")[0] + "-hourly"
+finest_resolution = round(((gen_buses_df.index[1] - gen_buses_df.index[0]).seconds)/3600)
+finest_resolution_name = str(finest_resolution) + "-hourly"
 upd_dict = {finest_resolution: finest_resolution_name}
 upd_dict.update(res_choices)
 
@@ -132,14 +144,6 @@ with date_col:
     )
     st.markdown(fix_cursor_css, unsafe_allow_html=True) 
 
-buses_country_data = gen_buses_dict_list.get(selected_network)
-gen_buses_df = buses_country_data["p"].drop("Load", axis=1, errors="ignore")
-
-buses_load_country_data = load_buses_dict_list.get(selected_network)
-load_buses_df = buses_load_country_data["p_set"]
-
-buses_links_country_data = links_buses_dict_list.get(selected_network)
-cons_links_df = buses_links_country_data["p0"]
 
 _, date_range_param, _ = st.columns([1, 50, 1])
 with date_range_param:
@@ -164,7 +168,7 @@ with date_range_param:
 # #TODO Add balance?
 # balance_df = gen_df
 
-if res.isdigit():
+if str(res).isdigit():
     res = str(res) + "H"
 
 _, balance_plot_col, _ = st.columns([1, 80, 1])
