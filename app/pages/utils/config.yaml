@@ -9,7 +9,7 @@ scenario_names:
 
   rigid: Rigid Scenario
   flex: Flexible Scenario
-  flex_upd: Updated Flexible Scenario  
+  flex_upd: Updated Flexible Scenario
 
   # BJ_4: Benin four clusters
   # BJ_6: Benin six clusters
@@ -139,7 +139,6 @@ countries_names:
   RS: Serbia
   SE: Sweden
   SI: Slovenia
-
 
 carrier_names:
   H2: hydrogen
@@ -293,7 +292,6 @@ carrier:
   services rural gas boiler: services rural gas boiler
   gas for industry: gas for industry
   residential urban decentral water tanks disc: residential urban decentral water tanks disc
-  G: G
   residential rural resistive heater: Resistive Heater
   biogas to gas: Biogas to Gas
   services rural water tanks discharger: services rural water tanks discharger
@@ -309,7 +307,6 @@ carrier:
   home battery charger: Home Battery charger
   services urban decentral DAC: services urban decentral DAC
   methanolisation: methanolisation
-  -reversed: -reversed
   EV charger: EV charger
 
   # lines and links
@@ -633,4 +630,4 @@ preferred_order:
   - H2 liquefaction
   - power-to-liquid
   - CO2 sequestration
-  - CCS  
+  - CCS
