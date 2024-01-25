@@ -71,7 +71,7 @@ plot_font_dict = dict(
 
 st.title("Country operation")
 
-_, main_col, _, country_col, _, date_col, _ = st.columns([1, 35, 1, 20, 1, 20, 1])
+_, scen_col, _, country_col, _, date_col, _ = st.columns([1, 35, 1, 20, 1, 20, 1])
 
 def scenario_formatter(scenario):
     return helper.config["scenario_names"][scenario]
@@ -90,7 +90,8 @@ tech_map = dict(map(reversed, carriers_map.items()))
 tech_colors = get_colors_map()
 
 tools.add_logo()
-with main_col:
+
+with scen_col:
     selected_network = st.selectbox(
         "Select which scenario's plot you want to see :",
         list(gen_buses_dict_list.keys()),
