@@ -28,7 +28,6 @@ import typing
 config=tools.config
 pypsa_network_map=tools.get_network_map()
 
-###### for generators #####################
 
 def get_unique_carriers(df):
     """
@@ -43,10 +42,15 @@ def get_unique_carriers(df):
 
     return list(set(split_cols))
 
+
 #@st.cache_resource
 def get_meta_df(network_key):
     network=pypsa_network_map.get(network_key)
     return network.meta
+
+###### generators #####################
+
+non_empth_df_gen_t=[param for param in config["gen_t_parameter"]]
 
 #@st.cache_resource
 def get_buses_gen_t_df(_pypsa_network, gen_t_key, country="all"):
@@ -95,8 +99,7 @@ def get_buses_gen_t_dict(country="all"):
     
     return result
 
-############# for load #####################
-non_empty_load_keys = [param for param in config["loads_t_parameter"]]
+###### buses #####################
 non_empty_bus_key = [param for param in config["buses_t_parameter"]][0]
 #@st.cache_resource
 def get_buses_load_t_dict(country="all"):
@@ -131,7 +134,6 @@ def get_marginal_costs(_pypsa_network, marginal_cost_key, carrier, country):
 
     return result
 
-
 def get_weighted_costs(_pypsa_network, marginal_cost_key, carrier):
 
     consider_carriers = config["carriers_for_marginal_costs"][carrier]
@@ -151,6 +153,8 @@ def get_weighted_costs(_pypsa_network, marginal_cost_key, carrier):
 
     return result
 
+###### loads #####################
+non_empty_load_keys = [param for param in config["loads_t_parameter"]]
 
 # @st.cache_resource  
 def get_buses_load_t_df(_pypsa_network, load_t_key, country="all"):
@@ -174,6 +178,7 @@ def get_buses_load_t_df(_pypsa_network, load_t_key, country="all"):
 
     return load_t_df
 
+###### costs #####################
 def get_marginal_costs_dict(country):
 
     result={}
@@ -188,7 +193,6 @@ def get_marginal_costs_dict(country):
         result[network_key] = marginal_costs
 
     return result
-
 
 def get_weighted_costs_dict():
 
@@ -205,7 +209,8 @@ def get_weighted_costs_dict():
 
     return result
 
-############## links
+
+############## links #####################
 non_empth_df_links_t=[param for param in config["links_t_parameter"]]
 
 #@st.cache_resource
@@ -252,8 +257,7 @@ def rename_final_df(df):
         df=df.rename(columns={column_name:get_renamed_column(column_name)})
     return df
 
-
-############# for links #####################
+############# links #####################
 def get_links_unique_cols(pypsa_network, pypsa_component, col_name):
     #all_cols=pypsa_network.links_t["p0"].columns
     all_cols=getattr(pypsa_network, pypsa_component)[col_name].columns
