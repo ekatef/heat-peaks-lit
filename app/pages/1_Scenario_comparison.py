@@ -2,6 +2,8 @@ import streamlit as st
 st.set_page_config(
     layout="wide"
 )
+
+import numpy as np
 import pathlib
 import plotly.express as px
 import pages.utils.tools as tools
@@ -39,22 +41,30 @@ def main():
     tech_map = dict(map(reversed, carriers_map.items()))
 
     ###### first dropdown plotting n.statistics #####
-    params = list(network_map.values())[0].statistics().columns
+    params = list(network_map.values())[0].statistics()
+    keep_columns = ["Capital Expenditure", "Operational Expenditure", "Curtailment", "Revenue"]
+    params = params[keep_columns].columns.values
+
     st.header("Statistics plot")
     _, select_col, _ = st.columns([2,60,20])
 
 
-    with select_col: 
+    with select_col:
         option = st.selectbox(
             "Select metric",
-            params,
+            np.append(params, 'Total Costs'),
             help="You can select any parameter from PyPSA Network Statistics table"
         )
         st.markdown(fix_cursor_css, unsafe_allow_html=True)
 
-    df = helper.get_df_for_parameter(
-        network_map, option, helper.add_values_for_statistics, helper.get_stats_col_names
-    )
+    if option == "Total Costs":
+        df = helper.get_df_for_parameter(
+            network_map, ["Capital Expenditure", "Operational Expenditure"]
+        )
+    else:
+        df = helper.get_df_for_parameter(
+            network_map, option
+        )
 
     # TODO fix tech map to match with the Generators or Links
     #df_techs = [tech_map[c] for c in df.columns]
@@ -94,7 +104,7 @@ def main():
             helper.adjust_plot_appearance(current_fig=fig)
             st.plotly_chart(fig,
                 use_cointainer_width=True
-            )            
+            )
 
     st.header("Network statistics")
     _, table_col, _ = st.columns([2, 60, 20])
@@ -106,7 +116,7 @@ def main():
             help="You can choose between available scenarios"
         )
     st.markdown(fix_cursor_css, unsafe_allow_html=True)
-    stat_table = helper.add_statistics(network_map[scenario])
+    stat_table = helper.add_statistics(network_map[scenario], keep_columns)
 
     th_props = [
         ("font-size", "18px"),

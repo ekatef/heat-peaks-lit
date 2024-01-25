@@ -41,8 +41,8 @@ def add_logo():
                 background-image: url(https://github.com/pypsa-meets-earth/pypsa-kz-data/assets/53824825/ca7893de-26e2-47ad-a3e4-d91cd6716652);
                 background-repeat: no-repeat;
                 padding-top: 30px;
-                background-position: 20px 20px;
-                background-size: 70px;
+                background-position: 40px 40px;
+                background-size: 120px;
             [data-testid="stSidebarNav"]::before {
                 content: "test";
                 margin-left: 20px;
@@ -55,4 +55,3 @@ def add_logo():
         """,
         unsafe_allow_html=True,
     )
-
