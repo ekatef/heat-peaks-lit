@@ -7,9 +7,10 @@ scenario_names:
   # NG_no_oil: Nigeria without oil
   # MA: Morocco
 
-  rigid: Rigid Scenario
-  flex: Flexible Scenario
-  flex_upd: Updated Flexible Scenario  
+  lvopt_rigid: Rigid Scenario (optimal line expansion)
+  lvopt_flex: Flexible Scenario (optimal line expansion)
+  lv1_flex: Flexible Scenario (no line expansion)
+  lvopt_flex_i: Flexible Scenario with Industry (optimal line expansion)
 
   # BJ_4: Benin four clusters
   # BJ_6: Benin six clusters
@@ -34,7 +35,7 @@ gen_t_parameter:
     legend_title: " "
 
 loads_t_parameter:
-  p: 
+  p_set: 
     nice_name: Demand
     unit: MW
     legend_title: " "
@@ -62,12 +63,26 @@ buses_t_parameter:
 ######### operation parameters
 
 carriers_for_marginal_costs:
-  electricity: ['AC', 'H2', 'battery', 'Li ion', 'residential rural heat', 'residential rural water tanks', 'services rural heat',
-    'services rural water tanks', 'residential urban decentral heat', 'residential urban decentral water tanks', 'services urban decentral heat',
-    'services urban decentral water tanks', 'urban central heat',
-    'urban central water tanks', 'solid biomass',
-    'low voltage', 'home battery']
-  gas: ['gas', 'biogas']
+  electricity:
+    carrier: ['AC', 'H2', 'battery', 'Li ion', 'residential rural heat', 'residential rural water tanks', 'services rural heat',
+      'services rural water tanks', 'residential urban decentral heat', 'residential urban decentral water tanks', 'services urban decentral heat',
+      'services urban decentral water tanks', 'urban central heat',
+      'urban central water tanks', 'solid biomass', 'solid biomass for industry',
+      'low voltage', 'home battery']
+    nice_name: Electricity
+  gas:
+    carrier: ['gas', 'biogas']
+    nice_name: Gas
+  coal_industry:
+    carrier: ['coal']
+    nice_name: Industry Coal
+  gas_industry:
+    carrier: ['gas for industry']
+    nice_name: Industry Gas
+  fuels_industry:
+    carrier: ['methanol', 'shipping methanol', 'oil', 'shipping oil', 'naphtha for industry', 'kerosene for aviation']
+    nice_name: Industry Fuels
+
 
 operation:
   carrier:
@@ -106,6 +121,7 @@ ylim:
   co2: [-600, 600]
 
 countries_names:
+  all: All Countries
   AL: Albania
   AT: Austria
   BA: Bosnia & Herzegovina
@@ -138,8 +154,6 @@ countries_names:
   RS: Serbia
   SE: Sweden
   SI: Slovenia
-  all: All Countries
-
 
 carrier_names:
   H2: hydrogen
@@ -208,14 +222,15 @@ carrier:
 
   solid biomass for industry: Solid Bio Industry
   land transport EV: El Vehicles
+  solid biomass transport: Biomass Transport
   process emissions: Process Emission
   EU naphtha for industry: Naphta Industry
 
-  urban central heat: UrbCenOvr Heating
-  residential urban decentral heat: UrbDecRes Heating
-  services urban decentral heat: UrbDecSer Heating
-  residential rural heat: RurDecRes Heating
-  services rural heat: RurDecSer Heating
+  urban central heat: Urb Centr Heating
+  residential urban decentral heat: Urb Decentr Heating
+  services urban decentral heat: Urb Decentr Heating
+  residential rural heat: Rural Decentr Heating
+  services rural heat: Rural Decentr Heating
 
   EU oil: Oil
   land transport fuel cell: FC Vehicles  
@@ -224,13 +239,22 @@ carrier:
 
   # heat
   urban central solar thermal collector: Solar Thermal
+  urban central solar thermal: Solar Thermal
+  urban central air heat pump: Air Heat Pump
+  urban central resistive heater: Resistive Heater
   residential urban decentral solar thermal collector: Solar Thermal
   services urban decentral solar thermal collector: Solar Thermal
   residential rural solar thermal collector: Solar Thermal
+  residential rural solar thermal: Solar Thermal
+  residential urban decentral solar thermal: Solar Thermal
   services rural solar thermal collector: Solar Thermal
+  services rural solar thermal: Solar Thermal
+  services urban decentral solar thermal: Solar Thermal
   residential rural ground heat pump: Ground Heat Pump
   residential urban decentral air heat pump: Air Heat Pump
   residential urban decentral gas boiler: Gas Boiler
+  residential rural gas boiler: Gas Boiler
+  services rural gas boiler: Gas Boiler
   residential urban decentral: Resistive Heater
   residential urban decentral resistive heater: Resistive Heater
   services ground heat pump: Ground Heat Pump
@@ -240,7 +264,6 @@ carrier:
   services rural ground heat pump: Ground Heat Pump
   urban central gas CHP: Gas CHP
   urban central solid biomass CHP: Biomass CHP
-
 
   # retrofitting
 
@@ -262,16 +285,18 @@ carrier:
 
   # remaining
   power: Power
-  services rural resistive heater: services rural resistive heater
+  services rural resistive heater: Resistive Heater
   process emissions: process emissions
   Fuel Cell: Fuel Cell
   electricity distribution grid: Distribution Grid
   urban central solid biomass CHP CC: urban central solid biomass CHP CC
   EU process emissions CC: EU process emissions CC
   solid biomass for industry CC: solid biomass for industry CC
-  battery discharger: battery discharger
+  battery discharger: Battery Discharger
+  battery charger: Battery Charger
   services urban decentral water tanks dischar: services urban decentral water tanks dischar
-  residential urban decentral micro gas CHP: residential urban decentral micro gas CHP
+  services urban decentral micro gas CHP: Microgas CHP
+  residential urban decentral micro gas CHP: Microgas CHP
   SMR CC: SMR CC
   residential rural water tanks discharger: residential rural water tanks discharger
   urban central DAC: urban central DAC
@@ -282,22 +307,21 @@ carrier:
   services rural gas boiler: services rural gas boiler
   gas for industry: gas for industry
   residential urban decentral water tanks disc: residential urban decentral water tanks disc
-  G: G
-  residential rural resistive heater: residential rural resistive heater
-  biogas to gas: biogas to gas
+  residential rural resistive heater: Resistive Heater
+  biogas to gas: Biogas to Gas
   services rural water tanks discharger: services rural water tanks discharger
   residential rural water tanks charger: residential rural water tanks charger
-  services rural micro gas CHP: services rural micro gas CHP
+  services rural micro gas CHP: Microgas CHP
   EU shipping methanol: EU shipping methanol
   services urban decentral water tanks charger: services urban decentral water tanks charger
   Electrolysis: Electrolysis
   SMR: SMR
   urban central water tanks discharger: urban central water tanks discharger
-  residential rural micro gas CHP: residential rural micro gas CHP
-  home battery discharger: home battery discharger
+  residential rural micro gas CHP: Microgas CHP
+  home battery discharger: Home Battery discharger
+  home battery charger: Home Battery charger
   services urban decentral DAC: services urban decentral DAC
   methanolisation: methanolisation
-  -reversed: -reversed
   EV charger: EV charger
 
   # lines and links
@@ -621,4 +645,4 @@ preferred_order:
   - H2 liquefaction
   - power-to-liquid
   - CO2 sequestration
-  - CCS  
+  - CCS

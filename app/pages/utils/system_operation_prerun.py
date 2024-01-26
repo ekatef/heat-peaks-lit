@@ -28,7 +28,6 @@ import typing
 config=tools.config
 pypsa_network_map=tools.get_network_map()
 
-###### for generators #####################
 
 def get_unique_carriers(df):
     """
@@ -43,35 +42,33 @@ def get_unique_carriers(df):
 
     return list(set(split_cols))
 
+
 #@st.cache_resource
 def get_meta_df(network_key):
     network=pypsa_network_map.get(network_key)
     return network.meta
 
+###### generators #####################
+
+non_empth_df_gen_t=[param for param in config["gen_t_parameter"]]
+
 #@st.cache_resource
-def get_gen_t_df(_pypsa_network, gen_t_key):
+def get_buses_gen_t_df(_pypsa_network, gen_t_key, country="all"):
     """
     Get a dataframe of time-series of generation from pypsa_network
     for the parameter corresponding to gen_t_key
     """
+    gen_t_df = _pypsa_network.generators_t[gen_t_key].copy()
+    if country != "all":
+        gen_t_df = gen_t_df.filter(like=country)
+
     gen_t_df = (
-        _pypsa_network.generators_t[gen_t_key].copy().T
-        .groupby(_pypsa_network.generators.carrier)
-        .sum().T
-        .rename(columns=config["carrier"])
+        gen_t_df.T.groupby(_pypsa_network.generators.carrier).sum()
+        .rename(index=config["carrier"])
     )
-    gen_t_df = gen_t_df.T.groupby(gen_t_df.columns).sum().T
+    gen_t_df = gen_t_df.groupby(gen_t_df.index).sum().T
 
     return gen_t_df
-
-# TODO Remove hardcoding?
-# TODO Remove country hardcoding
-#@st.cache_resource
-def get_buses_t_df(_pypsa_network, gen_t_key):
-    gen_t_df = _pypsa_network.generators_t[gen_t_key]
-    return gen_t_df
-
-non_empth_df_gen_t=[param for param in config["gen_t_parameter"]]
 
 #@st.cache_resource
 def get_gen_dict():
@@ -88,7 +85,7 @@ def get_gen_dict():
     return result
 
 #@st.cache_resource
-def get_gen_t_dict():
+def get_buses_gen_t_dict(country="all"):
 
     result={}
     
@@ -96,43 +93,16 @@ def get_gen_t_dict():
         network_dict={}
         network=pypsa_network_map.get(network_key)
         for non_empty_key in non_empth_df_gen_t:
-            network_dict[non_empty_key]=get_gen_t_df(network, non_empty_key)
+            network_dict[non_empty_key]=get_buses_gen_t_df(network, non_empty_key, country)
         
         result[network_key]=network_dict
     
     return result
 
-#@st.cache_resource
-def get_buses_gen_t_dict():
-
-    result={}
-    
-    for network_key in pypsa_network_map.keys():
-        network_dict={}
-        network=pypsa_network_map.get(network_key)
-        for non_empty_key in non_empth_df_gen_t:
-            network_dict[non_empty_key]=get_buses_t_df(network, non_empty_key)
-        
-        result[network_key]=network_dict
-    
-    return result
-
-############# for load #####################
-non_empty_load_keys = [param for param in config["loads_t_parameter"]]
+###### buses #####################
 non_empty_bus_key = [param for param in config["buses_t_parameter"]][0]
-
 #@st.cache_resource
-def get_load_t_df(_pypsa_network, load_t_key):
-    """
-    Get a dataframe of time-series of load from pypsa_network
-    for the parameter corresponding to load_t_key
-    """
-    load_t_df = _pypsa_network.loads_t[load_t_key]
-    return load_t_df
-
-
-#@st.cache_resource
-def get_load_t_dict():
+def get_buses_load_t_dict(country="all"):
     """
     Get a list of load_t dataframes generation from pypsa_network
     for the parameter corresponding to all relevant keys (e.g. p)
@@ -144,42 +114,13 @@ def get_load_t_dict():
         network_dict={}
         network = pypsa_network_map.get(network_key)
         for non_empty_key in non_empty_load_keys:
-            network_dict[non_empty_key] = get_load_t_df(network, non_empty_key)
+            network_dict[non_empty_key] = get_buses_load_t_df(network, non_empty_key, country)
         result[network_key]=network_dict
     return result
 
-#@st.cache_resource
-def get_buses_load_t_df(_pypsa_network, load_t_key):
-    load_t_df = _pypsa_network.loads_t[load_t_key]   
-    return load_t_df
-
-    load_t_df = _pypsa_network.loads_t[load_t_key]
-    
-    resultant_df = load_t_df
-
-    unique_carriers = get_unique_carriers(load_t_df)
-    # electricity load is not captured by re as is doesn't have a sperific suffix
-    unique_carriers = [s if s is not "" else "power" for s in unique_carriers]
-
-    carriers_to_check = unique_carriers
-    if any(name in carriers_to_check for name in config["carrier"].values()):
-        resultant_df = load_t_df
-    else:    
-        unique_carriers_nice_names = [config["carrier"][carrier] for carrier in unique_carriers]
-        carriers_names_map = dict(zip(unique_carriers, unique_carriers_nice_names))
-        new_columns = load_t_df.columns
-        for old, new in carriers_names_map.items():
-            new_columns = new_columns.str.replace(old, new, regex=True)
-        load_t_df.columns = new_columns
-
-        resultant_df = load_t_df
-
-    return resultant_df
-
-
 def get_marginal_costs(_pypsa_network, marginal_cost_key, carrier, country):
 
-    consider_carriers = config["carriers_for_marginal_costs"][carrier]
+    consider_carriers = config["carriers_for_marginal_costs"][carrier]["carrier"]
     consider_carriers = _pypsa_network.buses.query("carrier in @consider_carriers").index
 
     if carrier == "electricity":
@@ -188,15 +129,14 @@ def get_marginal_costs(_pypsa_network, marginal_cost_key, carrier, country):
         else:
             result = _pypsa_network.buses_t[marginal_cost_key][consider_carriers].filter(like=country).mean(axis=1)
 
-    if carrier == "gas":
+    if carrier != "electricity":
         result = _pypsa_network.buses_t[marginal_cost_key][consider_carriers].mean(axis=1)
 
     return result
 
-
 def get_weighted_costs(_pypsa_network, marginal_cost_key, carrier):
 
-    consider_carriers = config["carriers_for_marginal_costs"][carrier]
+    consider_carriers = config["carriers_for_marginal_costs"][carrier]["carrier"]
     consider_carriers = _pypsa_network.buses.query("carrier in @consider_carriers").index
 
     if carrier == "electricity":
@@ -208,28 +148,37 @@ def get_weighted_costs(_pypsa_network, marginal_cost_key, carrier):
                 .filter(like = country).sum().sum() / _pypsa_network.loads_t.p_set.filter(like = country).sum().sum()
             )
 
-    if carrier == "gas":
+    if carrier != "electricity":
         result = pd.Series(index=["Europe"], data=[_pypsa_network.buses_t[marginal_cost_key][consider_carriers].mean().mean()])
 
     return result
 
+###### loads #####################
+non_empty_load_keys = [param for param in config["loads_t_parameter"]]
 
 # @st.cache_resource  
-def get_buses_load_t_dict():
+def get_buses_load_t_df(_pypsa_network, load_t_key, country="all"):
+    """
+    Get a dataframe of time-series of loads from pypsa_network
+    for the parameter corresponding to load_t_key
+    """
+    load_t_df = _pypsa_network.loads_t[load_t_key].copy()
 
-    result={}
+    if country != "all":
+        #n.buses.country = n.buses.location.apply(lambda b: b[0:2])
+        #n.loads["country"] = n.loads.bus.map(n.buses.country)
+        #load_t_df = n.loads_t[load_t_key].T.groupby([n.loads.country, n.loads.carrier]).sum().T
+        load_t_df = load_t_df.filter(like = country)
     
-    for network_key in pypsa_network_map.keys():
-        network_dict={}
-        network=pypsa_network_map.get(network_key)
-        for non_empty_key in non_empty_load_keys:
-            network_dict[non_empty_key]=get_buses_load_t_df(network, non_empty_key)
-        
-        result[network_key]=network_dict
-    
-    return result
+    load_t_df = (
+        load_t_df.T.groupby(_pypsa_network.loads.carrier).sum()
+        .rename(index=config["carrier"])
+    )
+    load_t_df = load_t_df.groupby(load_t_df.index).sum().T
 
+    return load_t_df
 
+###### costs #####################
 def get_marginal_costs_dict(country):
 
     result={}
@@ -238,13 +187,12 @@ def get_marginal_costs_dict(country):
         marginal_costs = {}
         network = pypsa_network_map.get(network_key)
         network.buses.country = network.buses.location.apply(lambda b: b.split(" ")[0][0:2])
-        for carrier in ["electricity", "gas"]:
+        for carrier in config["carriers_for_marginal_costs"].keys():
             marginal_costs[carrier] = get_marginal_costs(network, non_empty_bus_key, carrier, country)
 
         result[network_key] = marginal_costs
 
     return result
-
 
 def get_weighted_costs_dict():
 
@@ -254,55 +202,45 @@ def get_weighted_costs_dict():
         weighted_costs = {}
         network = pypsa_network_map.get(network_key)
         network.buses.country = network.buses.location.apply(lambda b: b.split(" ")[0][0:2])
-        for carrier in ["electricity", "gas"]:
+        for carrier in config["carriers_for_marginal_costs"].keys():
             weighted_costs[carrier] = get_weighted_costs(network, non_empty_bus_key, carrier)
 
         result[network_key] = weighted_costs
 
     return result
 
-############## links
+
+############## links #####################
 non_empth_df_links_t=[param for param in config["links_t_parameter"]]
 
 #@st.cache_resource
-def get_buses_links_t_df(_pypsa_network, link_t_key):
-    link_t_df = _pypsa_network.links_t[link_t_key]   
+def get_buses_links_t_df(_pypsa_network, link_t_key, country="all"):
+
+    link_t_df = _pypsa_network.links_t[link_t_key].copy()
+
+    if country != "all":
+        link_t_df = link_t_df.filter(like=country)
+
+    link_t_df = (
+        link_t_df.T.groupby(_pypsa_network.links.carrier).sum()
+        .rename(index=config["carrier"])
+    )
+
+    link_t_df = link_t_df.groupby(link_t_df.index).sum().T
+
     return link_t_df
 
-    link_t_df = _pypsa_network.links_t[link_t_key]
-
-    resultant_df = link_t_df
-
-    unique_carriers = get_unique_carriers(link_t_df)
-    # electricity link is not captured by re as is doesn't have a sperific suffix
-    unique_carriers = [s if s is not "" else "power" for s in unique_carriers]
-
-    carriers_to_check = unique_carriers
-    if any(name in carriers_to_check for name in config["carrier"].values()):
-        resultant_df = link_t_df
-    else:
-        unique_carriers_nice_names = [config["carrier"][carrier] for carrier in unique_carriers]
-        carriers_names_map = dict(zip(unique_carriers, unique_carriers_nice_names))
-        new_columns = link_t_df.columns
-        for old, new in carriers_names_map.items():
-            new_columns = new_columns.str.replace(old, new, regex=True)
-        link_t_df.columns = new_columns
-
-        resultant_df = link_t_df
-
-    return resultant_df
-
-# @st.cache_resource
-
-def get_buses_links_t_dict():
-
+def get_buses_links_t_dict(country="all"):
+    """
+    Get a dictionary for all the networks available in data
+    """
     result={}
 
     for network_key in pypsa_network_map.keys():
         network_dict={}
         network=pypsa_network_map.get(network_key)
         for non_empty_key in non_empth_df_links_t:
-            network_dict[non_empty_key]=get_buses_links_t_df(network, non_empty_key)
+            network_dict[non_empty_key]=get_buses_links_t_df(network, non_empty_key, country)
 
         result[network_key]=network_dict
 
@@ -319,23 +257,7 @@ def rename_final_df(df):
         df=df.rename(columns={column_name:get_renamed_column(column_name)})
     return df
 
-
-#@st.cache_resource
-def get_storage_t_dict():
-    
-    result={}
-
-    for network_key in pypsa_network_map.keys():
-        network_dict={}
-        network = pypsa_network_map.get(network_key)
-        for non_empty_key in non_empty_storage_keys:
-            df=network.storage_units_t[non_empty_key].copy()
-            network_dict[non_empty_key]=  rename_final_df(df)
-        
-        result[network_key]=network_dict
-    return result
-
-############# for links #####################
+############# links #####################
 def get_links_unique_cols(pypsa_network, pypsa_component, col_name):
     #all_cols=pypsa_network.links_t["p0"].columns
     all_cols=getattr(pypsa_network, pypsa_component)[col_name].columns
@@ -356,20 +278,3 @@ def get_links_df(pypsa_network, pypsa_component, component_key):
                 resultant_df[carrier]+=pypsa_df[links_carrier]
     
     return resultant_df
-
-#non_empth_links_keys=[param for param in config["links_t_parameter"]]
-#non_empth_loads_keys=[param for param in config["loads_t_parameter"]]
-#non_empth_stores_keys=[param for param in config["stores_t_parameter"]]
-
-#@st.cache_resource
-def get_components_t_dict(component_key, component_keys):
-    result={}
-
-    for network_key in pypsa_network_map.keys():
-        network_dict={}
-        network = pypsa_network_map.get(network_key)
-        for non_empty_key in component_keys:
-            network_dict[non_empty_key]=get_links_df(network, component_key, non_empty_key)
-        
-        result[network_key]=network_dict
-    return result
