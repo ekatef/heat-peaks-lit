@@ -11,9 +11,9 @@ from io import BytesIO
 
 # TODO Update the pictures
 # demo-pictures from the global repo
-url_1 = "https://raw.githubusercontent.com/ekatef/assets/master/preview_1.png"
-url_2 = "https://raw.githubusercontent.com/ekatef/assets/master/preview_2.png"
-url_3 = "https://raw.githubusercontent.com/ekatef/assets/master/preview_3.png"
+url_1 = "https://openenergytransition.org/assets/img/projects/blog6-riccardo-annandale-unsplash.jpg"
+#url_2 = "https://raw.githubusercontent.com/ekatef/assets/master/preview_2.png"
+#url_3 = "https://raw.githubusercontent.com/ekatef/assets/master/preview_3.png"
 
 @st.cache_data
 def get_image(url):
@@ -80,15 +80,16 @@ tools.add_logo()
 st.title("Welcome to the Peak Demand Project!")
 
 image_1 = Image.open(get_image(url=url_1))
-image_2 = Image.open(get_image(url=url_2))
-image_3 = Image.open(get_image(url=url_3))
+#image_2 = Image.open(get_image(url=url_2))
+#image_3 = Image.open(get_image(url=url_3))
 
 image_1_resized = resize_image(image_1, 200, 300)
-image_2_resized = resize_image(image_2, 200, 300)
-image_3_resized = resize_image(image_3, 200, 300)
+#image_2_resized = resize_image(image_2, 200, 300)
+#image_3_resized = resize_image(image_3, 200, 300)
 
 st.image(
-    [image_1_resized, image_2_resized, image_3_resized], 
+    image_1_resized,
+    #[image_1_resized, image_2_resized, image_3_resized], 
     width=200)
 
 st.header("Select a page from the sidebar to get started")
