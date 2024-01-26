@@ -179,7 +179,7 @@ def get_buses_load_t_df(_pypsa_network, load_t_key):
 
 def get_marginal_costs(_pypsa_network, marginal_cost_key, carrier, country):
 
-    consider_carriers = config["carriers_for_marginal_costs"][carrier]
+    consider_carriers = config["carriers_for_marginal_costs"][carrier]["carrier"]
     consider_carriers = _pypsa_network.buses.query("carrier in @consider_carriers").index
 
     if carrier == "electricity":
@@ -188,7 +188,7 @@ def get_marginal_costs(_pypsa_network, marginal_cost_key, carrier, country):
         else:
             result = _pypsa_network.buses_t[marginal_cost_key][consider_carriers].filter(like=country).mean(axis=1)
 
-    if carrier == "gas":
+    if carrier != "electricity":
         result = _pypsa_network.buses_t[marginal_cost_key][consider_carriers].mean(axis=1)
 
     return result
@@ -196,7 +196,7 @@ def get_marginal_costs(_pypsa_network, marginal_cost_key, carrier, country):
 
 def get_weighted_costs(_pypsa_network, marginal_cost_key, carrier):
 
-    consider_carriers = config["carriers_for_marginal_costs"][carrier]
+    consider_carriers = config["carriers_for_marginal_costs"][carrier]["carrier"]
     consider_carriers = _pypsa_network.buses.query("carrier in @consider_carriers").index
 
     if carrier == "electricity":
@@ -208,7 +208,7 @@ def get_weighted_costs(_pypsa_network, marginal_cost_key, carrier):
                 .filter(like = country).sum().sum() / _pypsa_network.loads_t.p_set.filter(like = country).sum().sum()
             )
 
-    if carrier == "gas":
+    if carrier != "electricity":
         result = pd.Series(index=["Europe"], data=[_pypsa_network.buses_t[marginal_cost_key][consider_carriers].mean().mean()])
 
     return result
@@ -238,7 +238,7 @@ def get_marginal_costs_dict(country):
         marginal_costs = {}
         network = pypsa_network_map.get(network_key)
         network.buses.country = network.buses.location.apply(lambda b: b.split(" ")[0][0:2])
-        for carrier in ["electricity", "gas"]:
+        for carrier in config["carriers_for_marginal_costs"].keys():
             marginal_costs[carrier] = get_marginal_costs(network, non_empty_bus_key, carrier, country)
 
         result[network_key] = marginal_costs
@@ -254,7 +254,7 @@ def get_weighted_costs_dict():
         weighted_costs = {}
         network = pypsa_network_map.get(network_key)
         network.buses.country = network.buses.location.apply(lambda b: b.split(" ")[0][0:2])
-        for carrier in ["electricity", "gas"]:
+        for carrier in config["carriers_for_marginal_costs"].keys():
             weighted_costs[carrier] = get_weighted_costs(network, non_empty_bus_key, carrier)
 
         result[network_key] = weighted_costs

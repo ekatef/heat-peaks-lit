@@ -133,7 +133,8 @@ with date_range_param:
 with carrier_col:
     carrier = st.selectbox(
         "Costs for...",
-        ["electricity", "gas"],
+        helper.config["carriers_for_marginal_costs"].keys(),
+        format_func = lambda x: helper.config["carriers_for_marginal_costs"][x]["nice_name"],
         help="You can choose the costs of a distinct carrier."
     )
 
@@ -159,7 +160,8 @@ costs_dict_list = helper.get_marginal_costs_dict(ctr)
 costs_weighted_dict_list = helper.get_weighted_costs_dict()
 
 fig = sp.make_subplots(rows=1, cols=1)
-st.header(f"Prices for {carrier} during the year for a selected country")
+carrier_nice_name = helper.config["carriers_for_marginal_costs"][carrier]["nice_name"]
+st.header(f"Prices for {carrier_nice_name} during the year for a selected country")
 for selected_network in selected_networks:
     if res.isdigit():
         res = str(res) + "H"
@@ -175,7 +177,7 @@ for selected_network in selected_networks:
 st.plotly_chart(fig)
 
 fig = sp.make_subplots(rows=1, cols=1)
-st.header(f"Average {carrier} prices for all countries")
+st.header(f"Average {carrier_nice_name} prices for all countries")
 for selected_network in selected_networks:
 
     costs_weighted = costs_weighted_dict_list.get(selected_network)
