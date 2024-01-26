@@ -145,12 +145,7 @@ with carrier_col:
         help="You can choose the costs of a distinct carrier."
     )
 
-countries_codes = pd.unique(
-    [(lambda x: re.sub("\d.*", '', x))(x) for x in gen_buses_df.columns]
-)
-# to avoid mis-interpretaiton of regex outputs
-country_codes_clean = [x for x in countries_codes if x in helper.config["countries_names"].keys()]
-country_codes_clean.insert(0, "all")
+country_codes_clean = helper.config["countries_names"].keys()
 with country_col:
     ctr = st.selectbox(
         "Country",
