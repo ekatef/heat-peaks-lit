@@ -7,9 +7,10 @@ scenario_names:
   # NG_no_oil: Nigeria without oil
   # MA: Morocco
 
-  rigid: Rigid Scenario
-  flex: Flexible Scenario
-  flex_upd: Updated Flexible Scenario
+  lvopt_rigid: Rigid Scenario (optimal line expansion)
+  lvopt_flex: Flexible Scenario (optimal line expansion)
+  lv1_flex: Flexible Scenario (no line expansion)
+  lvopt_flex_i: Flexible Scenario with Industry (optimal line expansion)
 
   # BJ_4: Benin four clusters
   # BJ_6: Benin six clusters
@@ -62,12 +63,26 @@ buses_t_parameter:
 ######### operation parameters
 
 carriers_for_marginal_costs:
-  electricity: ['AC', 'H2', 'battery', 'Li ion', 'residential rural heat', 'residential rural water tanks', 'services rural heat',
-    'services rural water tanks', 'residential urban decentral heat', 'residential urban decentral water tanks', 'services urban decentral heat',
-    'services urban decentral water tanks', 'urban central heat',
-    'urban central water tanks', 'solid biomass',
-    'low voltage', 'home battery']
-  gas: ['gas', 'biogas']
+  electricity:
+    carrier: ['AC', 'H2', 'battery', 'Li ion', 'residential rural heat', 'residential rural water tanks', 'services rural heat',
+      'services rural water tanks', 'residential urban decentral heat', 'residential urban decentral water tanks', 'services urban decentral heat',
+      'services urban decentral water tanks', 'urban central heat',
+      'urban central water tanks', 'solid biomass', 'solid biomass for industry',
+      'low voltage', 'home battery']
+    nice_name: Electricity
+  gas:
+    carrier: ['gas', 'biogas']
+    nice_name: Gas
+  coal_industry:
+    carrier: ['coal']
+    nice_name: Industry Coal
+  gas_industry:
+    carrier: ['gas for industry']
+    nice_name: Industry Gas
+  fuels_industry:
+    carrier: ['methanol', 'shipping methanol', 'oil', 'shipping oil', 'naphtha for industry', 'kerosene for aviation']
+    nice_name: Industry Fuels
+
 
 operation:
   carrier:
