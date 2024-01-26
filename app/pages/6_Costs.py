@@ -91,13 +91,23 @@ if selected_networks == []:
     st.error("You must choose a scenario. Please tick at least one of the boxes!")
     st.stop()
 
+# TODO Chech if [0] index is appropriate; needed to quickly fix time resolution
+buses_country_data = gen_buses_dict_list.get(selected_networks[0])
+gen_buses_df = buses_country_data["p"].drop("Load", axis=1, errors="ignore")
+
+# metadata for time resolution may be wrong; keeping the meta-data approach for reference only
 # the finest available resolution depends on the model and should be extracted from metadata
 # https://stackoverflow.com/a/9891784/8465924    
-pat = r".*?\-(.\d)H.*"
+#pat = r".*?\-(.\d)H.*"
+# TODO Check if the loop here is needed
 for selected_network in selected_networks:
-    sector_scen_string = helper.get_meta_df(selected_network)["scenario"]["sector_opts"]
-    finest_resolution = re.search(pat, sector_scen_string[0]).group(1)    
-    finest_resolution_name = finest_resolution.split("H")[0] + "-hourly"
+    #sector_scen_string = helper.get_meta_df(selected_network)["scenario"]["sector_opts"]
+    #finest_resolution = re.search(pat, sector_scen_string[0]).group(1)    
+    #finest_resolution_name = finest_resolution.split("H")[0] + "-hourly"
+    #upd_dict = {finest_resolution: finest_resolution_name}
+    #upd_dict.update(res_choices)
+    finest_resolution = round(((gen_buses_df.index[1] - gen_buses_df.index[0]).seconds)/3600)
+    finest_resolution_name = str(finest_resolution) + "-hourly"
     upd_dict = {finest_resolution: finest_resolution_name}
     upd_dict.update(res_choices)
 
@@ -110,10 +120,7 @@ with date_col:
         key="gen_res",
         help="You can choose a resolution for time aggregation applied for a plot"
     )
-    st.markdown(fix_cursor_css, unsafe_allow_html=True)
-
-buses_country_data = gen_buses_dict_list.get(selected_network)
-gen_buses_df = buses_country_data["p"].drop("Load", axis=1, errors="ignore")
+    st.markdown(fix_cursor_css, unsafe_allow_html=True)    
 
 _, date_range_param, _ = st.columns([1, 50, 1])
 with date_range_param:
@@ -128,7 +135,7 @@ with date_range_param:
             format="D MMM, HH:mm",
             label_visibility="hidden",
             key="gen_date"
-        )
+        ) 
 
 with carrier_col:
     carrier = st.selectbox(
@@ -163,7 +170,7 @@ fig = sp.make_subplots(rows=1, cols=1)
 carrier_nice_name = helper.config["carriers_for_marginal_costs"][carrier]["nice_name"]
 st.header(f"Prices for {carrier_nice_name} during the year for a selected country")
 for selected_network in selected_networks:
-    if res.isdigit():
+    if str(res).isdigit():
         res = str(res) + "H"
 
     costs_unagg = costs_dict_list.get(selected_network)

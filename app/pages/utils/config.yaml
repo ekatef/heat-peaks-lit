@@ -35,7 +35,7 @@ gen_t_parameter:
     legend_title: " "
 
 loads_t_parameter:
-  p: 
+  p_set: 
     nice_name: Demand
     unit: MW
     legend_title: " "
@@ -121,6 +121,7 @@ ylim:
   co2: [-600, 600]
 
 countries_names:
+  all: All Countries
   AL: Albania
   AT: Austria
   BA: Bosnia & Herzegovina
@@ -153,8 +154,6 @@ countries_names:
   RS: Serbia
   SE: Sweden
   SI: Slovenia
-  all: All Countries
-
 
 carrier_names:
   H2: hydrogen
@@ -227,11 +226,11 @@ carrier:
   process emissions: Process Emission
   EU naphtha for industry: Naphta Industry
 
-  urban central heat: UrbCenOvr Heating
-  residential urban decentral heat: UrbDecRes Heating
-  services urban decentral heat: UrbDecSer Heating
-  residential rural heat: RurDecRes Heating
-  services rural heat: RurDecSer Heating
+  urban central heat: Urb Centr Heating
+  residential urban decentral heat: Urb Decentr Heating
+  services urban decentral heat: Urb Decentr Heating
+  residential rural heat: Rural Decentr Heating
+  services rural heat: Rural Decentr Heating
 
   EU oil: Oil
   land transport fuel cell: FC Vehicles  
@@ -254,6 +253,8 @@ carrier:
   residential rural ground heat pump: Ground Heat Pump
   residential urban decentral air heat pump: Air Heat Pump
   residential urban decentral gas boiler: Gas Boiler
+  residential rural gas boiler: Gas Boiler
+  services rural gas boiler: Gas Boiler
   residential urban decentral: Resistive Heater
   residential urban decentral resistive heater: Resistive Heater
   services ground heat pump: Ground Heat Pump
@@ -306,7 +307,6 @@ carrier:
   services rural gas boiler: services rural gas boiler
   gas for industry: gas for industry
   residential urban decentral water tanks disc: residential urban decentral water tanks disc
-  G: G
   residential rural resistive heater: Resistive Heater
   biogas to gas: Biogas to Gas
   services rural water tanks discharger: services rural water tanks discharger
@@ -322,7 +322,6 @@ carrier:
   home battery charger: Home Battery charger
   services urban decentral DAC: services urban decentral DAC
   methanolisation: methanolisation
-  -reversed: -reversed
   EV charger: EV charger
 
   # lines and links
@@ -646,4 +645,4 @@ preferred_order:
   - H2 liquefaction
   - power-to-liquid
   - CO2 sequestration
-  - CCS  
+  - CCS

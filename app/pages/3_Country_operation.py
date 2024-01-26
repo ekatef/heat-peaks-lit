@@ -38,16 +38,13 @@ fix_cursor_css = '''
     </style>
 '''
 
+# TODO Replace by the proper colors definition
 warm_orange_pallette = ["#ffe289", "#ffd966", "#ffc100", "#ff9a00", "#ff7400", 
     "#ff4d00", "#ff0000", "#d60000", "#b20000", "#8e0000"]
 
 non_empth_links_keys = [param for param in helper.config["links_t_parameter"]]
 non_empth_loads_keys = [param for param in helper.config["loads_t_parameter"]]
 non_empth_links_keys = [param for param in helper.config["links_t_parameter"]]
-
-# carrier values per bus
-gen_buses_dict_list = helper.get_buses_gen_t_dict()
-load_buses_dict_list = helper.get_buses_load_t_dict()
 
 res_choices = helper.config["operation"]["resolution"]
 
@@ -71,7 +68,7 @@ plot_font_dict = dict(
 
 st.title("Country operation")
 
-_, main_col, _, country_col, _, date_col, _ = st.columns([1, 35, 1, 20, 1, 20, 1])
+_, scen_col, _, country_col, _, date_col, _ = st.columns([1, 35, 1, 20, 1, 20, 1])
 
 def scenario_formatter(scenario):
     return helper.config["scenario_names"][scenario]
@@ -90,21 +87,50 @@ tech_map = dict(map(reversed, carriers_map.items()))
 tech_colors = get_colors_map()
 
 tools.add_logo()
-with main_col:
+
+country_codes_clean = helper.config["countries_names"].keys()
+with country_col:
+    ctr = st.selectbox(
+        "Country",
+        country_codes_clean,
+        format_func=country_formatter, 
+        key="country",
+        help="You can choose a country to examine operation of the energy system"
+    )
+    st.markdown(fix_cursor_css, unsafe_allow_html=True)
+
+# extract dataframes from all the available networks
+gen_buses_dict_list = helper.get_buses_gen_t_dict(ctr)
+load_buses_dict_list = helper.get_buses_load_t_dict(ctr)
+links_buses_dict_list = helper.get_buses_links_t_dict(ctr)
+
+with scen_col:
     selected_network = st.selectbox(
         "Select which scenario's plot you want to see :",
         list(gen_buses_dict_list.keys()),
         format_func = scenario_formatter,
         help="You can choose between available scenarios"
     )
-    st.markdown(fix_cursor_css, unsafe_allow_html=True)   
+    st.markdown(fix_cursor_css, unsafe_allow_html=True) 
 
+buses_country_data = gen_buses_dict_list.get(selected_network)
+gen_buses_df = buses_country_data["p"].drop("Load", axis=1, errors="ignore")
+
+buses_load_country_data = load_buses_dict_list.get(selected_network)
+load_buses_df = buses_load_country_data["p_set"]
+
+buses_links_country_data = links_buses_dict_list.get(selected_network)
+cons_links_df = buses_links_country_data["p0"]
+
+# metadata for time resolution may be wrong; keeping the meta-data approach for reference only
 # the finest available resolution depends on the model and should be extracted from metadata
 # https://stackoverflow.com/a/9891784/8465924    
-pat = r".*?\-(.\d)H.*"
-sector_scen_string = helper.get_meta_df(selected_network)["scenario"]["sector_opts"]
-finest_resolution = re.search(pat, sector_scen_string[0]).group(1)    
-finest_resolution_name = finest_resolution.split("H")[0] + "-hourly"
+#pat = r".*?\-(.\d)H.*"
+#sector_scen_string = helper.get_meta_df(selected_network)["scenario"]["sector_opts"]
+#finest_resolution = re.search(pat, sector_scen_string[0]).group(1)    
+#finest_resolution_name = finest_resolution.split("H")[0] + "-hourly"
+finest_resolution = round(((gen_buses_df.index[1] - gen_buses_df.index[0]).seconds)/3600)
+finest_resolution_name = str(finest_resolution) + "-hourly"
 upd_dict = {finest_resolution: finest_resolution_name}
 upd_dict.update(res_choices)
 
@@ -119,36 +145,6 @@ with date_col:
     )
     st.markdown(fix_cursor_css, unsafe_allow_html=True) 
 
-# # TODO naming should be imroved
-# country_data = gen_dict_list.get(selected_network)
-buses_country_data = gen_buses_dict_list.get(selected_network)
-buses_load_country_data = load_buses_dict_list.get(selected_network)
-##################### generators #####################
-# gen_df = country_data["p"].drop("Load", axis=1, errors="ignore")
-# TODO naming should be imroved: gen_buses_df can be distinguished 
-# between the dataframe and the dictionary
-gen_buses_df = buses_country_data["p"].drop("Load", axis=1, errors="ignore")
-load_buses_df = buses_load_country_data["p"]
-
-countries_codes = pd.unique(
-    [(lambda x: re.sub("\d.*", '', x))(x) for x in gen_buses_df.columns]
-)
-# to avoid mis-interpretaiton of regex outputs
-country_codes_clean = [x for x in countries_codes if x in helper.config["countries_names"].keys()]
-country_codes_clean = sorted(country_codes_clean)
-with country_col:
-    ctr = st.selectbox(
-        "Country",
-        country_codes_clean,
-        format_func=country_formatter, 
-        key="country",
-        help="You can choose a country to examine operation of the energy system"
-    )
-    st.markdown(fix_cursor_css, unsafe_allow_html=True)  
-
-links_buses_dict_list = helper.get_buses_links_t_dict(ctr)
-buses_links_country_data = links_buses_dict_list.get(selected_network)
-cons_links_df = buses_links_country_data["p0"]
 
 _, date_range_param, _ = st.columns([1, 50, 1])
 with date_range_param:
@@ -173,7 +169,7 @@ with date_range_param:
 # #TODO Add balance?
 # balance_df = gen_df
 
-if res.isdigit():
+if str(res).isdigit():
     res = str(res) + "H"
 
 _, balance_plot_col, _ = st.columns([1, 80, 1])
@@ -184,35 +180,31 @@ cons_links_aggr = cons_links_df.loc[values[0]:values[1]].resample(res).mean()
 
 # ###################### space heating #####################
 
-gen_buses_retrof_aggr = gen_buses_aggr.filter(like=ctr).filter(like="retrof")
-gen_buses_retrof_aggr.columns.name = None
-
-load_buses_heat_aggr = load_buses_aggr.filter(like=ctr).filter(like="heat")
-load_buses_space_heat_aggr = load_buses_heat_aggr.loc[:,~load_buses_heat_aggr.columns.str.endswith("industry")]
-load_buses_space_heat_aggr.columns.name = None
-load_buses_space_heat_aggr["space heating original"] = load_buses_space_heat_aggr.sum(axis=1)
-load_buses_space_heat_aggr["space heating overall"] = load_buses_space_heat_aggr["space heating original"] - gen_buses_retrof_aggr.sum(axis=1)
+load_buses_aggr["Heating Original"] = load_buses_aggr.filter(like="Heating").sum(axis=1)
+load_buses_aggr["Heating Retrofitted"] = load_buses_aggr["Heating Original"] - gen_buses_aggr.filter(like="Retrofitting").sum(axis=1)
 
 heat_techs = ["residential rural heat", "residential urban decentral heat",
               "services rural heat", "services urban decentral heat",
               "urban central heat"]
 
 with balance_plot_col:
-    buses_heat_area_plot = load_buses_space_heat_aggr[load_buses_space_heat_aggr.columns.difference(["space heating overall", "space heating original"])].hvplot.area(
+    buses_heat_area_plot = load_buses_aggr[
+        load_buses_aggr.filter(like="Heating").columns.difference(["Heating Original", "Heating Retrofitted"])
+    ].hvplot.area(
         **kwargs,
         ylabel="Heat Demand [MW]",
-        group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
+        group_label=helper.config["loads_t_parameter"]["p_set"]["legend_title"],
         color = [tech_colors[x] for x in heat_techs]
         )
     buses_heat_area_plot = buses_heat_area_plot.opts(
         fontsize=plot_font_dict
     )
     buses_ovheat_line_plot = (
-        load_buses_space_heat_aggr["space heating overall"].hvplot
+        load_buses_aggr["Heating Retrofitted"].hvplot
         .line(color=[tech_colors[x] for x in ["space heating overall"]])
     )
     buses_orheat_line_plot = (
-        load_buses_space_heat_aggr["space heating original"].hvplot
+        load_buses_aggr["Heating Original"].hvplot
         .line(color=[tech_colors[x] for x in ["space heating original"]])
     )
     buses_heat_area_plot = buses_heat_area_plot * buses_ovheat_line_plot
@@ -220,58 +212,43 @@ with balance_plot_col:
     s2=hv.render(buses_heat_area_plot, backend="bokeh")
     st.bokeh_chart(s2, use_container_width=True)
 
-if gen_buses_retrof_aggr.sum().sum()>0:
+if gen_buses_aggr.filter(like="Retrofitting").sum(axis=1).sum()>0:
     with balance_plot_col:
-        buses_retrof_area_plot = gen_buses_retrof_aggr.hvplot.area(
+        buses_retrof_area_plot = gen_buses_aggr["Retrofitting"].hvplot.area(
             **kwargs,
             ylabel="Retrofitting [MW]",
-            group_label=helper.config["loads_t_parameter"]["p"]["legend_title"],
+            group_label=helper.config["loads_t_parameter"]["p_set"]["legend_title"],
             color = warm_orange_pallette
             )
         buses_retrof_area_plot = buses_retrof_area_plot.opts(
             fontsize=plot_font_dict
-        )
-        # buses_ovheat_line_plot = load_buses_space_heat_aggr["space heating overall"].hvplot.line(color="navy")
-        # buses_orheat_line_plot = load_buses_space_heat_aggr["space heating original"].hvplot.line(color="darkred")
-        # buses_retrof_area_plot = buses_retrof_area_plot * buses_ovheat_line_plot
-        # buses_retrof_area_plot = buses_retrof_area_plot * buses_orheat_line_plot           
+        )           
         s2=hv.render(buses_retrof_area_plot, backend="bokeh")
         st.bokeh_chart(s2, use_container_width=True)
 
-# ###################### electricity load #####################
+# ###################### heat supply #####################
 
-power_cols = [x for x in load_buses_aggr.columns if re.match("^[0-9 ]+$", re.sub(ctr, "", x))]
-load_el_buses_aggr = load_buses_aggr[power_cols]
-load_el_buses_aggr.columns.name = None
-load_el_buses_aggr.index = pd.to_datetime(load_el_buses_aggr.index)
+heat_supply_cols = cons_links_aggr.columns[cons_links_aggr.columns.isin(
+    ["Air Heat Pump", "Ground Heat Pump", "Biomass CHP", 
+    "Gas Boiler", "Gas CHP", "Microgas CHP", "Resistive Heater"]
+)]
 
-cols_of_interest = cons_links_aggr.columns.str.contains("Resistive Heater|Heat Pump")
-cons_hp_links_aggr = cons_links_aggr[cons_links_aggr.columns[cols_of_interest]]
-cons_hp_links_aggr.index = pd.to_datetime(cons_hp_links_aggr.index)
+heat_supply_buses_aggr = cons_links_aggr[heat_supply_cols]
 
 #SOLAR THERMAL IS MISSING, CAN BE RETRIEVED VIA:
 #helper.get_gen_t_dict(country = ctr).get(selected_network)["p"]["Solar Thermal"]
-
-regional_load_buses_aggr = load_buses_aggr.filter(like=ctr)
-regional_load_buses_aggr.columns.name = None
-regional_load_buses_aggr.index = pd.to_datetime(regional_load_buses_aggr.index)
-
-heat_el_buses_aggr = pd.concat(
-    [cons_hp_links_aggr, regional_load_buses_aggr.filter(like="industry electricity")],
-    axis = 1
-)
-heat_el_buses_aggr["power"] = load_el_buses_aggr.sum(axis=1)
-
+heat_supply_buses_aggr["Solar Thermal"] = gen_buses_aggr.filter(like="Solar Thermal")
+heat_supply_buses_aggr["Retrofitting"] = gen_buses_aggr.filter(like="Retrofitting").sum(axis=1)
 
 with balance_plot_col:
-    buses_el_area_plot = heat_el_buses_aggr[heat_el_buses_aggr.columns.difference(["power"])].hvplot.area(
+    buses_el_area_plot = heat_supply_buses_aggr.hvplot.area(
         **kwargs,
         ylabel="Heat Supply [MW]",
         group_label=helper.config["links_t_parameter"]["p0"]["legend_title"],
         color = warm_orange_pallette
         )
-    buses_el_line_plot = heat_el_buses_aggr["power"].hvplot.line(color="#8B0000")
-    buses_el_area_plot = buses_el_area_plot * buses_el_line_plot
+    #buses_el_line_plot = load_buses_aggr["electricity"].hvplot.line(color="#8B0000")
+    #buses_el_area_plot = buses_el_area_plot * buses_el_line_plot
     buses_el_area_plot = buses_el_area_plot.opts(
         fontsize=plot_font_dict
     )
