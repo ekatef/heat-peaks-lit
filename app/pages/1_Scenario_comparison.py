@@ -39,6 +39,7 @@ def main():
     network_map = tools.get_network_map()
     carriers_map = get_carrier_map()
     tech_map = dict(map(reversed, carriers_map.items()))
+    
 
     ###### first dropdown plotting n.statistics #####
     params = list(network_map.values())[0].statistics()
@@ -67,9 +68,12 @@ def main():
         )
 
     # TODO fix tech map to match with the Generators or Links
-    #df_techs = [tech_map[c] for c in df.columns]
-    #tech_colors = get_colors_map()
-    #plot_color = [tech_colors[c] for c in df_techs]
+    df_techs = [tech_map[c] for c in df.columns]
+    with open("techs.txt", "w") as file:
+        for text in df_techs:
+            file.write(text+", \n")
+    tech_colors = get_colors_map()
+    plot_color = [tech_colors[c] for c in df_techs]
 
     # needed to control markers size for the scatter
     _, plot_col, _ = st.columns([1, 80, 1])
@@ -80,7 +84,7 @@ def main():
                 size="dummy_size",
                 size_max=25,
                 opacity=0.9,
-                #color_discrete_sequence=plot_color,
+                color_discrete_sequence=plot_color,
                 labels={
                     "value":get_stat_unit(option),
                     "index":" ",
@@ -100,7 +104,8 @@ def main():
                     "index":" ",
                     "variable": "carriers"
                 }, 
-                title=" ")
+                title=" ",
+                color_discrete_sequence=plot_color,)
             helper.adjust_plot_appearance(current_fig=fig)
             st.plotly_chart(fig,
                 use_cointainer_width=True
