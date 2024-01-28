@@ -200,9 +200,6 @@ with balance_plot_col:
         group_label=helper.config["loads_t_parameter"]["p_set"]["legend_title"],
         color = [tech_colors[x] for x in heat_techs]
         )
-    buses_heat_area_plot = buses_heat_area_plot.opts(
-        fontsize=plot_font_dict
-    )
     buses_ovheat_line_plot = (
         load_buses_aggr["Heating Retrof"].hvplot
         .line(color=[tech_colors[x] for x in ["space heating overall"]])
@@ -212,7 +209,12 @@ with balance_plot_col:
         .line(color=[tech_colors[x] for x in ["space heating original"]])
     )
     buses_heat_area_plot = buses_heat_area_plot * buses_ovheat_line_plot
-    buses_heat_area_plot = buses_heat_area_plot * buses_orheat_line_plot           
+    buses_heat_area_plot = buses_heat_area_plot * buses_orheat_line_plot 
+    buses_heat_area_plot = buses_heat_area_plot.opts(
+        ylim=(0, None),
+        active_tools=[],
+        fontsize=plot_font_dict
+    )         
     s2=hv.render(buses_heat_area_plot, backend="bokeh")
     st.bokeh_chart(s2, use_container_width=True)
 
@@ -225,6 +227,8 @@ if gen_buses_aggr.filter(like="Retrofitting").sum(axis=1).sum()>0:
             color = warm_orange_pallette
             )
         buses_retrof_area_plot = buses_retrof_area_plot.opts(
+            ylim=(0, None),            
+            active_tools=[],
             fontsize=plot_font_dict
         )           
         s2=hv.render(buses_retrof_area_plot, backend="bokeh")
@@ -254,6 +258,8 @@ with balance_plot_col:
     #buses_el_line_plot = load_buses_aggr["electricity"].hvplot.line(color="#8B0000")
     #buses_el_area_plot = buses_el_area_plot * buses_el_line_plot
     buses_el_area_plot = buses_el_area_plot.opts(
+        ylim=(0, None),
+        active_tools=[],
         fontsize=plot_font_dict
     )
     s2=hv.render(buses_el_area_plot, backend="bokeh")
