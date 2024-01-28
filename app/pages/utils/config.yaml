@@ -225,6 +225,7 @@ carrier:
   solid biomass transport: Biomass Transport
   process emissions: Process Emission
   EU naphtha for industry: Naphta Industry
+  naphtha for industry: Naphta Industry
 
   urban central heat: Urb Centr Heating
   residential urban decentral heat: Urb Decentr Heating
@@ -233,9 +234,13 @@ carrier:
   services rural heat: Rural Decentr Heating
 
   EU oil: Oil
+  oil: Oil
   land transport fuel cell: FC Vehicles  
   EU kerosene for aviation: Avia Kerosene
-  EU shipping methanol: Methanol Shipping  
+  kerosene for aviation: Avia Kerosene
+  EU shipping methanol: Methanol Shipping
+  shipping methanol: Methanol Shipping
+  shipping oil: Oil Shipping
 
   # heat
   urban central solar thermal collector: Solar Thermal
@@ -322,7 +327,7 @@ carrier:
   home battery discharger: Home Battery discharger
   home battery charger: Home Battery charger
   services urban decentral DAC: services urban decentral DAC
-  methanolisation: methanolisation
+  methanolisation: Methanolisation
   EV charger: EV charger
   DAC: DAC
   H2 Electrolysis: H2 Electrolysis
@@ -331,6 +336,10 @@ carrier:
   solid biomass: Solid Biomass
   Li ion: Li ion
   electricity: Electricity
+  biogas: Biogas
+  coal: Coal
+  co2 sequestered: CO2 sequestered
+  gas for industry CC: Gas for industry CC
 
   # lines and links
 
@@ -588,6 +597,7 @@ tech_colors:
   carbon capture: "#f29dae"
   CCS: "#f29dae"
   CO2 sequestration: "#f29dae"
+  co2 sequestered: "#f29dae"
   DAC: "#ff5270"
   direct air capture: "#ff5270"
   co2 stored: "#f2385a"
