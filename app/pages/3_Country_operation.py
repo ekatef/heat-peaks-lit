@@ -181,16 +181,20 @@ cons_links_aggr = cons_links_df.loc[values[0]:values[1]].resample(res).mean()
 # ###################### space heating #####################
 
 load_buses_aggr["Heating Original"] = load_buses_aggr.filter(like="Heating").sum(axis=1)
-load_buses_aggr["Heating Retrofitted"] = load_buses_aggr["Heating Original"] - gen_buses_aggr.filter(like="Retrofitting").sum(axis=1)
+load_buses_aggr["Heating Retrof"] = load_buses_aggr["Heating Original"] - gen_buses_aggr.filter(like="Retrofitting").sum(axis=1)
+
+load_buses_aggr["Urb Centr Heating Retrof"] = load_buses_aggr["Urb Centr Heating"] - gen_buses_aggr["Retrofitting Urban Central"]
+load_buses_aggr["Urb Decentr Heating Retrof"] = load_buses_aggr["Urb Decentr Heating"] - gen_buses_aggr["Retrofitting Urban Decentral"]
+load_buses_aggr["Rural Heating Retrof"] = load_buses_aggr["Rural Decentr Heating"] - gen_buses_aggr["Retrofitting Rural"]
 
 heat_techs = ["residential rural heat", "residential urban decentral heat",
               "services rural heat", "services urban decentral heat",
               "urban central heat"]
 
 with balance_plot_col:
-    buses_heat_area_plot = load_buses_aggr[
-        load_buses_aggr.filter(like="Heating").columns.difference(["Heating Original", "Heating Retrofitted"])
-    ].hvplot.area(
+    #buses_heat_area_plot = load_buses_aggr[
+    #    load_buses_aggr.filter(like="Heating").columns.difference(["Heating Original", "Heating Retrofitted"])
+    buses_heat_area_plot = load_buses_aggr[["Urb Centr Heating Retrof", "Urb Decentr Heating Retrof", "Rural Heating Retrof"]].hvplot.area(
         **kwargs,
         ylabel="Heat Demand [MW]",
         group_label=helper.config["loads_t_parameter"]["p_set"]["legend_title"],
@@ -200,7 +204,7 @@ with balance_plot_col:
         fontsize=plot_font_dict
     )
     buses_ovheat_line_plot = (
-        load_buses_aggr["Heating Retrofitted"].hvplot
+        load_buses_aggr["Heating Retrof"].hvplot
         .line(color=[tech_colors[x] for x in ["space heating overall"]])
     )
     buses_orheat_line_plot = (
@@ -214,7 +218,7 @@ with balance_plot_col:
 
 if gen_buses_aggr.filter(like="Retrofitting").sum(axis=1).sum()>0:
     with balance_plot_col:
-        buses_retrof_area_plot = gen_buses_aggr["Retrofitting"].hvplot.area(
+        buses_retrof_area_plot = gen_buses_aggr.filter(like="Retrofitting").hvplot.area(
             **kwargs,
             ylabel="Retrofitting [MW]",
             group_label=helper.config["loads_t_parameter"]["p_set"]["legend_title"],
