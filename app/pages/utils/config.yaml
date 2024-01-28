@@ -289,9 +289,10 @@ carrier:
   process emissions: process emissions
   Fuel Cell: Fuel Cell
   electricity distribution grid: Distribution Grid
-  urban central solid biomass CHP CC: urban central solid biomass CHP CC
+  urban central solid biomass CHP CC: Solid biomass CHP
   EU process emissions CC: EU process emissions CC
-  solid biomass for industry CC: solid biomass for industry CC
+  process emissions CC: Process emissions CC
+  solid biomass for industry CC: Solid biomass for industry
   battery discharger: Battery Discharger
   battery charger: Battery Charger
   services urban decentral water tanks dischar: services urban decentral water tanks dischar
@@ -325,11 +326,11 @@ carrier:
   EV charger: EV charger
   DAC: DAC
   H2 Electrolysis: H2 Electrolysis
-  Hydrogen Storage: hydrogen storage
+  Hydrogen Storage: Hydrogen Storage
   Open-Cycle Gas: OCGT
-  solid biomass: solid biomass
+  solid biomass: Solid Biomass
   Li ion: Li ion
-  electricity: electricity
+  electricity: Electricity
 
   # lines and links
 
@@ -465,12 +466,14 @@ tech_colors:
   # biomass
   biogas: "#e3d37d"
   biogas upgrading: "#e3d37d"
+  biogas to gas: '#e36311'
   biomass: "#baa741"
   solid biomass: "#baa741"
   solid biomass CHP: "#9d9042"
   solid biomass transport: "#baa741"
   solid biomass for industry: "#7a6d26"
   solid biomass for industry CC: "#47411c"
+  urban central solid biomass CHP CC: "#aeb841"
   solid biomass CHP CC: "#aeb841"
   solid biomass for industry co2 from atmosphere: "#736412"
   solid biomass for industry co2 to stored: "#47411c"
