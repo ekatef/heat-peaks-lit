@@ -289,6 +289,9 @@ carrier:
   retrofitting: Retrofitting
 
   # remaining
+  Battery Storage: Battery Storage
+  H2 Fuel Cell: H2 Fuel Cell
+
   power: Power
   services rural resistive heater: Resistive Heater
   process emissions: process emissions
@@ -507,6 +510,7 @@ tech_colors:
   pbattery: "#ace37f"
   nbattery: "#ace37f"
   battery storage: "#ace37f"
+  Battery Storage: "#ace37f"  
   home battery: "#80c944"
   home battery storage: "#80c944"
   BEV charger: "#baf238"
@@ -552,6 +556,7 @@ tech_colors:
   CHP electric: "#8a5751"
   district heating: "#e8beac"
   resistive heater: "#d8f9b8"
+  residential rural resistive heater: "#d8f9b8"
   retrofitting: "#8487e8"
   building retrofitting: "#8487e8"
   # hydrogen
