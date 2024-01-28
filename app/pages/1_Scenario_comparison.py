@@ -69,9 +69,6 @@ def main():
 
     # TODO fix tech map to match with the Generators or Links
     df_techs = [tech_map[c] for c in df.columns]
-    with open("techs.txt", "w") as file:
-        for text in df_techs:
-            file.write(text+", \n")
     tech_colors = get_colors_map()
     plot_color = [tech_colors[c] for c in df_techs]
 
