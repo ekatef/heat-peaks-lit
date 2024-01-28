@@ -268,20 +268,20 @@ carrier:
   # retrofitting
 
   # moderate
-  retrofitting moderate urban central heat: Retrofitting
-  retrofitting moderate residential urban decentral heat: Retrofitting
-  retrofitting moderate services urban decentral heat: Retrofitting
-  retrofitting moderate residential rural heat: Retrofitting
-  retrofitting moderate services rural heat: Retrofitting
+  retrofitting moderate urban central heat: Retrofitting Urban Central
+  retrofitting moderate residential urban decentral heat: Retrofitting Urban Decentral
+  retrofitting moderate services urban decentral heat: Retrofitting Urban Decentral
+  retrofitting moderate residential rural heat: Retrofitting Rural
+  retrofitting moderate services rural heat: Retrofitting Rural
 
   # ambitious
-  retrofitting ambitious urban central heat: Retrofitting
-  retrofitting ambitious residential urban decentral heat: Retrofitting
-  retrofitting ambitious services urban decentral heat: Retrofitting
-  retrofitting ambitious residential rural heat: Retrofitting
-  retrofitting ambitious services rural heat: Retrofitting
+  retrofitting ambitious urban central heat: Retrofitting Urban Central
+  retrofitting ambitious residential urban decentral heat: Retrofitting Urban Decentral
+  retrofitting ambitious services urban decentral heat: Retrofitting Urban Decentral
+  retrofitting ambitious residential rural heat: Retrofitting Rural
+  retrofitting ambitious services rural heat: Retrofitting Rural
 
-  retrofitting: Retrofitting
+  #retrofitting: Retrofitting
 
   # remaining
   power: Power
