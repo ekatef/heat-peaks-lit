@@ -224,7 +224,7 @@ if gen_buses_aggr.filter(like="Retrofitting").sum(axis=1).sum()>0:
             **kwargs,
             ylabel="Retrofitting [MW]",
             group_label=helper.config["loads_t_parameter"]["p_set"]["legend_title"],
-            color = warm_orange_pallette
+            color = warm_orange_pallette[3:]
             )
         buses_retrof_area_plot = buses_retrof_area_plot.opts(
             ylim=(0, None),            
