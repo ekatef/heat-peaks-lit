@@ -67,7 +67,6 @@ def main():
             network_map, option
         )
 
-    # TODO fix tech map to match with the Generators or Links
     df_techs = [tech_map[c] for c in df.columns]
     tech_colors = get_colors_map()
     plot_color = [tech_colors[c] for c in df_techs]
