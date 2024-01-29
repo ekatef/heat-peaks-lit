@@ -214,15 +214,15 @@ carrier:
   Sabatier: Methanation
   helmeth: Methanation
 
-  industry electricity: El Industry
+  industry electricity: Elec Industry
   gas for industry: Gas Industry
   # H2 for industry is captured as "for industry"
   for industry: H2 Industry
   low-temperature heat for industry: LT Heat Industry
 
-  solid biomass for industry: Solid Bio Industry
-  land transport EV: El Vehicles
-  solid biomass transport: Biomass Transport
+  solid biomass for industry: Solid Biomass Industry
+  land transport EV: Elec Vehicles
+  solid biomass transport: Solid Biomass Transport
   process emissions: Process Emission
   EU naphtha for industry: Naphta Industry
   naphtha for industry: Naphta Industry
@@ -268,7 +268,7 @@ carrier:
   services urban decentral gas boiler: Gas Boiler
   services rural ground heat pump: Ground Heat Pump
   urban central gas CHP: Gas CHP
-  urban central solid biomass CHP: Biomass CHP
+  urban central solid biomass CHP: Solid Biomass CHP
 
   # retrofitting
 
@@ -294,13 +294,13 @@ carrier:
 
   power: Power
   services rural resistive heater: Resistive Heater
-  process emissions: process emissions
+  process emissions: Process Emissions
   Fuel Cell: Fuel Cell
-  electricity distribution grid: Distribution Grid
-  urban central solid biomass CHP CC: Solid biomass CHP
-  EU process emissions CC: EU process emissions CC
-  process emissions CC: Process emissions CC
-  solid biomass for industry CC: Solid biomass for industry
+  electricity distribution grid: Distribution Lines
+  urban central solid biomass CHP CC: Solid Biomass CHP
+  EU process emissions CC: Process Emissions
+  process emissions CC: Process Emissions
+  solid biomass for industry CC: Solid Biomass Industry
   battery discharger: Battery Discharger
   battery charger: Battery Charger
   services urban decentral water tanks dischar: services urban decentral water tanks dischar
@@ -314,10 +314,10 @@ carrier:
   residential urban decentral water tanks char: residential urban decentral water tanks char
   OCGT: OCGT
   services rural gas boiler: services rural gas boiler
-  gas for industry: gas for industry
+  gas for industry: Gas Industry
   residential urban decentral water tanks disc: residential urban decentral water tanks disc
   residential rural resistive heater: Resistive Heater
-  biogas to gas: Biogas to Gas
+  biogas to gas: Biogas #Biogas to Gas
   services rural water tanks discharger: services rural water tanks discharger
   residential rural water tanks charger: residential rural water tanks charger
   services rural micro gas CHP: Microgas CHP
@@ -334,7 +334,7 @@ carrier:
   EV charger: EV charger
   DAC: DAC
   H2 Electrolysis: H2 Electrolysis
-  Hydrogen Storage: Hydrogen Storage
+  Hydrogen Storage: H2 Storage
   Open-Cycle Gas: OCGT
   solid biomass: Solid Biomass
   Li ion: Li ion
@@ -342,7 +342,7 @@ carrier:
   biogas: Biogas
   coal: Coal
   co2 sequestered: CO2 sequestered
-  gas for industry CC: Gas for industry CC
+  gas for industry CC: Gas Industry
 
   # lines and links
 
@@ -636,49 +636,60 @@ tech_colors:
   fossil oil and gas: "#ababab"
   green e-fuel imports: "#03a2ff"
 preferred_order:
-  - H2 storage
-  - hydrogen storage
-  - battery storage
-  - BEV charger
+  - Retrofitting
+
+  - Solid Biomass
+  - Solid Biomass Industry
+  - Solid Biomass Transport
+  - Biogas
+  - Gas
+  - Gas Industry
+  - Methanol
+  - Methanol Shipping
+  - Oil
+  - Oil Shipping
+  - Naphta Industry
+  - Avia Kerosene
+  - Elec Industry
+        
+  - Transmission Lines
+  - Distribution Lines
+  - Gas Pipeline
+  - H2 Pipeline
+        
+  - H2 Electrolysis
+  - H2 Fuel Cell
+  - DAC
+  - Fischer-Tropsch
+  - Methanation
+  - BEV Charger
   - V2G
-  - hot water storage
-  - co2
-  - hydroelectricity
-  - hydro reservoir
-  - pumped hydro storage
-  - run of river
-  - transmission lines
-  - electricity distribution grid
-  - solid biomass
-  - biogas
-  - onshore wind
-  - offshore wind
-  - offshore wind (AC)
-  - offshore wind (DC)
-  - solar PV
-  - solar thermal
-  - solar rooftop
-  - solar
-  - building retrofitting" "ground heat pump
-  - air heat pump
-  - heat pump
-  - resistive heater
-  - power-to-heat
-  - gas-to-power/heat
-  - CHP
+  - Elec Vehicle
+  - SMR
+  - Methanolisation
+        
+  - TES
+  - Battery Storage
+  - Gas Storage
+  - H2 Storage
+  - Water Tanks Discharger
+        
+  - Hydroelectricity
   - OCGT
-  - gas boiler
-  - gas
-  - natural gas
-  - helmeth
-  - methanation
-  - power-to-gas
-  - power-to-H2
-  - H2 pipeline
-  - H2 pipeline retrofitted
-  - gas pipeline
-  - gas pipeline new
-  - H2 liquefaction
-  - power-to-liquid
-  - CO2 sequestration
-  - CCS
+  - Onshore Wind
+  - Offshore Wind
+  - Solar
+  - Solar Thermal
+  - Solar Rooftop
+        
+  - Solid Biomass CHP
+  - Gas CHP
+  - Biomass Boiler
+  - Gas Boiler
+  - Resistive Heater
+  - Air Heat Pump
+  - Ground Heat Pump
+        
+  - Co2
+  - CO2 Sequestration
+  - Process Emissions
