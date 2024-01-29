@@ -246,10 +246,10 @@ if gen_buses_aggr.filter(like="Retrofitting").sum(axis=1).sum()>0:
 # ###################### heat supply #####################
 
 heat_supply_cols = cons_links_aggr.columns[cons_links_aggr.columns.isin(
-    ["Air Heat Pump", "Ground Heat Pump", "Biomass CHP", 
-    "Gas Boiler", "Gas CHP", "Microgas CHP", "Resistive Heater"]
+    ["Air Heat Pump", "Ground Heat Pump", "Biomass CHP",
+     "Gas CHP", "Microgas CHP",
+    "Gas Boiler", "Resistive Heater"]
 )]
-
 heat_supply_buses_aggr = cons_links_aggr[heat_supply_cols]
 
 #SOLAR THERMAL IS MISSING, CAN BE RETRIEVED VIA:
@@ -257,12 +257,28 @@ heat_supply_buses_aggr = cons_links_aggr[heat_supply_cols]
 heat_supply_buses_aggr["Solar Thermal"] = gen_buses_aggr.filter(like="Solar Thermal")
 heat_supply_buses_aggr["Retrofitting"] = gen_buses_aggr.filter(like="Retrofitting").sum(axis=1)
 
+heat_supply_cols = ["Retrofitting",
+    "Air Heat Pump", "Ground Heat Pump",
+    "Solar Thermal",
+    "Biomass CHP",
+     "Gas CHP", "Microgas CHP",
+    "Gas Boiler", "Resistive Heater"]
+
+#cols_to_plot = heat_supply_buses_aggr.columns.intersection(heat_supply_cols)
+cols_to_plot = pd.Index(
+    pd.Index(heat_supply_cols)
+    .intersection(heat_supply_buses_aggr.columns)
+    #.append(heat_supply_buses_aggr.columns.difference(heat_supply_cols))
+)
+
+plot_color = [tech_colors[c] for c in cols_to_plot]
+
 with balance_plot_col:
-    buses_el_area_plot = heat_supply_buses_aggr.hvplot.area(
+    buses_el_area_plot = heat_supply_buses_aggr[cols_to_plot].hvplot.area(
         **kwargs,
         ylabel="Heat Supply [MW]",
         group_label=helper.config["links_t_parameter"]["p0"]["legend_title"],
-        color = warm_orange_pallette
+        color=plot_color
         )
     #buses_el_line_plot = load_buses_aggr["electricity"].hvplot.line(color="#8B0000")
     #buses_el_area_plot = buses_el_area_plot * buses_el_line_plot
