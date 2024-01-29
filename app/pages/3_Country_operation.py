@@ -194,14 +194,16 @@ heat_techs = ["residential rural heat", "residential urban decentral heat",
               "services rural heat", "services urban decentral heat",
               "urban central heat"]
 
+
+cols_to_plot = ["Rural Heating Retrof", "Urb Decentr Heating Retrof", 
+                "Urb Centr Heating Retrof"]
+
 with balance_plot_col:
-    #buses_heat_area_plot = load_buses_aggr[
-    #    load_buses_aggr.filter(like="Heating").columns.difference(["Heating Original", "Heating Retrofitted"])
-    buses_heat_area_plot = load_buses_aggr[["Urb Centr Heating Retrof", "Urb Decentr Heating Retrof", "Rural Heating Retrof"]].hvplot.area(
+    buses_heat_area_plot = load_buses_aggr[cols_to_plot].hvplot.area(
         **kwargs,
         ylabel="Heat Demand [MW]",
         group_label=helper.config["loads_t_parameter"]["p_set"]["legend_title"],
-        color = [tech_colors[x] for x in heat_techs]
+        color = [tech_colors[x] for x in cols_to_plot]
         )
     buses_ovheat_line_plot = (
         load_buses_aggr["Heating Retrof"].hvplot
