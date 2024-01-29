@@ -496,6 +496,10 @@ tech_colors:
   Urb Centr Heating Retrof: "#e077b2"
   Urb Decentr Heating Retrof: "#a253d9"
   Rural Heating Retrof: "#276419"
+
+  Retrofitting Urban Central: "#ffc100"
+  Retrofitting Urban Decentral: "#ff7400"
+  Retrofitting Rural: "#d60000"
   Heat load: "#cc1f1f"
   heat: "#cc1f1f"
   heat demand: "#cc1f1f"

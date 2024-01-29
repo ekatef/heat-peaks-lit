@@ -224,12 +224,16 @@ with balance_plot_col:
     st.bokeh_chart(s2, use_container_width=True)
 
 if gen_buses_aggr.filter(like="Retrofitting").sum(axis=1).sum()>0:
+
+    cols_to_plot = ["Retrofitting Rural", 
+                    "Retrofitting Urban Decentral", "Retrofitting Urban Central"]
+     
     with balance_plot_col:
-        buses_retrof_area_plot = gen_buses_aggr.filter(like="Retrofitting").hvplot.area(
+        buses_retrof_area_plot = gen_buses_aggr[cols_to_plot].hvplot.area(
             **kwargs,
             ylabel="Retrofitting [MW]",
             group_label=helper.config["loads_t_parameter"]["p_set"]["legend_title"],
-            color = warm_orange_pallette[3:]
+            color = [tech_colors[x] for x in cols_to_plot]
             )
         buses_retrof_area_plot = buses_retrof_area_plot.opts(
             ylim=(0, None),            
