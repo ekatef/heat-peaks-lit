@@ -165,13 +165,7 @@ with date_range_param:
         )
 
 # ###################### time aggregation #####################
-
-# # TODO wouldn't it be more reliabe to move columns renaming there?
-# #gen_df.columns = [tech_map[c] for c in gen_df.columns]
-
-# #TODO Add balance?
-# balance_df = gen_df
-
+    
 if str(res).isdigit():
     res = str(res) + "H"
 
