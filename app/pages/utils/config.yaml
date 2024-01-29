@@ -8,9 +8,14 @@ scenario_names:
   # MA: Morocco
 
   lvopt_rigid: Rigid Scenario (optimal line expansion)
+  lvopt_rigid_i: Rigid Scenario with Industry (optimal line expansion)
   lvopt_flex: Flexible Scenario (optimal line expansion)
-  lv1_flex: Flexible Scenario (no line expansion)
   lvopt_flex_i: Flexible Scenario with Industry (optimal line expansion)
+  lvop_retro_tes_i: Retro + TES Scenario with Industry (optimal line expansion)  
+  lv1_flex: Flexible Scenario (no line expansion)
+  lv1_flex_i: Flexible Scenario with Industry (no line expansion)
+  lv1_retro_tes_i: Retro + TES Scenario with Industry (no line expansion)
+
 
   # BJ_4: Benin four clusters
   # BJ_6: Benin six clusters
@@ -500,6 +505,17 @@ tech_colors:
   Retrofitting Urban Central: "#ffc100"
   Retrofitting Urban Decentral: "#ff7400"
   Retrofitting Rural: "#d60000"
+
+  Air Heat Pump: "#36eb41"
+  Ground Heat Pump: "#2fb537"
+  Biomass CHP: "#9d9042"
+  Gas CHP: "#8a5751"
+  Microgas CHP: "#6e4e4c"
+  Gas Boiler: "#db6a25"
+  Resistive Heater: "#d8f9b8"
+  Solar Thermal: "#ffbf2b"
+  Retrofitting: "#8487e8"
+
   Heat load: "#cc1f1f"
   heat: "#cc1f1f"
   heat demand: "#cc1f1f"
