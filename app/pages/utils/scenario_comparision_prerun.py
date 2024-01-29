@@ -87,7 +87,8 @@ def adjust_plot_appearance(current_fig):
         legend_title_font_size=18,
         font_color=data_color,
         height=800,
-        width=800
+        width=800,
+        legend={'traceorder':'reversed'}
     )
     current_fig.update_xaxes(
         tickangle=270,
