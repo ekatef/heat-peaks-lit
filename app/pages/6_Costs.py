@@ -145,7 +145,10 @@ with carrier_col:
         help="You can choose the costs of a distinct carrier."
     )
 
-country_codes_clean = helper.config["countries_names"].keys()
+#country_codes_clean = helper.config["countries_names"].keys()
+country_dict = dict(sorted(helper.config["countries_names"].items(), key=lambda item: item[1]))
+country_dict_clean = {"all": country_dict.pop("all"), **country_dict}
+country_codes_clean = country_dict_clean.keys()
 with country_col:
     ctr = st.selectbox(
         "Country",
