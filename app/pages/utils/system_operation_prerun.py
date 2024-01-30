@@ -62,11 +62,27 @@ def get_buses_gen_t_df(_pypsa_network, gen_t_key, country="all"):
     if country != "all":
         gen_t_df = gen_t_df.filter(like=country)
 
+    retrof_df = gen_t_df.filter(like = "retrofitting").copy()
+    retrof_df["Retrofitting Urban Central"] = retrof_df.filter(like = "retrofitting").filter(like = "urban central heat").sum(axis=1)    
+    retrof_df["Retrofitting Urban Decentral"] = retrof_df.filter(like = "retrofitting").filter(like = "urban decentral heat").sum(axis=1) 
+    retrof_df["Retrofitting Rural"] = retrof_df.filter(like = "retrofitting").filter(like = "rural heat").sum(axis=1) 
     gen_t_df = (
         gen_t_df.T.groupby(_pypsa_network.generators.carrier).sum()
         .rename(index=config["carrier"])
     )
     gen_t_df = gen_t_df.groupby(gen_t_df.index).sum().T
+
+    gen_t_df = pd.concat(
+        [
+            gen_t_df, 
+            retrof_df[
+                ["Retrofitting Urban Central",
+                 "Retrofitting Urban Decentral",
+                 "Retrofitting Rural"]
+            ]
+        ],
+        axis=1
+    )    
 
     return gen_t_df
 

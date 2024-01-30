@@ -8,9 +8,14 @@ scenario_names:
   # MA: Morocco
 
   lvopt_rigid: Rigid Scenario (optimal line expansion)
+  lvopt_rigid_i: Rigid Scenario with Industry (optimal line expansion)
   lvopt_flex: Flexible Scenario (optimal line expansion)
-  lv1_flex: Flexible Scenario (no line expansion)
   lvopt_flex_i: Flexible Scenario with Industry (optimal line expansion)
+  lvop_retro_tes_i: Retro + TES Scenario with Industry (optimal line expansion)  
+  lv1_flex: Flexible Scenario (no line expansion)
+  lv1_flex_i: Flexible Scenario with Industry (no line expansion)
+  lv1_retro_tes_i: Retro + TES Scenario with Industry (no line expansion)
+
 
   # BJ_4: Benin four clusters
   # BJ_6: Benin six clusters
@@ -53,6 +58,10 @@ links_t_parameter:
     nice_name: Heat Demand
     unit: MW
     legend_title: " "
+  p3:
+    nice_name: Process Heat
+    unit: MW
+    legend_title: " "    
 
 buses_t_parameter:
   marginal_price:
@@ -273,20 +282,20 @@ carrier:
   # retrofitting
 
   # moderate
-  retrofitting moderate urban central heat: Retrofitting
-  retrofitting moderate residential urban decentral heat: Retrofitting
-  retrofitting moderate services urban decentral heat: Retrofitting
-  retrofitting moderate residential rural heat: Retrofitting
-  retrofitting moderate services rural heat: Retrofitting
+  retrofitting moderate urban central heat: Retrofitting Urban Central
+  retrofitting moderate residential urban decentral heat: Retrofitting Urban Decentral
+  retrofitting moderate services urban decentral heat: Retrofitting Urban Decentral
+  retrofitting moderate residential rural heat: Retrofitting Rural
+  retrofitting moderate services rural heat: Retrofitting Rural
 
   # ambitious
-  retrofitting ambitious urban central heat: Retrofitting
-  retrofitting ambitious residential urban decentral heat: Retrofitting
-  retrofitting ambitious services urban decentral heat: Retrofitting
-  retrofitting ambitious residential rural heat: Retrofitting
-  retrofitting ambitious services rural heat: Retrofitting
+  retrofitting ambitious urban central heat: Retrofitting Urban Central
+  retrofitting ambitious residential urban decentral heat: Retrofitting Urban Decentral
+  retrofitting ambitious services urban decentral heat: Retrofitting Urban Decentral
+  retrofitting ambitious residential rural heat: Retrofitting Rural
+  retrofitting ambitious services rural heat: Retrofitting Rural
 
-  retrofitting: Retrofitting
+  #retrofitting: Retrofitting
 
   # remaining
   Battery Storage: Battery Storage
@@ -523,6 +532,28 @@ tech_colors:
   hot water charging: "#0000ff"
   hot water discharging: "#0000ff"
   # heat demand
+  Urb Centr Heating Retrof: "#e077b2"
+  Urb Decentr Heating Retrof: "#a253d9"
+  Rural Heating Retrof: "#276419"
+
+  Retrofitting Urban Central: "#ffc100"
+  Retrofitting Urban Decentral: "#ff7400"
+  Retrofitting Rural: "#d60000"
+
+  Air Heat Pump: "#36eb41"
+  Ground Heat Pump: "#2fb537"
+  Biomass CHP: "#9d9042"
+  Gas CHP: "#8a5751"
+  Microgas CHP: "#6e4e4c"
+  Gas Boiler: "#db6a25"
+  Biomass Boiler: "#db6a25"
+  Resistive Heater: "#d8f9b8"
+  Solar Thermal: "#ffbf2b"
+  Retrofitting: "#8487e8"
+
+  #H2 Fuel Cell
+  TES: "#0000ff"
+
   Heat load: "#cc1f1f"
   heat: "#cc1f1f"
   heat demand: "#cc1f1f"
