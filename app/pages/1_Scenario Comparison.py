@@ -77,12 +77,13 @@ def main():
     tech_colors = get_colors_map()
     plot_color = [tech_colors[c] for c in df_techs]
 
+    df_sort = df.loc[df.sum(1).sort_values(ascending=False).index]
     # needed to control markers size for the scatter
     _, plot_col, _ = st.columns([1, 80, 1])
     with plot_col:
         if option == "Capacity Factor":
             df["dummy_size"] = 1
-            fig = px.scatter(df, y=df.columns,
+            fig = px.scatter(df_sort, y=df_sort.columns,
                 size="dummy_size",
                 size_max=25,
                 opacity=0.9,
@@ -99,7 +100,7 @@ def main():
             )
             fig['data'][0]['showlegend']=True
         else:
-            fig = px.bar(df, y=df.columns,
+            fig = px.bar(df_sort, y=df_sort.columns,
                 #color_discrete_sequence=plot_color,                    
                 labels={
                     "value":get_stat_unit(option),
