@@ -13,6 +13,8 @@ import plotly.subplots as sp
 import plotly.express as px
 import datetime
 
+from itertools import cycle
+
 # needed to change cursor mode of selectboxes from the default text mode
 fix_cursor_css = '''
     <style>
@@ -167,6 +169,10 @@ costs_weighted_dict_list = helper.get_weighted_costs_dict()
 carrier_nice_name = helper.config["carriers_for_marginal_costs"][carrier]["nice_name"]
 st.header(f"Prices for {carrier_nice_name} during the year for a selected country")
 
+# https://plotly.com/python/discrete-color/
+#palette = cycle(px.colors.qualitative.Antique)
+#palette = cycle(px.colors.qualitative.Vivid)
+palette_ts = cycle(px.colors.qualitative.Bold)
 
 _, plot_col, _ = st.columns([1, 50, 1])
 with plot_col:
@@ -181,6 +187,7 @@ with plot_col:
         fig_ts.add_trace(
             go.Scatter(x=costs.index, y=costs.values,
             mode='lines',
+            marker_color=next(palette_ts),
             name=f"{scenario_formatter(selected_network)}"),
             row=1, col=1
         )
@@ -210,6 +217,8 @@ with plot_col:
         new_trace = go.Bar(
             x=costs.index, y=costs.values,
             textposition="auto", name=f"{scenario_formatter(selected_network)}",
+            marker_color=next(palette_dg)
+            #color_discrete_sequence=px.colors.qualitative.G10
         )
         fig_dg.add_trace(new_trace, row=1, col=1)
 
