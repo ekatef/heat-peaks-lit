@@ -186,17 +186,38 @@ cons_links_aggr3 = cons_links_df3.loc[values[0]:values[1]].resample(res).mean()
 load_buses_aggr["Heating Original"] = load_buses_aggr.filter(like="Heating").sum(axis=1)
 load_buses_aggr["Heating Retrof"] = load_buses_aggr["Heating Original"] - gen_buses_aggr.filter(like="Retrofitting").sum(axis=1)
 
-load_buses_aggr["Urb Centr Heating Retrof"] = load_buses_aggr["Urb Centr Heating"] - gen_buses_aggr["Retrofitting Urban Central"]
-load_buses_aggr["Urb Decentr Heating Retrof"] = load_buses_aggr["Urb Decentr Heating"] - gen_buses_aggr["Retrofitting Urban Decentral"]
-load_buses_aggr["Rural Heating Retrof"] = load_buses_aggr["Rural Decentr Heating"] - gen_buses_aggr["Retrofitting Rural"]
+
+#cols_df = pd.DataFrame(
+#    {
+#        "heating_col": ["Urb Centr Heating", "Urb Decentr Heating", "Rural Decentr Heating"],
+#        "retrofitting_col": ["Retrofitting Urban Central", "Retrofitting Urban Decentral", "Retrofitting Rural"],
+#        "retrofitting_col_nn": ["Urb Centr Heating Retrof", "Urb Decentr Heating Retrof", "Rural Heating Retrof"]
+#    }
+#)
+#for i in [0, 1, 2]:
+#    if cols_df.loc[i, "heating_col"] in load_buses_aggr.columns:
+#        load_buses_aggr[cols_df.loc[1, "retrofitting_col_nn"]] = load_buses_aggr[cols_df.loc[1, "heating_col"]] - gen_buses_aggr[cols_df.loc[1, "retrofitting_col"]]
+
+
+if "Urb Centr Heating" in load_buses_aggr.columns:
+    load_buses_aggr["Urb Centr Heating Retrof"] = load_buses_aggr["Urb Centr Heating"] - gen_buses_aggr["Retrofitting Urban Central"]
+if "Urb Decentr Heating" in load_buses_aggr.columns:    
+    load_buses_aggr["Urb Decentr Heating Retrof"] = load_buses_aggr["Urb Decentr Heating"] - gen_buses_aggr["Retrofitting Urban Decentral"]
+if "Rural Decentr Heating" in load_buses_aggr.columns:
+    load_buses_aggr["Rural Heating Retrof"] = load_buses_aggr["Rural Decentr Heating"] - gen_buses_aggr["Retrofitting Rural"]
 
 heat_techs = ["residential rural heat", "residential urban decentral heat",
               "services rural heat", "services urban decentral heat",
               "urban central heat"]
 
-
-cols_to_plot = ["Rural Heating Retrof", "Urb Decentr Heating Retrof", 
+heat_cols_to_plot = ["Rural Heating Retrof", "Urb Decentr Heating Retrof", 
                 "Urb Centr Heating Retrof"]
+
+cols_to_plot = pd.Index(
+    pd.Index(heat_cols_to_plot)
+    .intersection(load_buses_aggr.columns)
+    #.append(heat_supply_buses_aggr.columns.difference(heat_cols_to_plot))
+)
 
 with balance_plot_col:
     buses_heat_area_plot = load_buses_aggr[cols_to_plot].hvplot.area(
