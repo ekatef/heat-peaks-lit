@@ -341,7 +341,7 @@ carrier:
   electricity: Electricity
   biogas: Biogas
   coal: Coal
-  co2 sequestered: CO2 sequestered
+  co2 sequestered: CO2 Sequestration
   gas for industry CC: Gas Industry
 
   # lines and links
@@ -482,11 +482,11 @@ tech_colors:
   biomass: "#baa741"
   solid biomass: "#baa741"
   solid biomass CHP: "#9d9042"
-  solid biomass transport: "#baa741"
+  solid biomass transport: "#7a6d26"
   solid biomass for industry: "#7a6d26"
   solid biomass for industry CC: "#47411c"
-  urban central solid biomass CHP CC: "#aeb841"
-  solid biomass CHP CC: "#aeb841"
+  urban central solid biomass CHP CC: '#9d9042'
+  solid biomass CHP CC: '#9d9042'
   solid biomass for industry co2 from atmosphere: "#736412"
   solid biomass for industry co2 to stored: "#47411c"
   urban central solid biomass CHP: "#9d9042"
@@ -636,8 +636,6 @@ tech_colors:
   fossil oil and gas: "#ababab"
   green e-fuel imports: "#03a2ff"
 preferred_order:
-  - Retrofitting
-
   - Solid Biomass
   - Solid Biomass Industry
   - Solid Biomass Transport
@@ -648,6 +646,7 @@ preferred_order:
   - Methanol Shipping
   - Oil
   - Oil Shipping
+  - Coal
   - Naphta Industry
   - Avia Kerosene
   - Elec Industry
@@ -659,20 +658,19 @@ preferred_order:
         
   - H2 Electrolysis
   - H2 Fuel Cell
-  - DAC
-  - Fischer-Tropsch
-  - Methanation
   - BEV Charger
   - V2G
   - Elec Vehicle
+  - DAC
   - SMR
+  - Fischer-Tropsch
+  - Methanation
   - Methanolisation
         
-  - TES
   - Battery Storage
   - Gas Storage
   - H2 Storage
-  - Water Tanks Discharger
+  - TES
         
   - Hydroelectricity
   - OCGT
@@ -681,15 +679,18 @@ preferred_order:
   - Solar
   - Solar Thermal
   - Solar Rooftop
-        
-  - Solid Biomass CHP
-  - Gas CHP
-  - Biomass Boiler
-  - Gas Boiler
-  - Resistive Heater
-  - Air Heat Pump
-  - Ground Heat Pump
-        
+
   - Co2
   - CO2 Sequestration
   - Process Emissions
+
+  - Gas CHP        
+  - Solid Biomass CHP
+  - Biomass Boiler
+  - Resistive Heater
+  - Air Heat Pump
+  - Ground Heat Pump
+  - Gas Boiler
+  
+  - Retrofitting
+        
