@@ -288,11 +288,10 @@ heat_supply_buses_aggr["Solar Thermal"] = gen_buses_aggr.filter(like="Solar Ther
 heat_supply_cols = ["Retrofitting",
     "Air Heat Pump", "Ground Heat Pump",
     "Solar Thermal",
-    "Biomass CHP",
-     "Gas CHP", "Microgas CHP",
-    "Gas Boiler", "Resistive Heater"]
+    "CHP",
+    "H2 Fuel Cell", "TES",
+    "Resistive Heater", "Biomass Boiler", "Gas Boiler", "Fischer-Tropsch"]
 
-#cols_to_plot = heat_supply_buses_aggr.columns.intersection(heat_supply_cols)
 cols_to_plot = pd.Index(
     pd.Index(heat_supply_cols)
     .intersection(heat_supply_buses_aggr.columns)
