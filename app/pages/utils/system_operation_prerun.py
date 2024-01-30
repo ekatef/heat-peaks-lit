@@ -139,6 +139,20 @@ def get_marginal_costs(_pypsa_network, marginal_cost_key, carrier, country):
     consider_carriers = config["carriers_for_marginal_costs"][carrier]["carrier"]
     consider_carriers = _pypsa_network.buses.query("carrier in @consider_carriers").index
 
+    # TODO Add industry electricity
+    #elec_industry = ['industry electricity']
+    #n.buses.country = n.buses.location.apply(lambda b: b[0:2])
+    #    n.loads["country"] = n.loads.bus.map(n.buses.country)
+    #
+    #    bus = n.buses.query("carrier in @carrier").index
+    #    marginal_costs[name] = (
+    #        n.buses_t.marginal_price[n.loads.query("carrier in @elec_industry").bus]
+    #        .multiply(n.loads.query("carrier in @elec_industry").set_index("bus").p_set)
+    #        .T.groupby(n.buses.country).sum().sum(axis=1)
+    #        / n.loads.query("carrier in @elec_industry").groupby(n.loads.country).sum().p_set
+    #        / 8760
+    #    )    
+
     if carrier == "electricity":
         if country == 'all':
             result = _pypsa_network.buses_t[marginal_cost_key][consider_carriers].mean(axis=1)
