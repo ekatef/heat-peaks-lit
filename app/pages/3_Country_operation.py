@@ -124,6 +124,9 @@ load_buses_df = buses_load_country_data["p_set"]
 
 buses_links_country_data = links_buses_dict_list.get(selected_network)
 cons_links_df = buses_links_country_data["p0"]
+cons_links_df1 = buses_links_country_data["p1"]
+cons_links_df2 = buses_links_country_data["p2"]
+cons_links_df3 = buses_links_country_data["p3"]
 
 # metadata for time resolution may be wrong; keeping the meta-data approach for reference only
 # the finest available resolution depends on the model and should be extracted from metadata
@@ -174,6 +177,9 @@ _, balance_plot_col, _ = st.columns([1, 80, 1])
 gen_buses_aggr = gen_buses_df.loc[values[0]:values[1]].resample(res).mean()
 load_buses_aggr = load_buses_df.loc[values[0]:values[1]].resample(res).mean()
 cons_links_aggr = cons_links_df.loc[values[0]:values[1]].resample(res).mean()
+cons_links_aggr1 = cons_links_df1.loc[values[0]:values[1]].resample(res).mean()
+cons_links_aggr2 = cons_links_df2.loc[values[0]:values[1]].resample(res).mean()
+cons_links_aggr3 = cons_links_df3.loc[values[0]:values[1]].resample(res).mean()
 
 # ###################### space heating #####################
 
@@ -239,17 +245,24 @@ if gen_buses_aggr.filter(like="Retrofitting").sum(axis=1).sum()>0:
 
 # ###################### heat supply #####################
 
-heat_supply_cols = cons_links_aggr.columns[cons_links_aggr.columns.isin(
-    ["Air Heat Pump", "Ground Heat Pump", "Biomass CHP",
-     "Gas CHP", "Microgas CHP",
-    "Gas Boiler", "Resistive Heater"]
+heat_supply_cols = cons_links_aggr1.columns[cons_links_aggr1.columns.isin(
+    ["Air Heat Pump", "Ground Heat Pump",
+     #"Biomass CHP", "Gas CHP", "Microgas CHP",
+     #"H2 Fuel Cell",
+    "Biomass Boiler", "Gas Boiler", 
+    "Resistive Heater"]
 )]
-heat_supply_buses_aggr = cons_links_aggr[heat_supply_cols]
 
-#SOLAR THERMAL IS MISSING, CAN BE RETRIEVED VIA:
-#helper.get_gen_t_dict(country = ctr).get(selected_network)["p"]["Solar Thermal"]
-heat_supply_buses_aggr["Solar Thermal"] = gen_buses_aggr.filter(like="Solar Thermal")
+heat_supply_buses_aggr = -cons_links_aggr1[heat_supply_cols]
+heat_supply_buses_aggr["TES"] = -cons_links_aggr1.filter(like="water tanks discharger").sum(axis=1)
+
+heat_supply_buses_aggr["CHP"] = -cons_links_aggr2.filter(like="CHP").sum(axis=1)
+heat_supply_buses_aggr["Fuel Cell"] = -cons_links_aggr2.filter(like="Fuel Cell").sum(axis=1)
+
+heat_supply_buses_aggr["Fischer-Tropsch"] = -cons_links_aggr3.filter(like="Fischer").sum(axis=1)
+
 heat_supply_buses_aggr["Retrofitting"] = gen_buses_aggr.filter(like="Retrofitting").sum(axis=1)
+heat_supply_buses_aggr["Solar Thermal"] = gen_buses_aggr.filter(like="Solar Thermal")
 
 heat_supply_cols = ["Retrofitting",
     "Air Heat Pump", "Ground Heat Pump",

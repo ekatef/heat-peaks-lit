@@ -58,6 +58,10 @@ links_t_parameter:
     nice_name: Heat Demand
     unit: MW
     legend_title: " "
+  p3:
+    nice_name: Process Heat
+    unit: MW
+    legend_title: " "    
 
 buses_t_parameter:
   marginal_price:
@@ -512,9 +516,13 @@ tech_colors:
   Gas CHP: "#8a5751"
   Microgas CHP: "#6e4e4c"
   Gas Boiler: "#db6a25"
+  Biomass Boiler: "#db6a25"
   Resistive Heater: "#d8f9b8"
   Solar Thermal: "#ffbf2b"
   Retrofitting: "#8487e8"
+
+  #H2 Fuel Cell
+  TES: "#0000ff"
 
   Heat load: "#cc1f1f"
   heat: "#cc1f1f"
