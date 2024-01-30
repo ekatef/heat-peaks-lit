@@ -40,8 +40,8 @@ considered = [
 
 st.write(costs.loc[considered])
 
-st.write("FOM: Fixed operation and maintenance costs. Given as percentage of overnight costs per annum.")
-st.write("VOM: Variable operation and maintenance")
+st.write("FOM is the fixed operation and maintenance costs. Given as percentage of overnight costs per annum.")
+st.write("VOM is the Variable operation and maintenance costs.")
 
 st.header("Assumptions to distribute heat demands")
 
@@ -58,6 +58,8 @@ st.markdown(
     "Second, heat demands are distributed following average day patterns derived using the [demandlib](https://demandlib.readthedocs.io/en/latest/) package. "
     "They discriminate between a normal weekday or a weekend, and between the residential and the services sector. See the graphics below."
 )
+
+st.write("Third, the per unit time-series are scaled with the nationally reported heat demand per annum.")
 
 #st.line_chart(heat_demand['residential space weekday'])
 # Create an interactive plot with Plotly Express
@@ -78,6 +80,4 @@ fig.update_yaxes(title_text='heat demand [per unit]')
 # Display the interactive plot using Streamlit
 st.plotly_chart(fig)
 
-st.write("Third, the per unit time-series are scaled with the nationally reported heat demand per annum.")
-
-st.header("Assumed heating demands per annum")
+#st.header("Assumed heating demands per annum")
