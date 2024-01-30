@@ -220,18 +220,18 @@ cols_to_plot = pd.Index(
 )
 
 with balance_plot_col:
-    buses_heat_area_plot = load_buses_aggr[cols_to_plot].hvplot.area(
+    buses_heat_area_plot = (load_buses_aggr[cols_to_plot]/1e3).hvplot.area(
         **kwargs,
-        ylabel="Heat Demand [MW]",
+        ylabel="Heat Demand [GW]",
         group_label=helper.config["loads_t_parameter"]["p_set"]["legend_title"],
         color = [tech_colors[x] for x in cols_to_plot]
         )
     buses_ovheat_line_plot = (
-        load_buses_aggr["Heating Retrof"].hvplot
+        (load_buses_aggr["Heating Retrof"]/1e3).hvplot
         .line(color=[tech_colors[x] for x in ["space heating overall"]])
     )
     buses_orheat_line_plot = (
-        load_buses_aggr["Heating Original"].hvplot
+        (load_buses_aggr["Heating Original"]/1e3).hvplot
         .line(color=[tech_colors[x] for x in ["space heating original"]])
     )
     buses_heat_area_plot = buses_heat_area_plot * buses_ovheat_line_plot
@@ -250,9 +250,9 @@ if gen_buses_aggr.filter(like="Retrofitting").sum(axis=1).sum()>0:
                     "Retrofitting Urban Decentral", "Retrofitting Urban Central"]
      
     with balance_plot_col:
-        buses_retrof_area_plot = gen_buses_aggr[cols_to_plot].hvplot.area(
+        buses_retrof_area_plot = (gen_buses_aggr[cols_to_plot]/1e3).hvplot.area(
             **kwargs,
-            ylabel="Retrofitting [MW]",
+            ylabel="Retrofitting [GW]",
             group_label=helper.config["loads_t_parameter"]["p_set"]["legend_title"],
             color = [tech_colors[x] for x in cols_to_plot]
             )
@@ -302,9 +302,9 @@ cols_to_plot = pd.Index(
 plot_color = [tech_colors[c] for c in cols_to_plot]
 
 with balance_plot_col:
-    buses_el_area_plot = heat_supply_buses_aggr[cols_to_plot].hvplot.area(
+    buses_el_area_plot = (heat_supply_buses_aggr[cols_to_plot]/1e3).hvplot.area(
         **kwargs,
-        ylabel="Heat Supply [MW]",
+        ylabel="Heat Supply [GW]",
         group_label=helper.config["links_t_parameter"]["p0"]["legend_title"],
         color=plot_color
         )
