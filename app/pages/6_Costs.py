@@ -164,41 +164,72 @@ with country_col:
 costs_dict_list = helper.get_marginal_costs_dict(ctr)
 costs_weighted_dict_list = helper.get_weighted_costs_dict()
 
-fig = sp.make_subplots(rows=1, cols=1)
 carrier_nice_name = helper.config["carriers_for_marginal_costs"][carrier]["nice_name"]
 st.header(f"Prices for {carrier_nice_name} during the year for a selected country")
-for selected_network in selected_networks:
-    if str(res).isdigit():
-        res = str(res) + "H"
 
-    costs_unagg = costs_dict_list.get(selected_network)
-    costs = costs_unagg[carrier].loc[values[0]:values[1]].squeeze().resample(res).mean()
 
-    fig.add_trace(
-        go.Scatter(x=costs.index, y=costs.values,
-        mode='lines', name=f"{scenario_formatter(selected_network)}"), row=1, col=1
-    )
+_, plot_col, _ = st.columns([1, 50, 1])
+with plot_col:
+    fig_ts = sp.make_subplots(rows=1, cols=1)
+    for selected_network in selected_networks:
+        if str(res).isdigit():
+            res = str(res) + "H"
 
-st.plotly_chart(fig)
+        costs_unagg = costs_dict_list.get(selected_network)
+        costs = costs_unagg[carrier].loc[values[0]:values[1]].squeeze().resample(res).mean()
 
-fig = sp.make_subplots(rows=1, cols=1)
-st.header(f"Average {carrier_nice_name} prices for all countries")
-for selected_network in selected_networks:
+        fig_ts.add_trace(
+            go.Scatter(x=costs.index, y=costs.values,
+            mode='lines',
+            name=f"{scenario_formatter(selected_network)}"),
+            row=1, col=1
+        )
 
-    costs_weighted = costs_weighted_dict_list.get(selected_network)
-    costs = costs_weighted[carrier].sort_values()
+        fig_ts.update_yaxes(title_text="Costs [EUR/MWh]", row=1, col=1)
+        fig_ts.update_yaxes(title_text="Average costs [EUR/MWh]", row=2, col=1)        
 
-    new_trace = go.Bar(
-        x=costs.index, y=costs.values,
-        textposition='auto', name=f"{scenario_formatter(selected_network)}"
-    )
-    fig.add_trace(new_trace, row=1, col=1)
+        fig_ts.update_layout(
+            width=800,
+            height=400,
+            font=dict(
+                size=18
+            )
+        )    
 
-    fig.update_yaxes(title_text='Costs [EUR/MWh]', row=1, col=1)
-    fig.update_yaxes(title_text='Average costs [EUR/MWh]', row=2, col=1)
+    st.plotly_chart(fig_ts)
 
-    fig.update_layout(width=800, height=400)
+palette_dg = cycle(px.colors.qualitative.Bold)
+with plot_col:
+    fig_dg = sp.make_subplots(rows=1, cols=1)
+    st.header(f"Average {carrier_nice_name} prices for all countries")
+    for selected_network in selected_networks:
 
-st.plotly_chart(fig)
+        costs_weighted = costs_weighted_dict_list.get(selected_network)
+        costs = costs_weighted[carrier].sort_values()
+
+        new_trace = go.Bar(
+            x=costs.index, y=costs.values,
+            textposition="auto", name=f"{scenario_formatter(selected_network)}",
+        )
+        fig_dg.add_trace(new_trace, row=1, col=1)
+
+        fig_dg.update_yaxes(title_text="Costs [EUR/MWh]", row=1, col=1)
+        fig_dg.update_yaxes(title_text="Average costs [EUR/MWh]", row=2, col=1)
+
+        fig_dg.update_layout(
+            width=800,
+            height=400,
+            #font=dict(
+            #    size=42
+            #),
+            #font=dict(
+            #    xaxis_title_font_size=14,
+            #    xaxis_tickfont_size=14,
+            #    hoverlabel_font_size=14, 
+            #    legend_font_size=14
+            #)
+        )
+
+    st.plotly_chart(fig_dg)
 
 tools.add_logo()  
