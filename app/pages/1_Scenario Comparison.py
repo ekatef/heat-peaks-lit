@@ -78,6 +78,11 @@ def main():
     plot_color = [tech_colors[c] for c in df_techs]
 
     df_sort = df.loc[df.sum(1).sort_values(ascending=False).index]
+    
+    scen_dict = tools.config["scenario_names"]
+    # It doesn't look really good whan the bars are having long names
+    #df_sort = df_sort.rename(index = scen_dict)
+
     # needed to control markers size for the scatter
     _, plot_col, _ = st.columns([1, 80, 1])
     with plot_col:
