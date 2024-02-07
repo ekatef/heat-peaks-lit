@@ -5,7 +5,7 @@ import streamlit as st
 data_color = "#1B1212"
 
 @st.cache_resource
-def get_df_for_parameter(_network_map, parameter):
+def get_df_for_parameter(_network_map, parameter, display_tol=0.005):
 
     result = pd.DataFrame()
     for key, n in _network_map.items():
@@ -20,7 +20,7 @@ def get_df_for_parameter(_network_map, parameter):
     tech_map |= tools.config["carrier"] # update tech mapping, if applicable
     result.index = result.index.map(tech_map)
     result = result.groupby(result.index).sum()
-    drop = result.index[result.max(axis=1) < 0.005*result.sum().max()]
+    drop = result.index[result.max(axis=1) < display_tol*result.sum(axis=0).min()]
     result = result.drop(drop).T
     
     return result
