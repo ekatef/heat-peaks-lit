@@ -120,7 +120,7 @@ with date_col:
         choices,
         format_func=lambda x: choices[x], 
         key="gen_res",
-        help="You can choose a resolution for time aggregation applied for a plot"
+        help="You can choose a resolution for time aggregation to show a plot"
     )
     st.markdown(fix_cursor_css, unsafe_allow_html=True)    
 

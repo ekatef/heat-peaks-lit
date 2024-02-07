@@ -7,11 +7,11 @@ scenario_names:
   # NG_no_oil: Nigeria without oil
   # MA: Morocco
 
-  lvopt_rigid_i: Supplied Heating with Industry Optimal Network Expansion
-  lvopt_flex_i: Efficient Green Heating with Industry Optimal Network Expansion
-  lvop_retro_tes_i: Efficient Heating with Industry Optimal Network Expansion
-  lv1_flex_i: Efficient Green Heating with Industry Constrained Network Expansion
-  lv1_retro_tes_i: Efficient Heating Scenario with Industry Constrained Network Expansion
+  lvopt_rigid_i: Supplied Heating Optimal Network Expansion
+  lvopt_flex_i: Efficient Green Heating Optimal Network Expansion
+  lvop_retro_tes_i: Efficient Heating Optimal Network Expansion
+  lv1_flex_i: Efficient Green Heating Constrained Network Expansion
+  lv1_retro_tes_i: Efficient Heating Scenario Constrained Network Expansion
 
   # test cases without industry  
   lvopt_rigid: Supplied Heating Optimal Network Expansion (no industry)  
