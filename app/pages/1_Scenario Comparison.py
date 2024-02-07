@@ -49,14 +49,14 @@ def main():
     params = params[keep_columns].columns.values
 
     st.header("Statistics plot")
-    _, select_col, _ = st.columns([2,60,20])
+    _, select_col, _ = st.columns([2, 60, 20])
 
 
     with select_col:
         option = st.selectbox(
             "Select metric",
-            np.append(params, 'Total Costs'),
-            help="You can select any parameter from PyPSA Network Statistics table"
+            np.append(params, "Total Costs"),
+            help="You can select a parameter to compare between scenarios"
         )
         st.markdown(fix_cursor_css, unsafe_allow_html=True)
 
