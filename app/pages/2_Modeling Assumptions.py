@@ -21,21 +21,21 @@ url = "https://raw.githubusercontent.com/PyPSA/technology-data/master/outputs/co
 costs = pd.read_csv(url, index_col=0)
 
 considered = [
-    'central air-sourced heat pump', 'decentral air-sourced heat pump',
-    'central ground-sourced heat pump', 'decentral ground-sourced heat pump',
-    'central resistive heater', 'decentral resistive heater',
-    'central solar thermal', 'decentral solar thermal',
-    'central solid biomass CHP',
-    'central water tank storage', 'decentral water tank storage',
-    'water tank charger', 'water tank discharger',
+    "central air-sourced heat pump", "decentral air-sourced heat pump",
+    "central ground-sourced heat pump", "decentral ground-sourced heat pump",
+    "central resistive heater", "decentral resistive heater",
+    "central solar thermal", "decentral solar thermal",
+    "central solid biomass CHP",
+    "central water tank storage", "decentral water tank storage",
+    "water tank charger", "water tank discharger",
 
-    'battery inverter', 'battery storage',
-    'biogas upgrading', 'direct air capture', 'electricity distribution grid', 'electricity grid connection',
-    'electrolysis', 'fuel cell', 'central gas CHP', 'central gas boiler',
-    'decentral gas boiler', 'hydrogen storage underground', 'hydrogen storage tank type 1',
-    'HVDC inverter pair', 'helmeth', 'micro CHP', 'OCGT', 'offwind',
-    'onwind', 'PHS', 'ror', 'methanation', 'solar-rooftop',
-    'solar-utility', 'Steam methane reforming'
+    "battery inverter", "battery storage",
+    "biogas upgrading", "direct air capture", "electricity distribution grid", "electricity grid connection",
+    "electrolysis", "fuel cell", "central gas CHP", "central gas boiler",
+    "decentral gas boiler", "hydrogen storage underground", "hydrogen storage tank type 1",
+    "HVDC inverter pair", "helmeth", "micro CHP", "OCGT", "offwind",
+    "onwind", "PHS", "ror", "methanation", "solar-rooftop",
+    "solar-utility", "Steam methane reforming"
 ]
 
 st.write(costs.loc[considered])
