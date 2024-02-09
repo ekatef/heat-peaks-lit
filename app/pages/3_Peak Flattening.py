@@ -226,15 +226,15 @@ with balance_plot_col:
         group_label=helper.config["loads_t_parameter"]["p_set"]["legend_title"],
         color = [tech_colors[x] for x in cols_to_plot]
         )
-    buses_ovheat_line_plot = (
-        (load_buses_aggr["Heating Retrof"]/1e3).hvplot
-        .line(color=[tech_colors[x] for x in ["space heating overall"]])
-    )
+    #buses_ovheat_line_plot = (
+    #    (load_buses_aggr["Heating Retrof"]/1e3).hvplot
+    #    .line(color=[tech_colors[x] for x in ["space heating overall"]])
+    #)
     buses_orheat_line_plot = (
         (load_buses_aggr["Heating Original"]/1e3).hvplot
         .line(color=[tech_colors[x] for x in ["space heating original"]])
     )
-    buses_heat_area_plot = buses_heat_area_plot * buses_ovheat_line_plot
+    #buses_heat_area_plot = buses_heat_area_plot * buses_ovheat_line_plot
     buses_heat_area_plot = buses_heat_area_plot * buses_orheat_line_plot 
     buses_heat_area_plot = buses_heat_area_plot.opts(
         ylim=(0, None),
