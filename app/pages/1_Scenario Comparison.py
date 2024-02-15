@@ -156,6 +156,40 @@ def main():
             .style
             .set_properties().set_table_styles(styles)
     )   
+
+    st.subheader("Description")
+
+    st.markdown('<p class="big-font">Scenarios have been defined using the following technological assumptions</p>', unsafe_allow_html=True)
+
+    scenario_df = pd.DataFrame(
+        {
+            "name": [
+                "Efficient Heating",
+                "Semi-Efficient Heating",
+                "Efficient Green Heating",
+                "Non-efficient Heating",
+                "Optimal Network Expansion",
+                "Limited Network Expansion"
+            ],
+            "Assumptions": [
+                "Allows the model to invest in all supply heating technologies and buildings retrofitting, aiming to minimize total system costs. This scenario details the optimal investments in both supply and building renovation measures.",
+                "The model can invest in all heating supply technologies minimizing the total system costs. Usage of buildings retrofitting is reduced to half of what was found optimal in the scenario “Efficient Heating”. This conveys the impact when only a fraction of households invests in renovation measures.",
+                "Similar to “Efficient Heating”, but no individual gas boilers are allowed. This communicates the impact of removing fossil heat supply on the energy system.",
+                "Allows the model to invest in all heating supply technologies, but with no buildings retrofitting. This highlights the impact on the energy system when buildings are not renovated.",
+                "Model enforces the transmission grid as much as needed to minimize total costs.",
+                "Expansion of the transmission grid is limited."
+            ]
+        },
+        )
+
+    scenario_df.set_index("name", inplace=True)
+
+    st.table(
+        scenario_df
+            .style
+            .set_properties().set_table_styles(styles)
+    )
+
     st.header("Network statistics")
     _, table_col, _ = st.columns([2, 60, 20])
     with table_col:
