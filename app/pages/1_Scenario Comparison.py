@@ -73,7 +73,8 @@ def main():
         df.columns.difference(tools.config["preferred_order"])
     )
     df = df[new_cols]
-    df_techs = [tech_map[c] for c in df.columns]
+    #df_techs = [tech_map[c] for c in df.columns]
+    df_techs = df.columns
     tech_colors = get_colors_map()
     plot_color = [tech_colors[c] for c in df_techs]
 
