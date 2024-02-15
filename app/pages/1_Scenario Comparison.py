@@ -120,6 +120,42 @@ def main():
                 use_cointainer_width=True
             )
 
+    st.header("Considered scenarios")
+
+    st.subheader("Notations")
+
+    notations_df = pd.DataFrame(
+        {
+            "name": [
+                "lvopt_rigid_i", 
+                "lvopt_flex_i", 
+                "lvop_retro_tes_i", 
+                "lv1_flex_i", 
+                "lv1_retro_tes_i", 
+                "lvopt_rigid", 
+                "lvopt_flex", 
+                "lv1_flex"
+            ],
+            "Description": [
+                "Supplied Heating Optimal Network Expansion",
+                "Efficient Green Heating Optimal Network Expansion",
+                "Efficient Heating Optimal Network Expansion",
+                "Efficient Green Heating Limited Network Expansion",
+                "Efficient Heating Scenario Limited Network Expansion",
+                "Supplied Heating Optimal Network Expansion (no industry)",
+                "Efficient Green Heating Optimal Network Expansion (no industry)",
+                "Efficient Green Heating Limited Network Expansion (no industry)"
+            ]
+        },
+        )
+
+    notations_df.set_index("name", inplace=True)
+
+    st.table(
+        notations_df
+            .style
+            .set_properties().set_table_styles(styles)
+    )   
     st.header("Network statistics")
     _, table_col, _ = st.columns([2, 60, 20])
     with table_col:
