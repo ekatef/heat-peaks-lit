@@ -90,7 +90,7 @@ with main_col:
             selected_networks.append(scenario)
 
 if selected_networks == []:
-    st.error("You must choose a scenario. Please tick at least one of the boxes!")
+    st.error("Choose a scenario ticking one of the boxes")
     st.stop()
 
 # TODO Chech if [0] index is appropriate; needed to quickly fix time resolution
