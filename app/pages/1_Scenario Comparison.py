@@ -36,6 +36,22 @@ styles = [
     dict(selector="td", props=td_props)
 ]
 
+st.markdown("""
+<style>
+.big-font {
+    font-size:18px !important;
+}
+</style>
+""", unsafe_allow_html=True)
+st.markdown("""
+<style>
+.bigbold-font {
+    font-size:18px;
+    font-weight:bold;        
+}
+</style>
+""", unsafe_allow_html=True)
+
 def get_stat_unit(param):
     return tools.config["statistics_param_units"][param]
 
