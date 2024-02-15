@@ -5,6 +5,23 @@ import geopandas as gpd
 import plotly.subplots as sp
 import plotly.graph_objects as go
 
+data_color = "#333333"
+
+th_props = [
+    ("font-size", "16px"),
+    ("color", data_color),
+    ("font-weight", "bold"),
+    ("text-align", "left")
+]
+td_props = [
+    ("font-size", "16px"),
+    ("color", data_color)
+]    
+styles = [
+    dict(selector="th", props=th_props),
+    dict(selector="td", props=td_props)
+]
+
 st.title("Modelling assumptions")
 
 st.header("Assumptions for technology costs")

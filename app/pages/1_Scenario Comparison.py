@@ -21,7 +21,20 @@ fix_cursor_css = '''
         }            
     </style>
 '''
-
+th_props = [
+    ("font-size", "18px"),
+    ("color", data_color),
+    ("font-weight", "bold"),
+    ("text-align", "left")
+]
+td_props = [
+    ("font-size", "18px"),
+    ("color", data_color)
+]    
+styles = [
+    dict(selector="th", props=th_props),
+    dict(selector="td", props=td_props)
+]
 
 def get_stat_unit(param):
     return tools.config["statistics_param_units"][param]
@@ -201,21 +214,6 @@ def main():
         )
     st.markdown(fix_cursor_css, unsafe_allow_html=True)
     stat_table = helper.add_statistics(network_map[scenario], keep_columns)
-
-    th_props = [
-        ("font-size", "18px"),
-        ("color", data_color),
-        ("font-weight", "bold"),
-        ("text-align", "left")
-    ]
-    td_props = [
-        ("font-size", "18px"),
-        ("color", data_color)
-    ]    
-    styles = [
-        dict(selector="th", props=th_props),
-        dict(selector="td", props=td_props)
-    ]
 
     df = (
         stat_table.style
