@@ -55,10 +55,16 @@ considered = [
     "solar-utility", "Steam methane reforming"
 ]
 
-st.write(costs.loc[considered])
+costs.set_index("parameter", append=True, inplace=True)
 
 st.write("FOM is the fixed operation and maintenance costs. Given as percentage of overnight costs per annum.")
 st.write("VOM is the Variable operation and maintenance costs.")
+st.table(
+    costs.loc[considered]
+    .style
+    .set_properties().set_table_styles(styles)
+    .format(precision=2, thousands=" ", decimal=".")    
+)
 
 st.header("Assumptions to distribute heat demands")
 
