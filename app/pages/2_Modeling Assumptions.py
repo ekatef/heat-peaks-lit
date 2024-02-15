@@ -11,7 +11,7 @@ st.header("Assumptions for technology costs")
 
 st.markdown(
     "Model assumptions are under constant revision."
-    "Assumptions used for this study are basted on the "
+    "Assumptions used for this study are based on the "
     "[technology-data repository v0.6.2](https://github.com/PyPSA/technology-data/blob/master/outputs/costs_2030.csv). "
     "The most relevant technologies are outlined below:"
     ""
